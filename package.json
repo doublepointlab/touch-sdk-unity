@@ -1,0 +1,27 @@
+{
+  "name": "com.psix.watch",
+  "displayName": "Unity-Smartwatch Bridge",
+  "version": "0.0.0",
+  "unity": "2020.3",
+  "description": "C# scripts for bridging Unity applications with Wear OS smartwatches.",
+  "dependencies": {},
+  "keywords": [
+    "Port 6"
+  ],
+  "license": "",
+  "author": {
+    "name": "Arttu Tolvanen",
+    "email": "arttu@port6.io",
+    "url": ""
+  },
+
+  "homepage": "https://www.port6.io",
+  "bugs": {
+    "url": "",
+    "email" : ""
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
+}
