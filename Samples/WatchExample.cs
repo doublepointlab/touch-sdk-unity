@@ -12,14 +12,14 @@ public class WatchExample : MonoBehaviour
     public Text StatusText;
     public Text ButtonPositionText;
 
-    private ConcurrentQueue<int> gestureQueue
-        = new ConcurrentQueue<int>();
+    private ConcurrentQueue<Psix.Interaction.Gesture> gestureQueue
+        = new ConcurrentQueue<Psix.Interaction.Gesture>();
 
-    private ConcurrentQueue<(int type, float[] coords)> touchQueue
-        = new ConcurrentQueue<(int type, float[] coords)>();
+    private ConcurrentQueue<Psix.Interaction.TouchEvent> touchQueue
+        = new ConcurrentQueue<Psix.Interaction.TouchEvent>();
 
-    private ConcurrentQueue<(int type, int info)> motionQueue
-        = new ConcurrentQueue<(int type, int info)>();
+    private ConcurrentQueue<Psix.Interaction.MotionEvent> motionQueue
+        = new ConcurrentQueue<Psix.Interaction.MotionEvent>();
 
     private string StatusMessage
     {
@@ -36,9 +36,9 @@ public class WatchExample : MonoBehaviour
         watch = new Watch("Galaxy Watch4 Classic (NHYP)");
 
         // Enqueue gestures, motion events, and touch events to dedicated queues
-        watch.OnGesture = (type) => { gestureQueue.Enqueue(type); };
-        watch.OnTouchEvent = (type, coords) => { touchQueue.Enqueue((type, coords)); };
-        watch.OnMotionEvent = (type, info) => { motionQueue.Enqueue((type, info)); };
+        watch.OnGesture = (gesture) => { gestureQueue.Enqueue(gesture); };
+        watch.OnTouchEvent = (touchEvent) => { touchQueue.Enqueue(touchEvent); };
+        watch.OnMotionEvent = (motionEvent) => { motionQueue.Enqueue(motionEvent); };
 
         // Start scanning for the watch. Connect to it if found
         watch.Connect();
@@ -48,36 +48,34 @@ public class WatchExample : MonoBehaviour
     {
         // Query last known orientation. This will return (1, 0, 0, 0) if
         // no device is yet connected.
-        float[] quat = watch.GetOrientation();
+        float[] quat = watch.GetRotationalVelocity();
         ButtonPositionText.text = string.Format("{0:+0.00;-0.00}", quat[0])
                           + " " + string.Format("{0:+0.00;-0.00}", quat[1])
-                          + " " + string.Format("{0:+0.00;-0.00}", quat[2])
-                          + " " + string.Format("{0:+0.00;-0.00}", quat[3]);
+                          + " " + string.Format("{0:+0.00;-0.00}", quat[2]);
 
 
         // Get interaction events from queues
 
-        int gesture;
-        (int type, float[] coords) touch;
-        (int type, int info) motion;
+        Psix.Interaction.Gesture gesture;
+        Psix.Interaction.TouchEvent touch;
+        Psix.Interaction.MotionEvent motion;
 
         while (gestureQueue.TryDequeue(out gesture))
         {
             switch(gesture)
             {
-                case 0: StatusMessage = "TAP"; break;
-                case 1: StatusMessage = "TAP"; break;
-                case 2: StatusMessage = "TAP"; break;
+                case Psix.Interaction.Gesture.Tap: StatusMessage = "TAP"; break;
             }
         }
 
         while (touchQueue.TryDequeue(out touch))
         {
+            string coordinates = touch.coords[0].ToString() + ", " + touch.coords[1].ToString();
             switch(touch.type)
             {
-                case 0: StatusMessage = "TOUCH"; break;
-                case 1: StatusMessage = "UNTOUCH"; break;
-                case 2: StatusMessage = "SLIDE AT " + touch.coords[0].ToString() + ", " + touch.coords[1].ToString(); break;
+                case Psix.Interaction.TouchType.On: StatusMessage = "TOUCH AT " + coordinates; break;
+                case Psix.Interaction.TouchType.Off: StatusMessage = "UNTOUCH AT " + coordinates; break;
+                case Psix.Interaction.TouchType.Move: StatusMessage = "SLIDE AT " + coordinates; break;
             }
         }
 
@@ -85,8 +83,15 @@ public class WatchExample : MonoBehaviour
         {
             switch(motion.type)
             {
-                case 255: StatusMessage = "ROTATION CLOCKWISE"; break;
-                case 1: StatusMessage = "ROTATION COUNTER-CLOCKWISE"; break;
+                case Psix.Interaction.MotionType.Rotary:
+                    switch(motion.info)
+                    {
+                        case Psix.Interaction.MotionInfo.Clockwise:
+                            StatusMessage = "ROTATION CLOCKWISE"; break;
+                        case Psix.Interaction.MotionInfo.CounterClockwise:
+                            StatusMessage = "ROTATION COUNTER-CLOCKWISE"; break;
+                    }
+                    break;
             }
         }
     }

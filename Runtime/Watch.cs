@@ -2,7 +2,11 @@ using System;
 using System.Linq;
 using System.Threading;
 
+
 namespace Psix {
+
+using Interaction;
+
 public class Watch {
 
     private GattClient client;
@@ -28,14 +32,14 @@ public class Watch {
     {
         client = new GattClient(name);
 
-        client.SubscribeToCharacteristic(SensorServiceUUID, accUUID, accCallback);
         client.SubscribeToCharacteristic(SensorServiceUUID, gyroUUID, gyroCallback);
+        client.SubscribeToCharacteristic(SensorServiceUUID, accUUID, accCallback);
         client.SubscribeToCharacteristic(SensorServiceUUID, gravUUID, gravityCallback);
         client.SubscribeToCharacteristic(SensorServiceUUID, quatUUID, quatCallback);
 
         client.SubscribeToCharacteristic(InteractionServiceUUID, GestureUUID, gestureCallback);
         client.SubscribeToCharacteristic(InteractionServiceUUID, TouchUUID, touchCallback);
-        client.SubscribeToCharacteristic(InteractionServiceUUID, PhysicalUUID, physicalCallback);
+        client.SubscribeToCharacteristic(InteractionServiceUUID, PhysicalUUID, motionCallback);
     }
 
     public void Connect()
@@ -66,9 +70,9 @@ public class Watch {
     public Action<float[]> OnOrientationUpdated = (data) => { return; };
 
     // User callbacks for interaction events
-    public Action<int> OnGesture = (type) => { return; };
-    public Action<int, float[]> OnTouchEvent = (type, coords) => { return; };
-    public Action<int, int> OnMotionEvent = (type, info) => { return; };
+    public Action<Gesture> OnGesture = (gesture) => { return; };
+    public Action<TouchEvent> OnTouchEvent = (touchEvent) => { return; };
+    public Action<MotionEvent> OnMotionEvent = (motionEvent) => { return; };
 
     // Internal callbacks
 
@@ -98,17 +102,30 @@ public class Watch {
 
     private void gestureCallback(byte[] data)
     {
-        OnGesture(Convert.ToInt32(data[0]));
+        if (data.Length == 1)
+        OnGesture((Interaction.Gesture)Convert.ToInt32(data[0]));
     }
 
     private void touchCallback(byte[] data)
     {
-        OnTouchEvent(Convert.ToInt32(data[0]), getFloatArray(data.Skip(1).ToArray()));
+        if (data.Length == 9)
+        {
+            OnTouchEvent(new TouchEvent(
+                (Interaction.TouchType)Convert.ToInt32(data[0]),
+                getFloatArray(data.Skip(1).ToArray())
+            ));
+        }
     }
 
-    private void physicalCallback(byte[] data)
+    private void motionCallback(byte[] data)
     {
-        OnMotionEvent(Convert.ToInt32(data[0]), Convert.ToInt32(data[1]));
+        if (data.Length == 2)
+        {
+            OnMotionEvent(new MotionEvent(
+                (Interaction.MotionType)Convert.ToInt32(data[0]),
+                (Interaction.MotionInfo)Convert.ToInt32(data[1])
+            ));
+        }
     }
 
     public void TriggerHaptics(int Length, int Amplitude)
