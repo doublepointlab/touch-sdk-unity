@@ -31,6 +31,7 @@ class GattClient {
         Subscribe,
         Unsubscribe,
         Disconnect,
+        Terminate,
     }
 
     private void SetState(State newState, long timeout)
@@ -100,7 +101,7 @@ class GattClient {
     private void connectionLoop()
     {
         AndroidJNI.AttachCurrentThread(); // BLE interface on Android uses JNI
-        while (true)
+        while (_state != State.Terminate)
         {
             if (_timeout > 0)
             {
