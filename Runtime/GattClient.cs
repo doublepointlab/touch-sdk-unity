@@ -39,22 +39,23 @@ class GattClient {
         _timeout = timeout;
     }
 
-    public GattClient(string name) {
+    public GattClient(string name)
+    {
         serverName = name;
     }
 
-    private List<(
+    private Queue<(
         string service,
         string characteristic,
         Action<byte[]> callback)> subscribedCharacteristics
-        = new List<(string service, string characteristic, Action<byte[]> callback)>();
+        = new Queue<(string service, string characteristic, Action<byte[]> callback)>();
 
     public void SubscribeToCharacteristic(
        string serviceUuid,
        string characteristicUuid,
        Action<byte[]> callback)
     {
-        subscribedCharacteristics.Add((serviceUuid, characteristicUuid, callback));
+        subscribedCharacteristics.Enqueue((serviceUuid, characteristicUuid, callback));
     }
 
     private void Initialize()
@@ -202,30 +203,34 @@ class GattClient {
                             break;
 
                         case State.Subscribe:
-                            Debug.Log("Subscribing to characteristics...");
-                            foreach (var p in subscribedCharacteristics) {
+
+                            try
+                            {
+                                var p = subscribedCharacteristics.Dequeue();
+                                Debug.Log("Subscribing to " + p.characteristic);
                                 BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(
                                    _deviceAddress, p.service, p.characteristic,
                                    (notifyAddress, notifyCharacteristic) =>
                                 {
-                                    _state = State.None;
-                                    SetState(State.ReadRSSI, 1000);
+                                    Debug.Log("notification action called for " + notifyCharacteristic + " with " + subscribedCharacteristics.Count);
+                                    SetState(State.Subscribe, 100);
 
                                 }, (address, characteristicUUID, bytes) =>
                                 {
-                                    if (_state != State.None)
-                                    {
-                                        SetState(State.ReadRSSI, 1000);
-                                    }
+                                    Debug.Log("subscribe action called for " + characteristicUUID);
                                     p.callback(bytes);
                                 });
 
+                            } catch (InvalidOperationException) {
+                                Debug.Log("No more characteristics to subscribe to");
+                                SetState(State.ReadRSSI, 1000);
                             }
 
                             break;
 
                         case State.Unsubscribe:
-                            foreach(var p in subscribedCharacteristics) {
+                            foreach (var p in subscribedCharacteristics)
+                            {
                                 BluetoothLEHardwareInterface.UnSubscribeCharacteristic(
                                     _deviceAddress, p.service, p.characteristic, null);
                             }
