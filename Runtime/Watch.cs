@@ -52,6 +52,12 @@ public class Watch {
         client.Disconnect();
     }
 
+    public ClientState State
+    {
+        get { return client.State; }
+        private set {}
+    }
+
     private float[] gyro = new float[] {0, 0, 0};
     private float[] acceleration = new float[] {0, 0, 0};
     private float[] gravity = new float[] {0, 0, 0};

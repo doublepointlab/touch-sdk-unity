@@ -5,12 +5,29 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Psix {
+
+public enum ClientState
+{
+    None,
+    Scan,
+    ScanRSSI,
+    ReadRSSI,
+    Connect,
+    RequestMTU,
+    Subscribe,
+    Unsubscribe,
+    Disconnect,
+    Terminate,
+}
+
 class GattClient {
 
     private string serverName;
     private string _deviceAddress;
 
-    private State _state = State.None;
+    public ClientState State {get; private set;}
+    = ClientState.None;
+
     private bool _connected = false;
     private bool _rssiOnly = false;
 
@@ -20,23 +37,10 @@ class GattClient {
 
     private Thread connectionThread;
 
-    enum State
-    {
-        None,
-        Scan,
-        ScanRSSI,
-        ReadRSSI,
-        Connect,
-        RequestMTU,
-        Subscribe,
-        Unsubscribe,
-        Disconnect,
-        Terminate,
-    }
 
-    private void SetState(State newState, long timeout)
+    private void SetState(ClientState newState, long timeout)
     {
-        _state = newState;
+        State = newState;
         _timeout = timeout;
     }
 
@@ -67,7 +71,7 @@ class GattClient {
 
         BluetoothLEHardwareInterface.Initialize(true, false, () =>
         {
-            SetState(State.Scan, 100);
+            SetState(ClientState.Scan, 100);
         }, (error) =>
         {
             Debug.Log("BLE error: " + error);
@@ -85,7 +89,7 @@ class GattClient {
 
     public void Disconnect()
     {
-        SetState(State.Disconnect, 4000);
+        SetState(ClientState.Disconnect, 4000);
     }
 
     public void SendBytes(byte[] data, string serviceUuid, string characteristicUuid)
@@ -101,7 +105,7 @@ class GattClient {
     private void connectionLoop()
     {
         AndroidJNI.AttachCurrentThread(); // BLE interface on Android uses JNI
-        while (_state != State.Terminate)
+        while (State != ClientState.Terminate)
         {
             if (_timeout > 0)
             {
@@ -112,12 +116,12 @@ class GattClient {
                 {
                     _timeout = 0;
 
-                    switch (_state)
+                    switch (State)
                     {
-                        case State.None:
+                        case ClientState.None:
                             break;
 
-                        case State.Scan:
+                        case ClientState.Scan:
                             Debug.Log("Scanning for " + serverName);
 
                             BluetoothLEHardwareInterface.ScanForPeripheralsWithServices(
@@ -132,7 +136,7 @@ class GattClient {
                                         BluetoothLEHardwareInterface.StopScan();
 
                                         _deviceAddress = address;
-                                        SetState(State.Connect, 500);
+                                        SetState(ClientState.Connect, 500);
                                     }
                                 }
 
@@ -151,30 +155,30 @@ class GattClient {
                                         BluetoothLEHardwareInterface.StopScan();
 
                                         _deviceAddress = address;
-                                        SetState(State.Connect, 500);
+                                        SetState(ClientState.Connect, 500);
                                     }
                                 }
 
                             }, _rssiOnly);
 
                             if (_rssiOnly)
-                                SetState(State.ScanRSSI, 500);
+                                SetState(ClientState.ScanRSSI, 500);
                             break;
 
-                        case State.ScanRSSI:
+                        case ClientState.ScanRSSI:
                             break;
 
-                        case State.ReadRSSI:
+                        case ClientState.ReadRSSI:
                             Debug.Log($"Call Read RSSI");
                             BluetoothLEHardwareInterface.ReadRSSI(_deviceAddress, (address, rssi) =>
                             {
                                 Debug.Log($"Read RSSI: {rssi}");
                             });
 
-                            SetState(State.ReadRSSI, 2000);
+                            SetState(ClientState.ReadRSSI, 2000);
                             break;
 
-                        case State.Connect:
+                        case ClientState.Connect:
                             Debug.Log("Connecting...");
 
                             // TODO: make sure the device has required Bluetooth attributes
@@ -183,27 +187,27 @@ class GattClient {
                             {
                                 Debug.Log("Connected");
                                 _connected = true;
-                                SetState(State.RequestMTU, 2000);
+                                SetState(ClientState.RequestMTU, 2000);
                             }, null, null, (kek) =>
                             {
-                                SetState(State.Disconnect, 4000);
+                                SetState(ClientState.Disconnect, 4000);
                                 Debug.Log("Server disconnected: " + kek);
                             }
                             );
                             break;
 
-                        case State.RequestMTU:
+                        case ClientState.RequestMTU:
                             Debug.Log("Requesting MTU");
 
                             BluetoothLEHardwareInterface.RequestMtu(_deviceAddress, 185, (address, newMTU) =>
                             {
                                 Debug.Log("MTU set to " + newMTU.ToString());
 
-                                SetState(State.Subscribe, 100);
+                                SetState(ClientState.Subscribe, 100);
                             });
                             break;
 
-                        case State.Subscribe:
+                        case ClientState.Subscribe:
 
                             try
                             {
@@ -214,7 +218,7 @@ class GattClient {
                                    (notifyAddress, notifyCharacteristic) =>
                                 {
                                     Debug.Log("notification action called for " + notifyCharacteristic + " with " + subscribedCharacteristics.Count);
-                                    SetState(State.Subscribe, 100);
+                                    SetState(ClientState.Subscribe, 100);
 
                                 }, (address, characteristicUUID, bytes) =>
                                 {
@@ -224,21 +228,21 @@ class GattClient {
 
                             } catch (InvalidOperationException) {
                                 Debug.Log("No more characteristics to subscribe to");
-                                SetState(State.ReadRSSI, 1000);
+                                SetState(ClientState.ReadRSSI, 1000);
                             }
 
                             break;
 
-                        case State.Unsubscribe:
+                        case ClientState.Unsubscribe:
                             foreach (var p in subscribedCharacteristics)
                             {
                                 BluetoothLEHardwareInterface.UnSubscribeCharacteristic(
                                     _deviceAddress, p.service, p.characteristic, null);
                             }
-                            SetState(State.Disconnect, 4000);
+                            SetState(ClientState.Disconnect, 4000);
                             break;
 
-                        case State.Disconnect:
+                        case ClientState.Disconnect:
                             Debug.Log("Commanded disconnect.");
 
                             if (_connected)
@@ -250,7 +254,7 @@ class GattClient {
                                     BluetoothLEHardwareInterface.DeInitialize(() =>
                                     {
                                         _connected = false;
-                                        _state = State.None;
+                                        State = ClientState.None;
                                     });
                                 });
                             }
@@ -258,7 +262,7 @@ class GattClient {
                             {
                                 BluetoothLEHardwareInterface.DeInitialize(() =>
                                 {
-                                    _state = State.None;
+                                    State = ClientState.None;
                                 });
                             }
                             break;
