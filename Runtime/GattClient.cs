@@ -13,7 +13,6 @@ public enum ClientState
     ScanRSSI,
     ReadRSSI,
     Connect,
-    RequestMTU,
     Subscribe,
     Unsubscribe,
     Disconnect,
@@ -187,24 +186,15 @@ class GattClient {
                             {
                                 Debug.Log("Connected");
                                 _connected = true;
-                                SetState(ClientState.RequestMTU, 2000);
-                            }, null, null, (kek) =>
+                            }, (addr, service) => {
+                                // start subscribing once service discovery is done
+                                SetState(ClientState.Subscribe, 100);
+                            }, null, (addr) =>
                             {
                                 SetState(ClientState.Disconnect, 4000);
-                                Debug.Log("Server disconnected: " + kek);
+                                Debug.Log("Server disconnected: " + addr);
                             }
                             );
-                            break;
-
-                        case ClientState.RequestMTU:
-                            Debug.Log("Requesting MTU");
-
-                            BluetoothLEHardwareInterface.RequestMtu(_deviceAddress, 185, (address, newMTU) =>
-                            {
-                                Debug.Log("MTU set to " + newMTU.ToString());
-
-                                SetState(ClientState.Subscribe, 100);
-                            });
                             break;
 
                         case ClientState.Subscribe:
@@ -212,12 +202,15 @@ class GattClient {
                             try
                             {
                                 var p = subscribedCharacteristics.Dequeue();
-                                Debug.Log("Subscribing to " + p.characteristic);
+                                Debug.Log("Subscribing to service " + p.characteristic
+                                            + ", char " + p.characteristic);
                                 BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(
                                    _deviceAddress, p.service, p.characteristic,
                                    (notifyAddress, notifyCharacteristic) =>
                                 {
-                                    Debug.Log("notification action called for " + notifyCharacteristic + " with " + subscribedCharacteristics.Count);
+                                    Debug.Log("notification action called for "
+                                                + notifyCharacteristic + " with "
+                                                + subscribedCharacteristics.Count);
                                     SetState(ClientState.Subscribe, 100);
 
                                 }, (address, characteristicUUID, bytes) =>
