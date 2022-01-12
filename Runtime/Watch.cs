@@ -1,6 +1,10 @@
+#nullable enable
+
 using System;
 using System.Linq;
 using System.Threading;
+
+using UnityEngine;
 
 
 namespace Psix {
@@ -42,9 +46,13 @@ public class Watch {
         client.SubscribeToCharacteristic(InteractionServiceUUID, PhysicalUUID, motionCallback);
     }
 
-    public void Connect()
+    public void Connect(Action? onConnected = null, Action? onDisconnected = null, Action? onTimeout = null)
     {
-        client.Connect();
+        client.Connect(
+            onConnected: () => { connectAction(onConnected); },
+            onDisconnected: () => { disconnectAction(onDisconnected); },
+            onTimeout: () => { timeoutAction(onTimeout); }
+        );
     }
 
     public void Disconnect()
@@ -52,10 +60,18 @@ public class Watch {
         client.Disconnect();
     }
 
-    private float[] gyro = new float[] {0, 0, 0};
-    private float[] acceleration = new float[] {0, 0, 0};
-    private float[] gravity = new float[] {0, 0, 0};
-    private float[] quat = new float[] {1, 0, 0, 0};
+    public bool IsConnected { get; private set; } = false;
+
+    public void TriggerHaptics(int Length, int Amplitude)
+    {
+        byte[] data = { 0, 0 };
+        try {
+            data = new byte[]{ Convert.ToByte(Length), Convert.ToByte(Amplitude) };
+        }
+        catch (OverflowException) {}
+
+        client.SendBytes(data, FeedbackServiceUUID, HapticsUUID);
+    }
 
     // TODO: Should these throw an exception if no device is connected?
     public float[] GetRotationalVelocity() { return gyro; }
@@ -73,6 +89,12 @@ public class Watch {
     public Action<Gesture> OnGesture = (gesture) => { return; };
     public Action<TouchEvent> OnTouchEvent = (touchEvent) => { return; };
     public Action<MotionEvent> OnMotionEvent = (motionEvent) => { return; };
+
+    // Internal sensor state
+    private float[] gyro = new float[] {0, 0, 0};
+    private float[] acceleration = new float[] {0, 0, 0};
+    private float[] gravity = new float[] {0, 0, 0};
+    private float[] quat = new float[] {1, 0, 0, 0};
 
     // Internal callbacks
 
@@ -128,16 +150,29 @@ public class Watch {
         }
     }
 
-    public void TriggerHaptics(int Length, int Amplitude)
-    {
-        byte[] data = { 0, 0 };
-        try {
-            data = new byte[]{ Convert.ToByte(Length), Convert.ToByte(Amplitude) };
-        }
-        catch (OverflowException) {}
+    // Internal connection lifecycle callbacks
 
-        client.SendBytes(data, FeedbackServiceUUID, HapticsUUID);
+    private void connectAction(Action? onConnected)
+    {
+        Debug.Log("connect action");
+        IsConnected = true;
+        onConnected?.Invoke();
     }
+
+    private void disconnectAction(Action? onDisconnected)
+    {
+        Debug.Log("disconnect action");
+        IsConnected = false;
+        onDisconnected?.Invoke();
+    }
+
+    private void timeoutAction(Action? onTimeout)
+    {
+        Debug.Log("timeout action");
+        IsConnected = false;
+        onTimeout?.Invoke();
+    }
+
 
     // Convert array of bytes to array of floats, switching the byte endianness
     private float[] getFloatArray(byte[] data)

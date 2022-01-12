@@ -33,7 +33,7 @@ public class WatchExample : MonoBehaviour
 
     void Start()
     {
-        watch = new Watch("Galaxy Watch4 Classic (NHYP)");
+        watch = new Watch("NHYP");
 
         // Enqueue gestures, motion events, and touch events to dedicated queues
         watch.OnGesture = (gesture) => { gestureQueue.Enqueue(gesture); };
@@ -41,7 +41,11 @@ public class WatchExample : MonoBehaviour
         watch.OnMotionEvent = (motionEvent) => { motionQueue.Enqueue(motionEvent); };
 
         // Start scanning for the watch. Connect to it if found
-        watch.Connect();
+        watch.Connect(
+            onConnected: () => {StatusMessage = "CONNECTED"; },
+            onDisconnected: () => {StatusMessage = "DISCONNECTED"; },
+            onTimeout: () => {StatusMessage = "TIMEOUT"; }
+        );
     }
 
     void Update()
