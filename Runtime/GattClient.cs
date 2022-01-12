@@ -1,269 +1,232 @@
+#nullable enable
+
 using System;
-using System.Threading;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Timers;
 
 using UnityEngine;
 
-namespace Psix {
+using BLE = BluetoothLEHardwareInterface;
+using Timer = System.Timers.Timer;
 
-public enum ClientState
+namespace Psix
 {
-    None,
-    Scan,
-    ScanRSSI,
-    ReadRSSI,
-    Connect,
-    Subscribe,
-    Unsubscribe,
-    Disconnect,
-    Terminate,
-}
 
-class GattClient {
-
-    private string serverName;
-    private string _deviceAddress;
-
-    public ClientState State {get; private set;}
-    = ClientState.None;
-
-    private bool _connected = false;
-    private bool _rssiOnly = false;
-
-    private int _rssi = 0;
-    private long _timeout = 0;
-    private long _lastTime = 0;
-
-    private Thread connectionThread;
-
-
-    private void SetState(ClientState newState, long timeout)
+    class GattClient
     {
-        State = newState;
-        _timeout = timeout;
-    }
 
-    public GattClient(string name)
-    {
-        serverName = name;
-    }
-
-    private Queue<(
-        string service,
-        string characteristic,
-        Action<byte[]> callback)> subscribedCharacteristics
-        = new Queue<(string service, string characteristic, Action<byte[]> callback)>();
-
-    public void SubscribeToCharacteristic(
-       string serviceUuid,
-       string characteristicUuid,
-       Action<byte[]> callback)
-    {
-        subscribedCharacteristics.Enqueue((serviceUuid, characteristicUuid, callback));
-    }
-
-    private void Initialize()
-    {
-        BluetoothLEHardwareInterface.BluetoothConnectionPriority(
-            BluetoothLEHardwareInterface.ConnectionPriority.High
-        );
-
-        BluetoothLEHardwareInterface.Initialize(true, false, () =>
+        public GattClient(string name = "")
         {
-            SetState(ClientState.Scan, 100);
-        }, (error) =>
-        {
-            Debug.Log("BLE error: " + error);
+            serverName = name;
         }
-        );
-    }
 
-    public void Connect()
-    {
-        Initialize();
-        _lastTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-        connectionThread = new Thread(new ThreadStart(connectionLoop));
-        connectionThread.Start();
-    }
-
-    public void Disconnect()
-    {
-        SetState(ClientState.Disconnect, 4000);
-    }
-
-    public void SendBytes(byte[] data, string serviceUuid, string characteristicUuid)
-    {
-        BluetoothLEHardwareInterface.WriteCharacteristic(
-            _deviceAddress, serviceUuid, characteristicUuid,
-            data, data.Length, false, (characteristicUUID) =>
+        public double ScanTimeout
         {
-            Debug.Log("Write Succeeded");
-        });
-    }
+            get { return ScanTimer.Interval; }
+            set { ScanTimer.Interval = value; }
+        }
 
-    private void connectionLoop()
-    {
-        AndroidJNI.AttachCurrentThread(); // BLE interface on Android uses JNI
-        while (State != ClientState.Terminate)
+        public void SubscribeToCharacteristic(
+           string serviceUuid,
+           string characteristicUuid,
+           Action<byte[]> callback)
         {
-            if (_timeout > 0)
+            requiredServices.Add(serviceUuid);
+            subscriptions.Enqueue((serviceUuid, characteristicUuid, callback));
+        }
+
+
+        public void Connect(Action? onConnected = null, Action? onDisconnected = null, Action? onTimeout = null)
+        {
+            connectAction = onConnected;
+            disconnectAction = onDisconnected;
+            timeoutAction = onTimeout;
+            bluetoothThread = new Thread(new ThreadStart(Initiate));
+            bluetoothThread?.Start();
+        }
+
+        public void Disconnect()
+        {
+            if (serverAddress != "")
             {
-                _timeout -= DateTimeOffset.Now.ToUnixTimeMilliseconds() - _lastTime;
-                _lastTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-
-                if (_timeout <= 0)
-                {
-                    _timeout = 0;
-
-                    switch (State)
+                BLE.DisconnectPeripheral(
+                    serverAddress, (address) =>
                     {
-                        case ClientState.None:
-                            break;
-
-                        case ClientState.Scan:
-                            Debug.Log("Scanning for " + serverName);
-
-                            BluetoothLEHardwareInterface.ScanForPeripheralsWithServices(
-                                null, (address, name) =>
-                            {
-                                if (!_rssiOnly)
-                                {
-                                    if (name.Contains(serverName))
-                                    {
-                                        Debug.Log("Found " + name);
-
-                                        BluetoothLEHardwareInterface.StopScan();
-
-                                        _deviceAddress = address;
-                                        SetState(ClientState.Connect, 500);
-                                    }
-                                }
-
-                            }, (address, name, rssi, bytes) =>
-                            {
-                                if (name.Contains(serverName))
-                                {
-                                    Debug.Log("Found " + name);
-
-                                    if (_rssiOnly)
-                                    {
-                                        _rssi = rssi;
-                                    }
-                                    else
-                                    {
-                                        BluetoothLEHardwareInterface.StopScan();
-
-                                        _deviceAddress = address;
-                                        SetState(ClientState.Connect, 500);
-                                    }
-                                }
-
-                            }, _rssiOnly);
-
-                            if (_rssiOnly)
-                                SetState(ClientState.ScanRSSI, 500);
-                            break;
-
-                        case ClientState.ScanRSSI:
-                            break;
-
-                        case ClientState.ReadRSSI:
-                            Debug.Log($"Call Read RSSI");
-                            BluetoothLEHardwareInterface.ReadRSSI(_deviceAddress, (address, rssi) =>
-                            {
-                                Debug.Log($"Read RSSI: {rssi}");
-                            });
-
-                            SetState(ClientState.ReadRSSI, 2000);
-                            break;
-
-                        case ClientState.Connect:
-                            Debug.Log("Connecting...");
-
-                            // TODO: make sure the device has required Bluetooth attributes
-                            BluetoothLEHardwareInterface.ConnectToPeripheral(
-                                _deviceAddress, (address) =>
-                            {
-                                Debug.Log("Connected");
-                                _connected = true;
-                            }, (addr, service) => {
-                                // start subscribing once service discovery is done
-                                SetState(ClientState.Subscribe, 100);
-                            }, null, (addr) =>
-                            {
-                                SetState(ClientState.Disconnect, 4000);
-                                Debug.Log("Server disconnected: " + addr);
-                            }
-                            );
-                            break;
-
-                        case ClientState.Subscribe:
-
-                            try
-                            {
-                                var p = subscribedCharacteristics.Dequeue();
-                                Debug.Log("Subscribing to service " + p.characteristic
-                                            + ", char " + p.characteristic);
-                                BluetoothLEHardwareInterface.SubscribeCharacteristicWithDeviceAddress(
-                                   _deviceAddress, p.service, p.characteristic,
-                                   (notifyAddress, notifyCharacteristic) =>
-                                {
-                                    Debug.Log("notification action called for "
-                                                + notifyCharacteristic + " with "
-                                                + subscribedCharacteristics.Count);
-                                    SetState(ClientState.Subscribe, 100);
-
-                                }, (address, characteristicUUID, bytes) =>
-                                {
-                                    Debug.Log("subscribe action called for " + characteristicUUID);
-                                    p.callback(bytes);
-                                });
-
-                            } catch (InvalidOperationException) {
-                                Debug.Log("No more characteristics to subscribe to");
-                                SetState(ClientState.ReadRSSI, 1000);
-                            }
-
-                            break;
-
-                        case ClientState.Unsubscribe:
-                            foreach (var p in subscribedCharacteristics)
-                            {
-                                BluetoothLEHardwareInterface.UnSubscribeCharacteristic(
-                                    _deviceAddress, p.service, p.characteristic, null);
-                            }
-                            SetState(ClientState.Disconnect, 4000);
-                            break;
-
-                        case ClientState.Disconnect:
-                            Debug.Log("Commanded disconnect.");
-
-                            if (_connected)
-                            {
-                                BluetoothLEHardwareInterface.DisconnectPeripheral(
-                                    _deviceAddress, (address) =>
-                                {
-                                    Debug.Log("Device disconnected");
-                                    BluetoothLEHardwareInterface.DeInitialize(() =>
-                                    {
-                                        _connected = false;
-                                        State = ClientState.None;
-                                    });
-                                });
-                            }
-                            else
-                            {
-                                BluetoothLEHardwareInterface.DeInitialize(() =>
-                                {
-                                    State = ClientState.None;
-                                });
-                            }
-                            break;
+                        disconnectAction?.Invoke();
                     }
+                );
+            }
+            Cleanup();
+        }
+
+        public void SendBytes(byte[] data, string serviceUuid, string characteristicUuid)
+        {
+            BLE.WriteCharacteristic(
+                serverAddress, serviceUuid, characteristicUuid,
+                data, data.Length, false, (characteristicUUID) =>
+            {
+                Debug.Log("Write Succeeded");
+            });
+        }
+
+        private void Initiate()
+        {
+            AndroidJNI.AttachCurrentThread(); // BLE interface on Android uses JNI
+
+            BLE.BluetoothConnectionPriority(BLE.ConnectionPriority.High);
+
+            BLE.BluetoothScanMode(BLE.ScanMode.LowLatency);
+
+            BLE.Initialize(true, false,
+                () => { StartScanning(); },
+                (error) => { Debug.Log("BLE error: " + error); }
+            );
+        }
+
+        private void Cleanup()
+        {
+            AndroidJNI.AttachCurrentThread(); // BLE interface on Android uses JNI
+            BLE.StopScan();
+            lock (matchLock)
+            {
+            if (serverAddress == "")
+            {
+                foreach (string addr in connectedDevices)
+                {
+                    BLE.DisconnectPeripheral(addr, null);
+                }
+                BLE.DeInitialize(() => { Connect(); });
+                timeoutAction?.Invoke();
+            }
+            }
+            AndroidJNI.DetachCurrentThread(); // BLE interface on Android uses JNI
+
+            requiredServices.Clear();
+            subscriptions.Clear();
+            deviceToDiscoveredServices.Clear();
+        }
+
+        private void StartScanning()
+        {
+
+            ScanTimer.Elapsed += (s, e) => { Cleanup(); };
+            ScanTimer.AutoReset = false; // scanning is stopped only once
+            ScanTimer.Start();
+
+            BLE.ScanForPeripheralsWithServices(
+                null,
+                (address, name) => { ProcessScanResult(address, name); }
+            );
+        }
+
+        private void ProcessScanResult(string address, string name)
+        {
+            if (name != "No Name" && name.Contains(serverName) && serverAddress == "")
+            {
+                try
+                {
+                    deviceToDiscoveredServices.Add(address, new HashSet<string>());
+                } catch (ArgumentException) {}
+
+                lock (connectionLock) {
+
+                    connectedDevices.Add(address);
+
+                    Debug.Log($"connecting to {name} ({address})");
+                    BLE.ConnectToPeripheral(
+                        address, (addr) => {Debug.Log($"connected to {addr}"); },
+                        (addr, service) =>
+                        {
+                            Debug.Log($"discover service {service} ({addr})");
+                            deviceToDiscoveredServices[addr].Add(service);
+                            if (requiredServices.All((service) => {
+                                return deviceToDiscoveredServices[addr].Contains(service); }))
+                            {
+                                ProcessDeviceMatch(addr);
+                            }
+                        }, (addr, service, characteristic) => {
+                            Debug.Log($"discover characteristic {characteristic} ({addr})");
+                        }, (addr) =>
+                        {
+                            Debug.Log($"disconnect {addr}");
+                            if (addr == serverAddress) disconnectAction?.Invoke();
+                            connectedDevices.Remove(addr);
+                        }
+                    );
                 }
             }
         }
-    AndroidJNI.DetachCurrentThread();
+
+        private void ProcessDeviceMatch(string address)
+        {
+            lock (matchLock)
+            {
+                if (serverAddress == "")
+                {
+                    Debug.Log($"MATCH: {address}");
+                    serverAddress = address;
+                    foreach (string addr in connectedDevices)
+                    {
+                        if (addr != serverAddress)
+                        {
+                            BLE.DisconnectPeripheral(addr, null);
+                        }
+                    }
+                    BLE.StopScan();
+                    Subscribe();
+                }
+            }
+        }
+
+        private void Subscribe()
+        {
+            (string service, string characteristic, Action<byte[]> callback) sub;
+            try
+            {
+                sub = subscriptions.Dequeue();
+            } catch (InvalidOperationException)
+            {
+                connectAction?.Invoke();
+                return;
+            }
+            BLE.SubscribeCharacteristicWithDeviceAddress(
+                serverAddress, sub.service, sub.characteristic, (addr, characteristic) =>
+                {
+                    Subscribe();
+                }, (addr, characteristic, bytes) =>
+                {
+                    sub.callback(bytes);
+                }
+            );
+
+        }
+
+        private string serverName = "";
+        private string serverAddress = "";
+
+        private Thread? bluetoothThread = null;
+
+        private Action? connectAction = null;
+        private Action? disconnectAction = null;
+        private Action? timeoutAction = null;
+
+        private readonly object connectionLock = new object();
+        private readonly object matchLock = new object();
+
+        private Timer ScanTimer = new Timer(10000); // Handles scan timeout
+
+        private Queue<(string service,
+            string characteristic,
+            Action<byte[]> callback)> subscriptions
+            = new Queue<(string service, string characteristic, Action<byte[]> callback)>();
+
+        private HashSet<string> connectedDevices = new HashSet<string>();
+        private HashSet<string> requiredServices = new HashSet<string>();
+
+        private Dictionary<string, HashSet<string>> deviceToDiscoveredServices
+            = new Dictionary<string, HashSet<string>>();
+
     }
-}
 }
