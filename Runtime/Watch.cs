@@ -17,14 +17,14 @@ public class Watch {
 
     // Sensor service
     private string SensorServiceUUID = "4b574af0-72d7-45d2-a1bb-23cd0ec20c57";
-    public string gyroUUID = "4b574af1-72d7-45d2-a1bb-23cd0ec20c57";
-    public string accUUID  = "4b574af2-72d7-45d2-a1bb-23cd0ec20c57";
-    public string gravUUID = "4b574af3-72d7-45d2-a1bb-23cd0ec20c57";
-    public string quatUUID = "4b574af4-72d7-45d2-a1bb-23cd0ec20c57";
+    private string gyroUUID = "4b574af1-72d7-45d2-a1bb-23cd0ec20c57";
+    private string accUUID  = "4b574af2-72d7-45d2-a1bb-23cd0ec20c57";
+    private string gravUUID = "4b574af3-72d7-45d2-a1bb-23cd0ec20c57";
+    private string quatUUID = "4b574af4-72d7-45d2-a1bb-23cd0ec20c57";
 
     // Feedback service
     private string FeedbackServiceUUID = "42926760-277c-4298-acfe-226b8d1c8c88";
-    public string HapticsUUID = "42926761-277c-4298-acfe-226b8d1c8c88";
+    private string HapticsUUID = "42926761-277c-4298-acfe-226b8d1c8c88";
 
     // Interaction service
     private string InteractionServiceUUID = "008e74d0-7bb3-4ac5-8baf-e5e372cced76";
@@ -32,9 +32,18 @@ public class Watch {
     private string TouchUUID = "008e74d2-7bb3-4ac5-8baf-e5e372cced76";
     private string PhysicalUUID = "008e74d3-7bb3-4ac5-8baf-e5e372cced76";
 
+    // Disconnect service
+    private string DisconnectServiceUUID = "e23625a0-a6b6-4aa5-a1ad-b9c5d9158363";
+    private string DisconnectUUID = "e23625a1-a6b6-4aa5-a1ad-b9c5d9158363";
+
+
     public Watch(string name)
     {
         client = new GattClient(name);
+
+        client.SubscribeToCharacteristic(DisconnectServiceUUID, DisconnectUUID,
+            (data) => { Disconnect(); }
+        );
 
         client.SubscribeToCharacteristic(SensorServiceUUID, gyroUUID, gyroCallback);
         client.SubscribeToCharacteristic(SensorServiceUUID, accUUID, accCallback);

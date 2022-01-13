@@ -51,12 +51,7 @@ namespace Psix
         {
             if (serverAddress != "")
             {
-                BLE.DisconnectPeripheral(
-                    serverAddress, (address) =>
-                    {
-                        disconnectAction?.Invoke();
-                    }
-                );
+                BLE.DisconnectPeripheral(serverAddress, null);
             }
             Cleanup();
         }
@@ -73,7 +68,7 @@ namespace Psix
 
         private void Initiate()
         {
-            AndroidJNI.AttachCurrentThread(); // BLE interface on Android uses JNI
+            AndroidJNI.AttachCurrentThread(); // Some BLE calls require AndroidJNI
 
             BLE.BluetoothConnectionPriority(BLE.ConnectionPriority.High);
 
@@ -87,7 +82,7 @@ namespace Psix
 
         private void Cleanup()
         {
-            AndroidJNI.AttachCurrentThread(); // BLE interface on Android uses JNI
+            AndroidJNI.AttachCurrentThread();
             BLE.StopScan();
             lock (matchLock)
             {
@@ -101,7 +96,6 @@ namespace Psix
                 timeoutAction?.Invoke();
             }
             }
-            AndroidJNI.DetachCurrentThread(); // BLE interface on Android uses JNI
 
             requiredServices.Clear();
             subscriptions.Clear();
