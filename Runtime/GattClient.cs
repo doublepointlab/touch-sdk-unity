@@ -17,9 +17,13 @@ namespace Psix
     class GattClient
     {
 
-        public GattClient(string name = "")
+        public GattClient(
+           string name= "",
+           string advertisedService = "008e74d0-7bb3-4ac5-8baf-e5e372cced76"
+        )
         {
             serverName = name;
+            advertisedServices.Add(advertisedService);
         }
 
         public double ScanTimeout
@@ -38,7 +42,11 @@ namespace Psix
         }
 
 
-        public void Connect(Action? onConnected = null, Action? onDisconnected = null, Action? onTimeout = null)
+        public void Connect(
+           Action? onConnected = null,
+           Action? onDisconnected = null,
+           Action? onTimeout = null
+        )
         {
             connectAction = onConnected;
             disconnectAction = onDisconnected;
@@ -86,19 +94,19 @@ namespace Psix
             BLE.StopScan();
             lock (matchLock)
             {
-            if (serverAddress == "")
-            {
-                foreach (string addr in connectedDevices)
+                if (serverAddress == "")
                 {
-                    BLE.DisconnectPeripheral(addr, null);
+                    foreach (string addr in connectedDevices)
+                    {
+                        BLE.DisconnectPeripheral(addr, null);
+                    }
+                    BLE.DeInitialize(null);
+                    timeoutAction?.Invoke();
                 }
-                BLE.DeInitialize(() => { Connect(); });
-                timeoutAction?.Invoke();
-            }
             }
 
-            requiredServices.Clear();
             subscriptions.Clear();
+            requiredServices.Clear();
             deviceToDiscoveredServices.Clear();
         }
 
@@ -110,45 +118,49 @@ namespace Psix
             ScanTimer.Start();
 
             BLE.ScanForPeripheralsWithServices(
+                advertisedServices.ToArray(),
                 null,
-                (address, name) => { ProcessScanResult(address, name); }
+                (address, name, rssi, advert) => { ProcessScanResult(address, name, advert); }
             );
         }
 
-        private void ProcessScanResult(string address, string name)
+        private void ProcessScanResult(string address, string name, byte[] advertisedData)
         {
-            if (name != "No Name" && name.Contains(serverName) && serverAddress == "")
-            {
-                try
+            if (System.Text.Encoding.UTF8.GetString(advertisedData.Skip(2).ToArray())
+                    .Contains(serverName)) {
+                lock (connectionLock)
                 {
-                    deviceToDiscoveredServices.Add(address, new HashSet<string>());
-                } catch (ArgumentException) {}
-
-                lock (connectionLock) {
-
-                    connectedDevices.Add(address);
-
-                    Debug.Log($"connecting to {name} ({address})");
-                    BLE.ConnectToPeripheral(
-                        address, (addr) => {Debug.Log($"connected to {addr}"); },
-                        (addr, service) =>
+                    if (!connectedDevices.Contains(address))
+                    {
+                        try
                         {
-                            Debug.Log($"discover service {service} ({addr})");
-                            deviceToDiscoveredServices[addr].Add(service);
-                            if (requiredServices.All((service) => {
-                                return deviceToDiscoveredServices[addr].Contains(service); }))
+                            deviceToDiscoveredServices.Add(address, new HashSet<string>());
+                        } catch (ArgumentException) {}
+
+                        connectedDevices.Add(address);
+
+                        Debug.Log($"connecting to {name} ({address})");
+                        BLE.ConnectToPeripheral(
+                            address, (addr) => {Debug.Log($"connected to {addr}"); },
+                            (addr, service) =>
                             {
-                                ProcessDeviceMatch(addr);
+                                Debug.Log($"discover service {service} ({addr})");
+                                deviceToDiscoveredServices[addr].Add(service);
+                                if (requiredServices.All((service) => {
+                                    return deviceToDiscoveredServices[addr].Contains(service); }))
+                                {
+                                    ProcessDeviceMatch(addr);
+                                }
+                            }, (addr, service, characteristic) => {
+                                Debug.Log($"discover characteristic {characteristic} ({addr})");
+                            }, (addr) =>
+                            {
+                                Debug.Log($"disconnect {addr}");
+                                if (addr == serverAddress) disconnectAction?.Invoke();
+                                connectedDevices.Remove(addr);
                             }
-                        }, (addr, service, characteristic) => {
-                            Debug.Log($"discover characteristic {characteristic} ({addr})");
-                        }, (addr) =>
-                        {
-                            Debug.Log($"disconnect {addr}");
-                            if (addr == serverAddress) disconnectAction?.Invoke();
-                            connectedDevices.Remove(addr);
-                        }
-                    );
+                        );
+                    }
                 }
             }
         }
@@ -218,6 +230,7 @@ namespace Psix
 
         private HashSet<string> connectedDevices = new HashSet<string>();
         private HashSet<string> requiredServices = new HashSet<string>();
+        private List<string> advertisedServices = new List<string>();
 
         private Dictionary<string, HashSet<string>> deviceToDiscoveredServices
             = new Dictionary<string, HashSet<string>>();
