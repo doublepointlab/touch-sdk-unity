@@ -15,11 +15,11 @@ public class WatchExample : MonoBehaviour
     private ConcurrentQueue<Psix.Interaction.Gesture> gestureQueue
         = new ConcurrentQueue<Psix.Interaction.Gesture>();
 
-    private ConcurrentQueue<Psix.Interaction.TouchEvent> touchQueue
-        = new ConcurrentQueue<Psix.Interaction.TouchEvent>();
+    private ConcurrentQueue<Psix.Interaction.TouchEventArgs> touchQueue
+        = new ConcurrentQueue<Psix.Interaction.TouchEventArgs>();
 
-    private ConcurrentQueue<Psix.Interaction.MotionEvent> motionQueue
-        = new ConcurrentQueue<Psix.Interaction.MotionEvent>();
+    private ConcurrentQueue<Psix.Interaction.MotionEventArgs> motionQueue
+        = new ConcurrentQueue<Psix.Interaction.MotionEventArgs>();
 
     private string StatusMessage
     {
@@ -57,12 +57,11 @@ public class WatchExample : MonoBehaviour
                           + " " + string.Format("{0:+0.00;-0.00}", quat[1])
                           + " " + string.Format("{0:+0.00;-0.00}", quat[2]);
 
-
         // Get interaction events from queues
 
         Psix.Interaction.Gesture gesture;
-        Psix.Interaction.TouchEvent touch;
-        Psix.Interaction.MotionEvent motion;
+        Psix.Interaction.TouchEventArgs touch;
+        Psix.Interaction.MotionEventArgs motion;
 
         while (gestureQueue.TryDequeue(out gesture))
         {

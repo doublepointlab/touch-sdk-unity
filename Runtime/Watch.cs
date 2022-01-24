@@ -96,8 +96,8 @@ public class Watch {
 
     // User callbacks for interaction events
     public Action<Gesture> OnGesture = (gesture) => { return; };
-    public Action<TouchEvent> OnTouchEvent = (touchEvent) => { return; };
-    public Action<MotionEvent> OnMotionEvent = (motionEvent) => { return; };
+    public Action<TouchEventArgs> OnTouchEvent = (touchEvent) => { return; };
+    public Action<MotionEventArgs> OnMotionEvent = (motionEvent) => { return; };
 
     // Internal sensor state
     private float[] gyro = new float[] {0, 0, 0};
@@ -141,7 +141,7 @@ public class Watch {
     {
         if (data.Length == 9)
         {
-            OnTouchEvent(new TouchEvent(
+            OnTouchEvent(new TouchEventArgs(
                 (Interaction.TouchType)Convert.ToInt32(data[0]),
                 getFloatArray(data.Skip(1).ToArray())
             ));
@@ -152,7 +152,7 @@ public class Watch {
     {
         if (data.Length == 2)
         {
-            OnMotionEvent(new MotionEvent(
+            OnMotionEvent(new MotionEventArgs(
                 (Interaction.MotionType)Convert.ToInt32(data[0]),
                 (Interaction.MotionInfo)Convert.ToInt32(data[1])
             ));

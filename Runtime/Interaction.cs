@@ -27,9 +27,9 @@ namespace Psix
             CounterClockwise = 1,
         };
 
-        public struct TouchEvent
+        public struct TouchEventArgs
         {
-            public TouchEvent(TouchType t, float[] c)
+            public TouchEventArgs(TouchType t, float[] c)
             {
                 type = t;
                 coords = c;
@@ -39,9 +39,9 @@ namespace Psix
             public float[] coords;
         };
 
-        public struct MotionEvent
+        public struct MotionEventArgs
         {
-            public MotionEvent(MotionType t, MotionInfo i)
+            public MotionEventArgs(MotionType t, MotionInfo i)
             {
                 type = t;
                 info = i;
