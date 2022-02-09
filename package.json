@@ -1,6 +1,6 @@
 {
-  "name": "com.psix.watch",
-  "displayName": "Unity-Smartwatch Bridge",
+  "name": "io.port6.watch",
+  "displayName": "Smartwatch Bridge",
   "version": "0.0.0",
   "unity": "2020.3",
   "description": "C# scripts for bridging Unity applications with Wear OS smartwatches.",
