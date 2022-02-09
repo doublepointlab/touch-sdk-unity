@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -71,15 +72,22 @@ public class Watch {
 
     public bool IsConnected { get; private set; } = false;
 
-    public void TriggerHaptics(int Length, int Amplitude)
+    public void Vibrate(int length, float amplitude)
     {
-        byte[] data = { 0, 0 };
-        try {
-            data = new byte[]{ Convert.ToByte(Length), Convert.ToByte(Amplitude) };
-        }
-        catch (OverflowException) {}
+        int clampedLength = Mathf.Clamp(length, 0, 5000);
+        float clampedAmplitude = Mathf.Clamp(amplitude, 0.0f, 1.0f);
+        byte byteAmplitude = Convert.ToByte(Math.Round(255 * clampedAmplitude));
 
-        client.SendBytes(data, FeedbackServiceUUID, HapticsUUID);
+        List<byte> data = BitConverter.GetBytes(clampedLength).Reverse().ToList();
+        data.Insert(0, 0); // Oneshot effect
+        data.Add(byteAmplitude);
+
+        client.SendBytes(data.ToArray(), FeedbackServiceUUID, HapticsUUID);
+    }
+
+    public void CancelVibration()
+    {
+        client.SendBytes(new byte[] {0xff}, FeedbackServiceUUID, HapticsUUID);
     }
 
     // TODO: Should these throw an exception if no device is connected?
