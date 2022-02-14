@@ -8,6 +8,8 @@ public class BluetoothDeviceScript : MonoBehaviour
     public Dictionary<string, string> BLEStandardUUIDs = new Dictionary<string, string>();
 #endif
 
+	public Queue<string> MessagesToProcess = null;
+
     public List<string> DiscoveredDeviceList;
 
 	public Action InitializedAction;
@@ -32,7 +34,6 @@ public class BluetoothDeviceScript : MonoBehaviour
 	public Dictionary<string, Dictionary<string, Action<string, byte[]>>> DidUpdateCharacteristicValueAction;
 	public Dictionary<string, Dictionary<string, Action<string, string, byte[]>>> DidUpdateCharacteristicValueWithDeviceAddressAction;
 	public Action<string, int> RequestMtuAction;
-	public Action<string, int> ReadRSSIAction;
 
 	// Use this for initialization
 	void Start ()
@@ -51,6 +52,18 @@ public class BluetoothDeviceScript : MonoBehaviour
     // Update is called once per frame
     void Update ()
 	{
+#if ENABLE_WINMD_SUPPORT
+		if (MessagesToProcess != null)
+        {
+			lock(MessagesToProcess)
+            {
+				if (MessagesToProcess.Count > 0)
+                {
+					OnBluetoothMessage(MessagesToProcess.Dequeue());
+                }
+            }
+        }
+#endif
 	}
 
 	const string deviceInitializedString = "Initialized";
@@ -72,7 +85,6 @@ public class BluetoothDeviceScript : MonoBehaviour
 	const string deviceDidUpdateValueForCharacteristic = "DidUpdateValueForCharacteristic";
 	const string deviceLog = "Log";
 	const string deviceRequestMtu = "MtuChanged";
-	const string deviceReadRSSI = "DidReadRSSI";
 
 	public void OnBluetoothMessage (string message)
 	{
@@ -277,18 +289,6 @@ public class BluetoothDeviceScript : MonoBehaviour
 							RequestMtuAction(parts[1], mtu);
 					}
                 }
-			}
-			else if (message.Length >= deviceReadRSSI.Length && message.Substring(0, deviceReadRSSI.Length) == deviceReadRSSI)
-			{
-				if (parts.Length >= 3)
-				{
-					if (ReadRSSIAction != null)
-					{
-						int rssi = 0;
-						if (int.TryParse(parts[2], out rssi))
-							ReadRSSIAction(parts[1], rssi);
-					}
-				}
 			}
 		}
 	}

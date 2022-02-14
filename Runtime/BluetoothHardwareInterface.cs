@@ -1,4 +1,5 @@
 #define EXPERIMENTAL_MACOS_EDITOR
+
 /*
 
 This build includes an experimental implementation for the macOS editor of Unity
@@ -151,9 +152,6 @@ public class BluetoothLEHardwareInterface
 	[DllImport("BluetoothLEOSX")]
 	private static extern void OSXBluetoothLERequestMtu (string name, int mtu);
 
-	[DllImport("BluetoothLEOSX")]
-	private static extern void OSXBluetoothLEReadRSSI (string name);
-
 	[DllImport ("BluetoothLEOSX")]
 	private static extern void OSXBluetoothLEDisconnectPeripheral (string name);
 
@@ -217,9 +215,6 @@ public class BluetoothLEHardwareInterface
 	[DllImport("__Internal")]
 	private static extern void _iOSBluetoothLERequestMtu(string name, int mtu);
 
-	[DllImport("__Internal")]
-	private static extern void _iOSBluetoothLEReadRSSI(string name);
-
 #if !UNITY_TVOS
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLEScanForBeacons (string proximityUUIDsString);
@@ -266,10 +261,10 @@ public class BluetoothLEHardwareInterface
 
 	public static void Log (string message)
 	{
-#if EXPERIMENTAL_MACOS_EDITOR && (UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX)
+#if EXPERIMENTAL_MACOS_EDITOR && (UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || ENABLE_WINMD_SUPPORT)
 		Debug.Log(message);
 #else
-        if (!Application.isEditor)
+		if (!Application.isEditor)
 		{
 #if UNITY_IOS || UNITY_TVOS
 			_iOSBluetoothLELog (message);
@@ -317,6 +312,8 @@ public class BluetoothLEHardwareInterface
 
 		GameObject.DontDestroyOnLoad (bluetoothLEReceiver);
 
+		BluetoothLEUWP.Instance.Initialize(bluetoothDeviceScript, asCentral, asPeripheral);
+
 #if EXPERIMENTAL_MACOS_EDITOR && (UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX)
 		ConnectUnitySendMessageCallback ((objectName, commandName, commandData) => {
 			string name = Marshal.PtrToStringAuto (objectName);
@@ -330,7 +327,7 @@ public class BluetoothLEHardwareInterface
 
 		BluetoothLEHardwareInterface.OSXBluetoothLEInitialize (asCentral, asPeripheral);
 #else
-        if (Application.isEditor)
+		if (Application.isEditor)
 		{
 			if (bluetoothDeviceScript != null)
 				bluetoothDeviceScript.SendMessage ("OnBluetoothMessage", "Initialized");
@@ -517,31 +514,15 @@ public class BluetoothLEHardwareInterface
 		{
 			_android.Call ("androidBluetoothRequestMtu", name, mtu);
 		}
+#elif ENABLE_WINMD_SUPPORT
+		BluetoothLEUWP.Instance.RequestMTU(name);
 #endif
-	}
 
-	public static void ReadRSSI(string name, Action<string, int> action)
-    {
-		if (bluetoothDeviceScript != null)
-        {
-			bluetoothDeviceScript.ReadRSSIAction = action;
-        }
-
-#if EXPERIMENTAL_MACOS_EDITOR && (UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX)
-		OSXBluetoothLEReadRSSI(name);
-#elif UNITY_IOS || UNITY_TVOS
-		_iOSBluetoothLEReadRSSI(name);
-#elif UNITY_ANDROID
-        if (_android != null)
-		{
-			_android.Call ("androidBluetoothReadRSSI", name);
-		}
-#endif
 	}
 
 	public static void ScanForPeripheralsWithServices (string[] serviceUUIDs, Action<string, string> action, Action<string, string, int, byte[]> actionAdvertisingInfo = null, bool rssiOnly = false, bool clearPeripheralList = true, int recordType = 0xFF)
 	{
-#if !UNITY_EDITOR_OSX || !EXPERIMENTAL_MACOS_EDITOR
+#if (!UNITY_EDITOR_OSX || !EXPERIMENTAL_MACOS_EDITOR)
 		if (!Application.isEditor)
 		{
 #endif
@@ -579,12 +560,17 @@ public class BluetoothLEHardwareInterface
 				_android.Call ("androidBluetoothScanForPeripheralsWithServices", serviceUUIDsString, rssiOnly, recordType);
 			}
 #endif
-#if !UNITY_EDITOR_OSX || !EXPERIMENTAL_MACOS_EDITOR
+
+#if ENABLE_WINMD_SUPPORT
+			BluetoothLEUWP.Instance.ScanForPeripheralsWithServices(serviceUUIDs, rssiOnly, clearPeripheralList, recordType);
+#endif
+
+#if (!UNITY_EDITOR_OSX || !EXPERIMENTAL_MACOS_EDITOR)
 		}
 #endif
-        }
+	}
 
-    public static void RetrieveListOfPeripheralsWithServices (string[] serviceUUIDs, Action<string, string> action)
+	public static void RetrieveListOfPeripheralsWithServices (string[] serviceUUIDs, Action<string, string> action)
 	{
 #if !UNITY_EDITOR_OSX || !EXPERIMENTAL_MACOS_EDITOR
         if (!Application.isEditor)
@@ -631,6 +617,8 @@ public class BluetoothLEHardwareInterface
 #elif UNITY_ANDROID
 			if (_android != null)
 				_android.Call ("androidBluetoothStopScan");
+#elif ENABLE_WINMD_SUPPORT
+			BluetoothLEUWP.Instance.StopScan();
 #endif
 		}
 #endif
@@ -688,10 +676,15 @@ public class BluetoothLEHardwareInterface
         if (_android != null)
 				_android.Call ("androidBluetoothConnectToPeripheral", name);
 #endif
-#if !UNITY_EDITOR_OSX || !EXPERIMENTAL_MACOS_EDITOR
-        }
+
+#if ENABLE_WINMD_SUPPORT
+			BluetoothLEUWP.Instance.ConnectToPeripheral(name);
 #endif
-    }
+
+#if !UNITY_EDITOR_OSX || !EXPERIMENTAL_MACOS_EDITOR
+		}
+#endif
+	}
 
 	public static void DisconnectPeripheral (string name, Action<string> action)
 	{
@@ -762,6 +755,8 @@ public class BluetoothLEHardwareInterface
 #elif UNITY_ANDROID
         if (_android != null)
 				_android.Call ("androidWriteCharacteristic", name, service, characteristic, data, length, withResponse);
+#elif ENABLE_WINMD_SUPPORT
+			BluetoothLEUWP.Instance.WriteCharacteristic(name, service, characteristic, data, length, withResponse);
 #endif
 #if !UNITY_EDITOR_OSX || !EXPERIMENTAL_MACOS_EDITOR
         }
@@ -824,7 +819,7 @@ public class BluetoothLEHardwareInterface
 				service = service.ToUpper ();
 				characteristic = characteristic.ToUpper ();
 
-#if UNITY_IOS || UNITY_TVOS || (EXPERIMENTAL_MACOS_EDITOR && (UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX))
+#if UNITY_IOS || UNITY_TVOS || ENABLE_WINMD_SUPPORT || (EXPERIMENTAL_MACOS_EDITOR && (UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX))
 				if (!bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicWithDeviceAddressAction.ContainsKey (name))
 					bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicWithDeviceAddressAction[name] = new Dictionary<string, Action<string, string>>();
 				bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicWithDeviceAddressAction[name][characteristic] = notificationAction;
@@ -858,11 +853,13 @@ public class BluetoothLEHardwareInterface
 #elif UNITY_ANDROID
         if (_android != null)
 				_android.Call ("androidSubscribeCharacteristic", name, service, characteristic);
+#elif ENABLE_WINMD_SUPPORT
+			BluetoothLEUWP.Instance.SubscribeCharacteristicWithDeviceAddress(name, service, characteristic);
 #endif
 #if !UNITY_EDITOR_OSX || !EXPERIMENTAL_MACOS_EDITOR
-        }
+		}
 #endif
-    }
+	}
 
 	public static void UnSubscribeCharacteristic (string name, string service, string characteristic, Action<string> action)
 	{
