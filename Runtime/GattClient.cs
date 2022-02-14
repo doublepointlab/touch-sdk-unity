@@ -51,8 +51,8 @@ namespace Psix
             connectAction = onConnected;
             disconnectAction = onDisconnected;
             timeoutAction = onTimeout;
-            bluetoothThread = new Thread(new ThreadStart(Initiate));
-            bluetoothThread?.Start();
+
+            Initiate();
         }
 
         public void Disconnect()
@@ -76,21 +76,19 @@ namespace Psix
 
         private void Initiate()
         {
-            AndroidJNI.AttachCurrentThread(); // Some BLE calls require AndroidJNI
-
             BLE.BluetoothConnectionPriority(BLE.ConnectionPriority.High);
 
             BLE.BluetoothScanMode(BLE.ScanMode.LowLatency);
+            bluetoothThread = new Thread(new ThreadStart(StartScanning));
 
             BLE.Initialize(true, false,
-                () => { StartScanning(); },
+                () => { bluetoothThread?.Start(); },
                 (error) => { Debug.Log("BLE error: " + error); }
             );
         }
 
         private void Cleanup()
         {
-            AndroidJNI.AttachCurrentThread();
             BLE.StopScan();
             lock (matchLock)
             {
@@ -126,7 +124,7 @@ namespace Psix
 
         private void ProcessScanResult(string address, string name, byte[] advertisedData)
         {
-            if (System.Text.Encoding.UTF8.GetString(advertisedData.Skip(2).ToArray())
+            if (System.Text.Encoding.UTF8.GetString(advertisedData.ToArray())
                     .Contains(serverName)) {
                 lock (connectionLock)
                 {
@@ -221,7 +219,7 @@ namespace Psix
         private readonly object connectionLock = new object();
         private readonly object matchLock = new object();
 
-        private Timer ScanTimer = new Timer(10000); // Handles scan timeout
+        private Timer ScanTimer = new Timer(20000); // Handles scan timeout
 
         private Queue<(string service,
             string characteristic,
