@@ -35,22 +35,44 @@ public class WatchManager : MonoBehaviour
     public UnityEvent m_TimeoutEvent;
 
 
-    public Vector3 Acceleration { get; private set; }
-    public Vector3 AngularVelocity { get; private set; }
-    public Vector3 Gravity { get; private set; }
-    public Quaternion Orientation { get; private set; }
+    /// Angular velocity of the watch in its own coordinate system, degrees per second.
+    /// Returns a zero vector if no watch is connected.
+    public Vector3 AngularVelocity { get { return watch.AngularVelocity; } }
 
+    /// Acceleration of the watch in its own coordinate system, meters per second squared.
+    /// Returns a zero vector if no watch is connected.
+    public Vector3 Acceleration { get { return watch.Acceleration; } }
+
+    /// Estimated direction of gravity in the coordinate system of the watch,
+    /// meters per second squared. Returns a zero vector if no watch is connected.
+    public Vector3 Gravity { get { return watch.Gravity; } }
+
+    /// Absolute orientation quaternion of watch in a reference coordinate system.
+    /// Quaternion {x*sin(t/2), y*sin(t/2), z*sin(t/2), cos(t/2)} corresponds
+    /// to a rotation of watch from the reference position around the unit vector
+    /// axis {x, y, z}, such that the directions {1, 0, 0}, {0, 1, 0}, and {0, 0, 1}
+    /// correspond to the "magnetic" East, magnetic North, and upwards directions,
+    /// respectively. Returns {0, 0, 0, 1} if no watch is connected.
+    public Quaternion Orientation { get {return watch.Orientation; } }
+
+    /// Indicates whether the touch screen of the watch is being touched.
     public bool IsTouching { get; private set; }
 
+    /// The number of clockwise steps that the watch rotary input has taken since the
+    /// start of this script's life cycle.
     public int RotaryPosition { get; private set; } = 0;
+
+    /// The number of taps detected by the watch since the start of this script's life cycle.
     public int TapCount { get; private set; } = 0;
 
+    /// Indicates whether a connection to a watch is active.
+    public bool IsConnected {get { return watch.IsConnected; } }
+
+    /// Name tag of the watch to connect to.
     [SerializeField]
-    private string watchName = "NHYP";
+    private string watchName = "";
 
     private Watch watch;
-
-    public bool IsConnected {get { return watch.IsConnected; } }
 
     void Start()
     {
@@ -93,18 +115,12 @@ public class WatchManager : MonoBehaviour
         );
     }
 
-    void Update()
-    {
-        float[] quat = watch.GetOrientation();
-        Orientation = new Quaternion(quat[0], quat[1], quat[2], quat[3]);
-        float[] accel = watch.GetAcceleration();
-        Acceleration = new Vector3(accel[0], accel[1], accel[2]);
-        float[] gyro = watch.GetRotationalVelocity();
-        AngularVelocity = new Vector3(gyro[0], gyro[1], gyro[2]);
-        float[] grav = watch.GetGravity();
-        Gravity = new Vector3(grav[0], grav[1], grav[2]);
-    }
-
+    /**
+     * Trigger a one-shot haptic feedback effect on the watch.
+     *
+     * @param length The duration of the effect in milliseconds.
+     * @param amplitude The strength of the effect, between 0.0 and 1.0.
+     */
     public void Vibrate(int length = 10, float amplitude = 0.5f)
     {
         watch.Vibrate(length, amplitude);

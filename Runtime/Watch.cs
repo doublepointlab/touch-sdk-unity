@@ -120,53 +120,76 @@ public class Watch {
         client.SendBytes(new byte[] {0xff}, FeedbackServiceUUID, HapticsUUID);
     }
 
-    // TODO: Should these throw an exception if no device is connected?
-    public float[] GetRotationalVelocity() { return gyro; }
-    public float[] GetAcceleration() { return acceleration; }
-    public float[] GetGravity() { return gravity; }
-    public float[] GetOrientation() { return quat; }
+    /// Angular velocity of the watch in its own coordinate system, degrees per second.
+    /// Returns a zero vector if no watch is connected.
+    public Vector3 AngularVelocity { get; private set; } = Vector3.zero;
+    public Action<Vector3> OnAngularVelocityUpdated = (data) => { return; };
 
-    // User callbacks for sensor events
-    public Action<float[]> OnRotationalVelocityUpdated = (data) => { return; };
-    public Action<float[]> OnAccelerationUpdated = (data) => { return; };
-    public Action<float[]> OnGravityUpdated = (data) => { return; };
-    public Action<float[]> OnOrientationUpdated = (data) => { return; };
+    /// Acceleration of the watch in its own coordinate system, meters per second squared.
+    /// Returns a zero vector if no watch is connected.
+    public Vector3 Acceleration { get; private set; } = Vector3.zero;
+    public Action<Vector3> OnAccelerationUpdated = (data) => { return; };
+
+    /// Estimated direction of gravity in the coordinate system of the watch,
+    /// meters per second squared. Returns a zero vector if no watch is connected.
+    public Vector3 Gravity { get; private set; } = Vector3.zero;
+    public Action<Vector3> OnGravityUpdated = (data) => { return; };
+
+    /// Absolute orientation quaternion of watch in a reference coordinate system.
+    /// Quaternion {x*sin(t/2), y*sin(t/2), z*sin(t/2), cos(t/2)} corresponds
+    /// to a rotation of watch from the reference position around the unit vector
+    /// axis {x, y, z}, such that the directions {1, 0, 0}, {0, 1, 0}, and {0, 0, 1}
+    /// correspond to the "magnetic" East, magnetic North, and upwards directions,
+    /// respectively. Returns {0, 0, 0, 1} if no watch is connected.
+    public Quaternion Orientation { get; private set; } = Quaternion(0, 0, 0, 1);
+    public Action<Quaternion> OnOrientationUpdated = (data) => { return; };
 
     // User callbacks for interaction events
     public Action<Gesture> OnGesture = (gesture) => { return; };
     public Action<TouchEventArgs> OnTouchEvent = (touchEvent) => { return; };
     public Action<MotionEventArgs> OnMotionEvent = (motionEvent) => { return; };
 
-    // Internal sensor state
-    private float[] gyro = new float[] {0, 0, 0};
-    private float[] acceleration = new float[] {0, 0, 0};
-    private float[] gravity = new float[] {0, 0, 0};
-    private float[] quat = new float[] {1, 0, 0, 0};
 
-    // Internal callbacks
+    // Internal sensor and interaction event callbacks
 
     private void gyroCallback(byte[] data)
     {
-        gyro = getFloatArray(data);
-        OnRotationalVelocityUpdated(gyro);
+        float[] gyro = getFloatArray(data);
+        if (gyro.Length == 3)
+        {
+            AngularVelocity = Vector3(gyro[0], gyro[1], gyro[2]);
+            OnAngularVelocityUpdated(AngularVelocity);
+        }
     }
 
     private void accCallback(byte[] data)
     {
-        acceleration = getFloatArray(data);
-        OnAccelerationUpdated(acceleration);
+        float[] accel = getFloatArray(data);
+        if (accel.Length == 3)
+        {
+            Acceleration = Vector3(accel[0], accel[1], accel[2]);
+            OnAccelerationUpdated(Acceleration);
+        }
     }
 
     private void gravityCallback(byte[] data)
     {
-        gravity = getFloatArray(data);
-        OnGravityUpdated(gravity);
+        float[] grav = getFloatArray(data);
+        if (grav.Length == 3)
+        {
+            Gravity = Vector3(grav[0], grav[1], grav[2]);
+            OnGravityUpdated(Gravity);
+        }
     }
 
     private void quatCallback(byte[] data)
     {
-        quat = getFloatArray(data);
-        OnOrientationUpdated(quat);
+        float[] quat = getFloatArray(data);
+        if (quat.Length == 4)
+        {
+            Orientation = Quaternion(quat[0], quat[1], quat[2], quat[3]);
+            OnOrientationUpdated(Orientation);
+        }
     }
 
     private void gestureCallback(byte[] data)
@@ -210,6 +233,10 @@ public class Watch {
     {
         Debug.Log("disconnect action");
         IsConnected = false;
+        AngularVelocity = Vector3.zero;
+        Acceleration = Vector3.zero;
+        Gravity = Vector3.zero;
+        Orientation = Quaternion(0, 0, 0, 1);
         onDisconnected?.Invoke();
     }
 
