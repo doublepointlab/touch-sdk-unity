@@ -12,6 +12,13 @@ namespace Psix {
 
 using Interaction;
 
+/**
+ * Smartwatch interface.
+ *
+ * Provides methods and callbacks related to connecting to Port 6 XR Controller
+ * smartwatch app.
+ *
+ */
 public class Watch {
 
     private GattClient client;
@@ -37,7 +44,11 @@ public class Watch {
     private string DisconnectServiceUUID = "e23625a0-a6b6-4aa5-a1ad-b9c5d9158363";
     private string DisconnectUUID = "e23625a1-a6b6-4aa5-a1ad-b9c5d9158363";
 
-
+    /**
+     * Constructor.
+     *
+     * @param name The nametag of the watch that should be connected to.
+     */
     public Watch(string name)
     {
         client = new GattClient(name);
@@ -56,6 +67,13 @@ public class Watch {
         client.SubscribeToCharacteristic(InteractionServiceUUID, PhysicalUUID, motionCallback);
     }
 
+    /**
+     * Connect to the watch running Port 6 XR Controller app.
+     *
+     * @param onConnected Action that is called once the connection is established.
+     * @param onDisconnected Action that is called when the connection is severed.
+     * @param onTimeout Action that is called if no matching device is found.
+     */
     public void Connect(Action? onConnected = null, Action? onDisconnected = null, Action? onTimeout = null)
     {
         client.Connect(
@@ -65,6 +83,9 @@ public class Watch {
         );
     }
 
+    /**
+     * Disconnect a connected watch.
+     */
     public void Disconnect()
     {
         client.Disconnect();
@@ -72,6 +93,12 @@ public class Watch {
 
     public bool IsConnected { get; private set; } = false;
 
+    /**
+     * Trigger a one-shot haptic feedback effect on the watch.
+     *
+     * @param length The duration of the effect in milliseconds.
+     * @param amplitude The strength of the effect, between 0.0 and 1.0.
+     */
     public void Vibrate(int length, float amplitude)
     {
         int clampedLength = Mathf.Clamp(length, 0, 5000);
@@ -79,12 +106,15 @@ public class Watch {
         byte byteAmplitude = Convert.ToByte(Math.Round(255 * clampedAmplitude));
 
         List<byte> data = BitConverter.GetBytes(clampedLength).Reverse().ToList();
-        data.Insert(0, 0); // Oneshot effect
+        data.Insert(0, 0); // One-shot effect
         data.Add(byteAmplitude);
 
         client.SendBytes(data.ToArray(), FeedbackServiceUUID, HapticsUUID);
     }
 
+    /**
+     * Cancel an ongoing haptic effect that was triggered earlier.
+     */
     public void CancelVibration()
     {
         client.SendBytes(new byte[] {0xff}, FeedbackServiceUUID, HapticsUUID);
@@ -142,7 +172,7 @@ public class Watch {
     private void gestureCallback(byte[] data)
     {
         if (data.Length == 1)
-        OnGesture((Interaction.Gesture)Convert.ToInt32(data[0]));
+            OnGesture((Interaction.Gesture)Convert.ToInt32(data[0]));
     }
 
     private void touchCallback(byte[] data)
