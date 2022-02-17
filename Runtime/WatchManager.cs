@@ -9,26 +9,26 @@ using System;
 using Psix;
 
 [System.Serializable]
-public class GestureEvent : UnityEvent<Psix.Interaction.Gesture>
+public class PsixGestureEvent : UnityEvent<Psix.Interaction.Gesture>
 {
 }
 
 [System.Serializable]
-public class TouchEvent : UnityEvent<Psix.Interaction.TouchEventArgs>
+public class PsixTouchEvent : UnityEvent<Psix.Interaction.TouchEventArgs>
 {
 }
 
 [System.Serializable]
-public class MotionEvent : UnityEvent<Psix.Interaction.MotionEventArgs>
+public class PsixMotionEvent : UnityEvent<Psix.Interaction.MotionEventArgs>
 {
 }
 
 public class WatchManager : MonoBehaviour
 {
 
-    public GestureEvent m_GestureEvent;
-    public TouchEvent m_TouchEvent;
-    public MotionEvent m_MotionEvent;
+    public PsixGestureEvent m_GestureEvent;
+    public PsixTouchEvent m_TouchEvent;
+    public PsixMotionEvent m_MotionEvent;
 
     public UnityEvent m_ConnectEvent;
     public UnityEvent m_DisconnectEvent;
