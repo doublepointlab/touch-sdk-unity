@@ -141,7 +141,7 @@ public class Watch {
     /// axis {x, y, z}, such that the directions {1, 0, 0}, {0, 1, 0}, and {0, 0, 1}
     /// correspond to the "magnetic" East, magnetic North, and upwards directions,
     /// respectively. Returns {0, 0, 0, 1} if no watch is connected.
-    public Quaternion Orientation { get; private set; } = Quaternion(0, 0, 0, 1);
+    public Quaternion Orientation { get; private set; } = new Quaternion(0, 0, 0, 1);
     public Action<Quaternion> OnOrientationUpdated = (data) => { return; };
 
     // User callbacks for interaction events
@@ -157,7 +157,7 @@ public class Watch {
         float[] gyro = getFloatArray(data);
         if (gyro.Length == 3)
         {
-            AngularVelocity = Vector3(gyro[0], gyro[1], gyro[2]);
+            AngularVelocity = new Vector3(gyro[0], gyro[1], gyro[2]);
             OnAngularVelocityUpdated(AngularVelocity);
         }
     }
@@ -167,7 +167,7 @@ public class Watch {
         float[] accel = getFloatArray(data);
         if (accel.Length == 3)
         {
-            Acceleration = Vector3(accel[0], accel[1], accel[2]);
+            Acceleration = new Vector3(accel[0], accel[1], accel[2]);
             OnAccelerationUpdated(Acceleration);
         }
     }
@@ -177,7 +177,7 @@ public class Watch {
         float[] grav = getFloatArray(data);
         if (grav.Length == 3)
         {
-            Gravity = Vector3(grav[0], grav[1], grav[2]);
+            Gravity = new Vector3(grav[0], grav[1], grav[2]);
             OnGravityUpdated(Gravity);
         }
     }
@@ -187,7 +187,7 @@ public class Watch {
         float[] quat = getFloatArray(data);
         if (quat.Length == 4)
         {
-            Orientation = Quaternion(quat[0], quat[1], quat[2], quat[3]);
+            Orientation = new Quaternion(quat[0], quat[1], quat[2], quat[3]);
             OnOrientationUpdated(Orientation);
         }
     }
