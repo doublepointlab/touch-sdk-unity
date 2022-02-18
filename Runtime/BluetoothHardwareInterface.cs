@@ -417,6 +417,8 @@ public class BluetoothLEHardwareInterface
 #elif UNITY_ANDROID
 			if (_android != null)
 				_android.Call ("androidBluetoothConnectionPriority", (int)connectionPriority);
+#elif ENABLE_WINMD_SUPPORT
+			BluetoothLEUWP.Instance.ConnectionPriority(connectionPriority);
 #endif
 		}
 	}
@@ -702,11 +704,13 @@ public class BluetoothLEHardwareInterface
 #elif UNITY_ANDROID
         if (_android != null)
 				_android.Call ("androidBluetoothDisconnectPeripheral", name);
+#elif ENABLE_WINMD_SUPPORT
+		BluetoothLEUWP.Instance.DisconnectPeripheral(name);
 #endif
 #if !UNITY_EDITOR_OSX || !EXPERIMENTAL_MACOS_EDITOR
-        }
+		}
 #endif
-    }
+	}
 
 	public static void ReadCharacteristic (string name, string service, string characteristic, Action<string, byte[]> action)
 	{
@@ -873,7 +877,7 @@ public class BluetoothLEHardwareInterface
 				service = service.ToUpper ();
 				characteristic = characteristic.ToUpper ();
 
-#if UNITY_IOS || UNITY_TVOS || (EXPERIMENTAL_MACOS_EDITOR && (UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX))
+#if UNITY_IOS || UNITY_TVOS || ENABLE_WINMD_SUPPORT || (EXPERIMENTAL_MACOS_EDITOR && (UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX))
 				if (!bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicWithDeviceAddressAction.ContainsKey (name))
 					bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicWithDeviceAddressAction[name] = new Dictionary<string, Action<string, string>>();
 				bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicWithDeviceAddressAction[name][characteristic] = null;
@@ -881,6 +885,7 @@ public class BluetoothLEHardwareInterface
 				if (!bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicAction.ContainsKey (name))
 					bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicAction[name] = new Dictionary<string, Action<string>> ();
 				bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicAction[name][characteristic] = action;
+
 #elif UNITY_ANDROID
                 if (!bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicWithDeviceAddressAction.ContainsKey (name))
 					bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicWithDeviceAddressAction[name] = new Dictionary<string, Action<string, string>>();
@@ -890,7 +895,7 @@ public class BluetoothLEHardwareInterface
 					bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicAction[name] = new Dictionary<string, Action<string>> ();
 				bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicAction[name][FullUUID (characteristic).ToLower ()] = action;
 #endif
-        }
+			}
 
 #if EXPERIMENTAL_MACOS_EDITOR && (UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX)
         OSXBluetoothLEUnSubscribeCharacteristic (name, service, characteristic);
@@ -899,11 +904,13 @@ public class BluetoothLEHardwareInterface
 #elif UNITY_ANDROID
         if (_android != null)
 				_android.Call ("androidUnsubscribeCharacteristic", name, service, characteristic);
+#elif ENABLE_WINMD_SUPPORT
+			BluetoothLEUWP.Instance.UnSubscribeCharacteristic(name, service, characteristic);
 #endif
 #if !UNITY_EDITOR_OSX || !EXPERIMENTAL_MACOS_EDITOR
-        }
+		}
 #endif
-    }
+	}
 
 	public static void PeripheralName (string newName)
 	{

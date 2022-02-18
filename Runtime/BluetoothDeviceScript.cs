@@ -257,7 +257,7 @@ public class BluetoothDeviceScript : MonoBehaviour
 						{
 							var action = characteristicAction[parts[2]];
 							if (action != null)
-								action (parts[2]);
+								action(parts[2]);
 						}
 					}
 
@@ -268,7 +268,7 @@ public class BluetoothDeviceScript : MonoBehaviour
 						{
 							var action = characteristicAction[parts[2]];
 							if (action != null)
-								action (parts[1], parts[2]);
+								action(parts[1], parts[2]);
 						}
 					}
 				}

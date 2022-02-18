@@ -16,6 +16,7 @@ using System.Linq;
 using Windows.Storage.Streams;
 using Windows.Security.Cryptography;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 #endif
 
 public class BluetoothLEUWP
@@ -37,6 +38,34 @@ public class BluetoothLEUWP
     public void Log(string message)
     {
         Debug.Log(message);
+    }
+
+#if ENABLE_WINMD_SUPPORT
+    //private BluetoothLEPreferredConnectionParameters _connectionPriorityParameter = BluetoothLEPreferredConnectionParameters.Balanced;
+#endif
+
+    public void ConnectionPriority(BluetoothLEHardwareInterface.ConnectionPriority connectionPriority)
+    {
+        switch (connectionPriority)
+        {
+            case BluetoothLEHardwareInterface.ConnectionPriority.Balanced:
+#if ENABLE_WINMD_SUPPORT
+                //_connectionPriorityParameter = BluetoothLEPreferredConnectionParameters.Balanced;
+#endif
+                break;
+
+            case BluetoothLEHardwareInterface.ConnectionPriority.High:
+#if ENABLE_WINMD_SUPPORT
+                //_connectionPriorityParameter = BluetoothLEPreferredConnectionParameters.ThroughPutOptimized;
+#endif
+                break;
+
+            case BluetoothLEHardwareInterface.ConnectionPriority.LowPower:
+#if ENABLE_WINMD_SUPPORT
+                //_connectionPriorityParameter = BluetoothLEPreferredConnectionParameters.PowerOptimized;
+#endif
+                break;
+        }
     }
 
     public void Initialize(BluetoothDeviceScript bluetoothDeviceScript, bool asCentral, bool asPeripheral)
@@ -115,9 +144,15 @@ public class BluetoothLEUWP
             _bluetoothDeviceDictionary = new Dictionary<string, BluetoothLEDevice>();
 
         if (!_bluetoothDeviceDictionary.ContainsKey(id) && device != null)
+        {
             _bluetoothDeviceDictionary.Add(id, device);
+            //device.RequestPreferredConnection(_connectionPriorityParameter);
+        }
 
-        return _bluetoothDeviceDictionary[id];
+        if (_bluetoothDeviceDictionary.ContainsKey(id))
+            return _bluetoothDeviceDictionary[id];
+
+        return null;
     }
 #endif
 
@@ -127,6 +162,7 @@ public class BluetoothLEUWP
         if (_deviceWatcher != null && _deviceWatcher.Status == BluetoothLEAdvertisementWatcherStatus.Started)
         {
             _deviceWatcher.Stop();
+            _deviceWatcher = null;
             Log("Scanning Stopped");
         }
         else
@@ -146,6 +182,7 @@ public class BluetoothLEUWP
         }
 
         BluetoothLEDevice bluetoothLeDevice = await BluetoothLEDevice.FromIdAsync(id);
+        bluetoothLeDevice.ConnectionStatusChanged += OnConnectionStatusChanged;
 
         lock (_bluetoothDeviceScript.MessagesToProcess)
         {
@@ -177,6 +214,37 @@ public class BluetoothLEUWP
                         }
                     }
                 }
+            }
+        }
+#endif
+    }
+
+#if ENABLE_WINMD_SUPPORT
+    private void OnConnectionStatusChanged(BluetoothLEDevice sender, object args)
+    {
+        if (_bluetoothDeviceScript != null)
+        {
+            sender.ConnectionStatusChanged -= OnConnectionStatusChanged;
+
+            lock (_bluetoothDeviceScript.MessagesToProcess)
+            {
+                _bluetoothDeviceScript.MessagesToProcess.Enqueue($"DisconnectedPeripheral~{sender.DeviceId}");
+            }
+        }
+    }
+#endif
+
+    public void DisconnectPeripheral(string id)
+    {
+#if ENABLE_WINMD_SUPPORT
+        var bluetoothLeDevice = GetAddDevice(id);
+        if (bluetoothLeDevice != null)
+        {
+            bluetoothLeDevice.Dispose();
+            _bluetoothDeviceDictionary.Remove(id.ToUpper());
+            lock (_bluetoothDeviceScript.MessagesToProcess)
+            {
+                _bluetoothDeviceScript.MessagesToProcess.Enqueue($"DisconnectedPeripheral~{id}");
             }
         }
 #endif
@@ -272,6 +340,70 @@ public class BluetoothLEUWP
         }
     }
 #endif
+
+    public async void UnSubscribeCharacteristic(string id, string serviceUuid, string characteristicUuid)
+    {
+#if ENABLE_WINMD_SUPPORT
+        var bluetoothLeDevice = GetAddDevice(id);
+        if (bluetoothLeDevice != null)
+        {
+            GattDeviceServicesResult serviceResult = await bluetoothLeDevice.GetGattServicesAsync();
+            if (serviceResult.Status == GattCommunicationStatus.Success)
+            {
+                var services = serviceResult.Services;
+                foreach (var service in services)
+                {
+                    if (serviceUuid.ToUpper().Equals(service.Uuid.ToString().ToUpper()))
+                    {
+                        GattCharacteristicsResult characteristicResult = await service.GetCharacteristicsAsync();
+                        if (characteristicResult.Status == GattCommunicationStatus.Success)
+                        {
+                            var characteristics = characteristicResult.Characteristics;
+                            foreach (var characteristic in characteristics)
+                            {
+                                if (characteristicUuid.ToUpper().Equals(characteristic.Uuid.ToString().ToUpper()))
+                                {
+                                    if (_dontAllowGCCharacteristicList != null)
+                                    {
+                                        int removeIndex = -1;
+                                        for (int i = 0; i < _dontAllowGCCharacteristicList.Count(); i++)
+                                        {
+                                            if (_dontAllowGCCharacteristicList[i].Uuid.ToString().ToUpper() == characteristic.Uuid.ToString().ToUpper())
+                                            {
+                                                removeIndex = i;
+                                                break;
+                                            }
+                                        }
+
+                                        if (removeIndex > -1)
+                                        {
+                                            GattCommunicationStatus status = await characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.None);
+                                            if(status == GattCommunicationStatus.Success)
+                                            {
+                                                lock (_bluetoothDeviceScript.MessagesToProcess)
+                                                {
+                                                    _bluetoothDeviceScript.MessagesToProcess.Enqueue($"DidUpdateNotificationStateForCharacteristic~{id}~{characteristicUuid.ToUpper()}");
+                                                }
+
+                                                Log($"***** char count 1 {_dontAllowGCCharacteristicList.Count()}");
+                                                _dontAllowGCCharacteristicList.RemoveAt(removeIndex);
+                                                Log($"***** char count 2 {_dontAllowGCCharacteristicList.Count()}");
+                                            }
+                                            else
+                                            {
+                                                Log($"Unsubscribe status error: {status}");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+#endif
+    }
 
     public async void WriteCharacteristic(string id, string serviceUuid, string characteristicUuid, byte[] data, int length, bool withResponse)
     {
