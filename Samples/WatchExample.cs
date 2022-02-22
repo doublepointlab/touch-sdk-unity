@@ -50,12 +50,12 @@ public class WatchExample : MonoBehaviour
 
     void Update()
     {
-        // Query last known orientation. This will return (1, 0, 0, 0) if
+        // Query last known angular velocity. This will return (0, 0, 0) if
         // no device is yet connected.
-        float[] quat = watch.GetRotationalVelocity();
-        ButtonPositionText.text = string.Format("{0:+0.00;-0.00}", quat[0])
-                          + " " + string.Format("{0:+0.00;-0.00}", quat[1])
-                          + " " + string.Format("{0:+0.00;-0.00}", quat[2]);
+        Vector3 vel = watch.AngularVelocity;
+        ButtonPositionText.text = string.Format("{0:+0.00;-0.00}", vel.x)
+                          + " " + string.Format("{0:+0.00;-0.00}", vel.y)
+                          + " " + string.Format("{0:+0.00;-0.00}", vel.z);
 
         // Get interaction events from queues
 

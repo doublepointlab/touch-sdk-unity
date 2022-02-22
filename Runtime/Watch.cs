@@ -236,7 +236,7 @@ public class Watch {
         AngularVelocity = Vector3.zero;
         Acceleration = Vector3.zero;
         Gravity = Vector3.zero;
-        Orientation = Quaternion(0, 0, 0, 1);
+        Orientation = new Quaternion(0, 0, 0, 1);
         onDisconnected?.Invoke();
     }
 
