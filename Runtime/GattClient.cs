@@ -89,6 +89,9 @@ namespace Psix
 
         private void Cleanup()
         {
+#if UNITY_ANDROID
+            AndroidJNI.AttachCurrentThread();
+#endif
             BLE.StopScan();
             lock (matchLock)
             {
@@ -110,6 +113,9 @@ namespace Psix
 
         private void StartScanning()
         {
+#if UNITY_ANDROID
+            AndroidJNI.AttachCurrentThread();
+#endif
 
             ScanTimer.Elapsed += (s, e) => { Cleanup(); };
             ScanTimer.AutoReset = false; // scanning is stopped only once
