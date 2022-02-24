@@ -26,14 +26,24 @@ public class PsixMotionEvent : UnityEvent<Psix.Interaction.MotionEventArgs>
 public class WatchManager : MonoBehaviour
 {
 
+    /// Invoked when a gesture is detected by the watch.
     public PsixGestureEvent m_GestureEvent;
+
+    /// Invoked when a touch screen event is detected by the watch.
     public PsixTouchEvent m_TouchEvent;
+
+    /// Invoked when a motion event (such as a physical button click or rotary input rotation)
+    /// is detected by the watch.
     public PsixMotionEvent m_MotionEvent;
 
+    /// Invoked when a connection to the watch is established.
     public UnityEvent m_ConnectEvent;
-    public UnityEvent m_DisconnectEvent;
-    public UnityEvent m_TimeoutEvent;
 
+    /// Invoked when the connection to the watch is severed.
+    public UnityEvent m_DisconnectEvent;
+
+    /// Invoked when an attempt to connect to a watch times out.
+    public UnityEvent m_TimeoutEvent;
 
     /// Angular velocity of the watch in its own coordinate system, degrees per second.
     /// Returns a zero vector if no watch is connected.
@@ -72,6 +82,7 @@ public class WatchManager : MonoBehaviour
     public bool IsConnected {get { return watch.IsConnected; } }
 
     /// Name tag of the watch to connect to.
+    [Tooltip("Name of the watch to connect to. Leave empty to connect to any compatible device within range.")]
     [SerializeField]
     private string watchName = "";
 
