@@ -42,17 +42,22 @@ namespace Psix
         }
 
 
-        public void Connect(
+        public bool Connect(
            Action? onConnected = null,
            Action? onDisconnected = null,
-           Action? onTimeout = null
+           Action? onTimeout = null,
+           int timeout = 20000
         )
         {
             connectAction = onConnected;
             disconnectAction = onDisconnected;
             timeoutAction = onTimeout;
 
+            ScanTimeout = timeout;
+
             Initiate();
+
+            return true;
         }
 
         public void Disconnect()

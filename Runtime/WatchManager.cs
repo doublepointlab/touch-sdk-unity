@@ -124,11 +124,8 @@ public class WatchManager : MonoBehaviour
             }
         };
 
-        watch.Connect(
-            onConnected: () => { m_ConnectEvent?.Invoke(); },
-            onDisconnected: () => { m_DisconnectEvent?.Invoke(); },
-            onTimeout: () => { m_TimeoutEvent?.Invoke(); }
-        );
+        Connect();
+
     }
 
     /**
@@ -140,5 +137,30 @@ public class WatchManager : MonoBehaviour
     public void Vibrate(int length = 10, float amplitude = 0.5f)
     {
         watch.Vibrate(length, amplitude);
+    }
+
+    /**
+     * Try to discover and connect to a watch. Return true if watch discovery was
+     * initiated successfully and false if something went wrong. Times out after
+     * 20 seconds by default if no watch is found.
+     *
+     * @param timeout Timeout interval in milliseconds.
+     */
+    public bool Connect(int timeout = 20000)
+    {
+        return watch.Connect(
+            onConnected: () => { m_ConnectEvent?.Invoke(); },
+            onDisconnected: () => { m_DisconnectEvent?.Invoke(); },
+            onTimeout: () => { m_TimeoutEvent?.Invoke(); },
+            timeoutInterval: timeout
+        );
+    }
+
+    /**
+     * Disconnect the watch.
+     */
+    public void Disconnect()
+    {
+        watch.Disconnect();
     }
 }

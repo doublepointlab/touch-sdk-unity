@@ -74,12 +74,17 @@ public class Watch {
      * @param onDisconnected Action that is called when the connection is severed.
      * @param onTimeout Action that is called if no matching device is found.
      */
-    public void Connect(Action? onConnected = null, Action? onDisconnected = null, Action? onTimeout = null)
+    public bool Connect(
+        Action? onConnected = null,
+        Action? onDisconnected = null,
+        Action? onTimeout = null,
+        int timeoutInterval = 20000)
     {
-        client.Connect(
+        return client.Connect(
             onConnected: () => { connectAction(onConnected); },
             onDisconnected: () => { disconnectAction(onDisconnected); },
-            onTimeout: () => { timeoutAction(onTimeout); }
+            onTimeout: () => { timeoutAction(onTimeout); },
+            timeout: timeoutInterval
         );
     }
 
