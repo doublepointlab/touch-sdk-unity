@@ -7,6 +7,7 @@ namespace Psix
         {
             NoGesture = 0,
             Tap = 1,
+            Clench = 2,
         };
 
         public enum TouchType
@@ -19,6 +20,7 @@ namespace Psix
         public enum MotionType
         {
             Rotary = 0,
+            Button = 1,
         };
 
         public enum MotionInfo
