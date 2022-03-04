@@ -1,7 +1,7 @@
 {
   "name": "io.port6.watch",
   "displayName": "Smartwatch Bridge",
-  "version": "0.0.0",
+  "version": "0.3.0",
   "unity": "2020.3",
   "description": "C# scripts for bridging Unity applications with Wear OS smartwatches.",
   "dependencies": {},
