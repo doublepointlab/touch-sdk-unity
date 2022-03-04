@@ -68,7 +68,7 @@ public class WatchManager : MonoBehaviour
     /// Indicates whether the touch screen of the watch is being touched.
     public bool IsTouching { get; private set; }
 
-    /// The screen coordinates of the last detected touch event
+    /// The screen coordinates of the last detected touch event in screen pixel coordinates.
     public Vector2 TouchCoordinates { get; private set; } = Vector2.zero;
 
     /// The number of clockwise steps that the watch rotary input has taken since the
@@ -109,7 +109,7 @@ public class WatchManager : MonoBehaviour
                 IsTouching = false;
             }
 
-            TouchCoordinates = new Vector2(touchEventArgs.coords[0], touchEventArgs.coords[1]);
+            TouchCoordinates = touchEventArgs.coords;
         };
         watch.OnMotionEvent = (motionEventArgs) => {
 

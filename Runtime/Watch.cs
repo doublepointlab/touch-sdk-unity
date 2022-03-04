@@ -202,9 +202,10 @@ public class Watch {
     {
         if (data.Length == 9)
         {
+            float[] touchCoords = getFloatArray(data.Skip(1).ToArray());
             OnTouchEvent(new TouchEventArgs(
                 (Interaction.TouchType)Convert.ToInt32(data[0]),
-                getFloatArray(data.Skip(1).ToArray())
+                new Vector2(touchCoords[0], touchCoords[1])
             ));
         }
     }

@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Psix
 {
     namespace Interaction
@@ -31,14 +33,14 @@ namespace Psix
 
         public struct TouchEventArgs
         {
-            public TouchEventArgs(TouchType t, float[] c)
+            public TouchEventArgs(TouchType t, Vector2 c)
             {
                 type = t;
                 coords = c;
             }
 
             public TouchType type;
-            public float[] coords;
+            public Vector2 coords;
         };
 
         public struct MotionEventArgs
