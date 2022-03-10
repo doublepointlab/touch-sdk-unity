@@ -1,9 +1,12 @@
 using System.Xml;
 using UnityEditor;
-using UnityEditor.Android;
-using UnityEditor.XR.Oculus;
 
 #if UNITY_ANDROID
+using UnityEditor.Android;
+
+#if PSIX_OCULUS
+using UnityEditor.XR.Oculus;
+
 internal class OculusManifestBTFixer : IPostGenerateGradleAndroidProject
 {
     static readonly string k_AndroidURI = "http://schemas.android.com/apk/res/android";
@@ -58,10 +61,14 @@ internal class OculusManifestBTFixer : IPostGenerateGradleAndroidProject
 
         string nodePath = "/manifest";
         CreateNameValueElementsInTag(manifestDoc, nodePath, "uses-permission", "name", "android.permission.BLUETOOTH");
+        CreateNameValueElementsInTag(manifestDoc, nodePath, "uses-permission", "name", "android.permission.BLUETOOTH_ADMIN");
+        CreateNameValueElementsInTag(manifestDoc, nodePath, "uses-permission", "name", "android.permission.ACCESS_FINE_LOCATION");
+        CreateNameValueElementsInTag(manifestDoc, nodePath, "uses-feature", "name", "android.hardware.bluetooth_le", "required", "false");
 
         manifestDoc.Save(manifestPath);
     }
 
     public int callbackOrder { get { return 20000; } }
 }
-#endif
+#endif // PSIX_OCULUS
+#endif // UNITY_ANDROID
