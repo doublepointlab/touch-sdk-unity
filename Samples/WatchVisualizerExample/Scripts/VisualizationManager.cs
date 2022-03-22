@@ -11,29 +11,21 @@ namespace Psix.Examples
     {
         public WatchManager watchManager;
         public TextMeshPro connectionText;
-        public AccelerometerManager accelerometerManager;
-        public GyroscopeManager gyroscopeManager;
-        public TouchManager touchManager;
-        public DialManager dialManager;
-        public TapManager tapManager;
-        public QuaternionManager quaternionManager;
+        public AccelerometerVisualizer accelerometerVisualizer;
+        public GyroscopeVisualizer gyroscopeVisualizer;
+        public TouchVisualizer touchVisualizer;
+        public DialVisualizer dialVisualizer;
+        public TapVisualizer tapVisualizer;
+        public QuaternionVisualizer quaternionVisualizer;
 
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
         void Update()
         {
-
-            accelerometerManager.UpdateVisualizer(watchManager.Acceleration);
-            gyroscopeManager.UpdateGyroscope(watchManager.AngularVelocity);
-            touchManager.UpdateTouchIndicator(watchManager.TouchCoordinates[0] / 450, watchManager.TouchCoordinates[1] / 450, watchManager.IsTouching);
-            dialManager.UpdateDialPosition(watchManager.RotaryPosition);
-            tapManager.UpdateTapCount(watchManager.TapCount);
-            quaternionManager.UpdateOrientation(watchManager.Orientation);
+            accelerometerVisualizer.UpdateVisualizer(watchManager.Acceleration);
+            gyroscopeVisualizer.UpdateGyroscope(watchManager.AngularVelocity);
+            touchVisualizer.UpdateTouchIndicator(watchManager.TouchCoordinates[0] / 450, watchManager.TouchCoordinates[1] / 450, watchManager.IsTouching);
+            dialVisualizer.UpdateDialPosition(watchManager.RotaryPosition);
+            tapVisualizer.UpdateTapCount(watchManager.TapCount);
+            quaternionVisualizer.UpdateOrientation(watchManager.Orientation);
 
             //inputText.text = watchManager.IsConnected.ToString() +":\n" +
             //    watchManager.Acceleration.ToString("F4") + "\n" +

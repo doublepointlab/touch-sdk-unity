@@ -1,3 +1,5 @@
+// Copyright (C) 2022 Port 6 Oy <hello@port6.io> – All rights reserved
+
 #nullable enable
 
 using System;

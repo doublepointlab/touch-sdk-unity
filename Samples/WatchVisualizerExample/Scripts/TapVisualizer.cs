@@ -7,25 +7,16 @@ using Psix;
 
 namespace Psix.Examples
 {
-    public class TapManager : MonoBehaviour
+    public class TapVisualizer : MonoBehaviour
     {
-        [SerializeField]
-        private TextMeshPro tapCountText;
+    
+        [SerializeField] private TextMeshPro tapCountText;
 
-        [SerializeField]
-        private GameObject tapThing;
+        [SerializeField] private Renderer tapThingRenderer;
 
         private int tapCount;
         private float timeOfLastTap;
 
-        private Renderer tapThingRenderer;
-        // Start is called before the first frame update
-        void Start()
-        {
-            tapThingRenderer = tapThing.GetComponent<Renderer>();
-        }
-
-        // Update is called once per frame
         void Update()
         {
             if (Time.time - timeOfLastTap > 0.05)

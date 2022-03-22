@@ -1,3 +1,5 @@
+// Copyright (C) 2022 Port 6 Oy <hello@port6.io> – All rights reserved
+
 using System.Linq;
 using System.Collections.Concurrent;
 
@@ -7,19 +9,20 @@ using UnityEngine.UI;
 using System;
 
 using Psix;
+using Psix.Interaction;
 
 [System.Serializable]
-public class PsixGestureEvent : UnityEvent<Psix.Interaction.Gesture>
+public class PsixGestureEvent : UnityEvent<Gesture>
 {
 }
 
 [System.Serializable]
-public class PsixTouchEvent : UnityEvent<Psix.Interaction.TouchEventArgs>
+public class PsixTouchEvent : UnityEvent<TouchEventArgs>
 {
 }
 
 [System.Serializable]
-public class PsixMotionEvent : UnityEvent<Psix.Interaction.MotionEventArgs>
+public class PsixMotionEvent : UnityEvent<MotionEventArgs>
 {
 }
 
@@ -125,7 +128,6 @@ public class WatchManager : MonoBehaviour
         };
 
         Connect();
-
     }
 
     /**

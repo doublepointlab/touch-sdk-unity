@@ -4,24 +4,26 @@
   "version": "0.3.0",
   "unity": "2020.3",
   "description": "C# scripts for bridging Unity applications with Wear OS smartwatches.",
-  "dependencies": {},
   "keywords": [
-    "Port 6"
+    "Port 6",
+    "Bluetooth",
+    "Smartwatch",
+    "GATT",
+    "Bridge",
+    "BLE"
   ],
   "license": "",
   "author": {
-    "name": "Arttu Tolvanen",
-    "email": "arttu@port6.io",
-    "url": ""
+    "name": "Port 6",
+    "email": "hello@port6.io",
+    "url": "https://www.port6.io"
   },
-
   "homepage": "https://www.port6.io",
-  "bugs": {
-    "url": "",
-    "email" : ""
-  },
-  "repository": {
-    "type": "git",
-    "url": ""
-  }
+  "samples": [
+    {
+      "displayName": "Watch Visualizer Demo",
+      "description": "Demonstrate and debug Bridge capabilities",
+      "path": "Samples~/WatchVisualizerExample"
+    }
+  ]
 }
