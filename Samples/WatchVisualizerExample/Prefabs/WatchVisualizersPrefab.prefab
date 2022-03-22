@@ -7180,12 +7180,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   watchManager: {fileID: 5632571188249650932}
   connectionText: {fileID: 5632571188407526109}
-  accelerometerManager: {fileID: 8200028227355215171}
-  gyroscopeManager: {fileID: 8531357186957632458}
-  touchManager: {fileID: 548162519940853317}
-  dialManager: {fileID: 412203974692194714}
-  tapManager: {fileID: 7095496620554108249}
-  quaternionManager: {fileID: 8352022811707972353}
+  accelerometerVisualizer: {fileID: 8200028227355215171}
+  gyroscopeVisualizer: {fileID: 8531357186957632458}
+  touchVisualizer: {fileID: 548162519940853317}
+  dialVisualizer: {fileID: 412203974692194714}
+  tapVisualizer: {fileID: 7095496620554108249}
+  quaternionVisualizer: {fileID: 8352022811707972353}
 --- !u!1 &5632571188253687875
 GameObject:
   m_ObjectHideFlags: 0
@@ -12074,9 +12074,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 201e247b08006b04599ba3d7da7cf8e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  watchManager: {fileID: 5632571188249650932}
   region: {fileID: 5632571188627967803}
   axisOrigin: {fileID: 5632571189087196227}
-  watchManager: {fileID: 5632571188249650932}
   cursor: {fileID: 5632571188184247168}
   cursorHead: {fileID: 5632571188052151032}
   cursorPowerText: {fileID: 5632571188240586575}
