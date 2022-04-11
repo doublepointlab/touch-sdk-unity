@@ -1,0 +1,16 @@
+{
+    "name": "Psix.Watch",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3aae35b309b72464695057c936af7c81"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
