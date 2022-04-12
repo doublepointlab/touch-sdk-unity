@@ -109,8 +109,6 @@ public class BluetoothLEUWP
 #if ENABLE_WINMD_SUPPORT
         private async void On_Received(BluetoothLEAdvertisementWatcher watcher, BluetoothLEAdvertisementReceivedEventArgs args)
         {
-            Log("On_Received");
-
             var dev = await BluetoothLEDevice.FromBluetoothAddressAsync(args.BluetoothAddress);
 
             if (dev != null)

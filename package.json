@@ -1,13 +1,14 @@
 {
-  "name": "io.port6.watch",
-  "displayName": "Smartwatch Bridge",
-  "version": "0.3.0",
+  "name": "io.port6.sdk",
+  "displayName": "Port 6 SDK",
+  "version": "0.4.0",
   "unity": "2020.3",
-  "description": "C# scripts for bridging Unity applications with Wear OS smartwatches.",
+  "description": "C# scripts for bridging Unity applications with Port 6 enabled smart peripherals.",
   "keywords": [
     "Port 6",
     "Bluetooth",
     "Smartwatch",
+    "Smartphone",
     "GATT",
     "Bridge",
     "BLE"

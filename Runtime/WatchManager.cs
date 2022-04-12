@@ -93,7 +93,6 @@ public class WatchManager : MonoBehaviour
 
     void Start()
     {
-
         watch = new Watch(watchName);
 
         watch.OnGesture = (gesture) => {
@@ -128,6 +127,11 @@ public class WatchManager : MonoBehaviour
         };
 
         Connect();
+    }
+
+    void OnDestroy()
+    {
+        Disconnect();
     }
 
     /**

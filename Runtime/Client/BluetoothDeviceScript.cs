@@ -54,7 +54,7 @@ public class BluetoothDeviceScript : MonoBehaviour
     // Update is called once per frame
     void Update ()
 	{
-#if ENABLE_WINMD_SUPPORT
+#if ENABLE_WINMD_SUPPORT || UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
 		if (MessagesToProcess != null)
         {
 			lock(MessagesToProcess)
@@ -307,8 +307,8 @@ public class BluetoothDeviceScript : MonoBehaviour
 			byte[] bytes = System.Convert.FromBase64String (base64Data);
 			if (bytes.Length > 0)
 			{
-				deviceAddress = deviceAddress.ToUpper ();
-				characteristic = characteristic.ToUpper ();
+				//deviceAddress = deviceAddress.ToUpper ();
+				//characteristic = characteristic.ToUpper ();
 
 #if UNITY_IOS
                 if (BLEStandardUUIDs.ContainsKey(characteristic))

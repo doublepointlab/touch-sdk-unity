@@ -15,9 +15,31 @@ using Timer = System.Timers.Timer;
 
 namespace Psix
 {
-
     class GattClient
     {
+        private string serverName = "";
+        private string serverAddress = "";
+
+        private Thread? bluetoothThread = null;
+
+        private Action? connectAction = null;
+        private Action? disconnectAction = null;
+        private Action? timeoutAction = null;
+
+        private readonly object connectionLock = new object();
+        private readonly object matchLock = new object();
+
+        private Timer ScanTimer = new Timer(20000); // Handles scan timeout
+
+        private Queue<(string service, string characteristic,Action<byte[]> callback)> subscriptions = 
+            new Queue<(string service, string characteristic, Action<byte[]> callback)>();
+
+        private HashSet<string> connectedDevices = new HashSet<string>();
+        private HashSet<string> requiredServices = new HashSet<string>();
+        private List<string> advertisedServices = new List<string>();
+
+        private Dictionary<string, HashSet<string>> deviceToDiscoveredServices = 
+            new Dictionary<string, HashSet<string>>();
 
         public GattClient(
            string name= "",
@@ -219,32 +241,5 @@ namespace Psix
             );
 
         }
-
-        private string serverName = "";
-        private string serverAddress = "";
-
-        private Thread? bluetoothThread = null;
-
-        private Action? connectAction = null;
-        private Action? disconnectAction = null;
-        private Action? timeoutAction = null;
-
-        private readonly object connectionLock = new object();
-        private readonly object matchLock = new object();
-
-        private Timer ScanTimer = new Timer(20000); // Handles scan timeout
-
-        private Queue<(string service,
-            string characteristic,
-            Action<byte[]> callback)> subscriptions
-            = new Queue<(string service, string characteristic, Action<byte[]> callback)>();
-
-        private HashSet<string> connectedDevices = new HashSet<string>();
-        private HashSet<string> requiredServices = new HashSet<string>();
-        private List<string> advertisedServices = new List<string>();
-
-        private Dictionary<string, HashSet<string>> deviceToDiscoveredServices
-            = new Dictionary<string, HashSet<string>>();
-
     }
 }
