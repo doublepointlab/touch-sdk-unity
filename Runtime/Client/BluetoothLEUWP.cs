@@ -1,4 +1,5 @@
-// Copyright (C) 2022 Port 6 Oy <hello@port6.io> – All rights reserved
+// Copyright (c) 2022 Port 6 Oy <hello@port6.io>
+// Licensed under the MIT License. See LICENSE for details.
 
 // use this to allow the editor to see WINMD code for syntax checking
 //#define ENABLE_WINMD_SUPPORT
