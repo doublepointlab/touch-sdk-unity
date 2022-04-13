@@ -232,14 +232,14 @@ public class Watch {
 
     private void connectAction(Action? onConnected)
     {
-        Debug.Log("connect action");
+        BluetoothLEHardwareInterface.Log("connect action");
         IsConnected = true;
         onConnected?.Invoke();
     }
 
     private void disconnectAction(Action? onDisconnected)
     {
-        Debug.Log("disconnect action");
+        BluetoothLEHardwareInterface.Log("disconnect action");
         IsConnected = false;
         AngularVelocity = Vector3.zero;
         Acceleration = Vector3.zero;
@@ -250,7 +250,7 @@ public class Watch {
 
     private void timeoutAction(Action? onTimeout)
     {
-        Debug.Log("timeout action");
+        BluetoothLEHardwareInterface.Log("timeout action");
         IsConnected = false;
         onTimeout?.Invoke();
     }

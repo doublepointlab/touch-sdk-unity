@@ -31,14 +31,14 @@ namespace Psix
 
         private Timer ScanTimer = new Timer(20000); // Handles scan timeout
 
-        private Queue<(string service, string characteristic,Action<byte[]> callback)> subscriptions = 
+        private Queue<(string service, string characteristic,Action<byte[]> callback)> subscriptions =
             new Queue<(string service, string characteristic, Action<byte[]> callback)>();
 
         private HashSet<string> connectedDevices = new HashSet<string>();
         private HashSet<string> requiredServices = new HashSet<string>();
         private List<string> advertisedServices = new List<string>();
 
-        private Dictionary<string, HashSet<string>> deviceToDiscoveredServices = 
+        private Dictionary<string, HashSet<string>> deviceToDiscoveredServices =
             new Dictionary<string, HashSet<string>>();
 
         public GattClient(
@@ -99,7 +99,7 @@ namespace Psix
                 serverAddress, serviceUuid, characteristicUuid,
                 data, data.Length, false, (characteristicUUID) =>
             {
-                Debug.Log("Write Succeeded");
+                BLE.Log("Write Succeeded");
             });
         }
 
@@ -112,7 +112,7 @@ namespace Psix
 
             BLE.Initialize(true, false,
                 () => { bluetoothThread?.Start(); },
-                (error) => { Debug.Log("BLE error: " + error); }
+                (error) => { BLE.Log("BLE error: " + error); }
             );
         }
 
@@ -172,12 +172,12 @@ namespace Psix
 
                         connectedDevices.Add(address);
 
-                        Debug.Log($"connecting to {name} ({address})");
+                        BLE.Log($"connecting to {name} ({address})");
                         BLE.ConnectToPeripheral(
-                            address, (addr) => {Debug.Log($"connected to {addr}"); },
+                            address, (addr) => {BLE.Log($"connected to {addr}"); },
                             (addr, service) =>
                             {
-                                Debug.Log($"discover service {service} ({addr})");
+                                BLE.Log($"discover service {service} ({addr})");
                                 deviceToDiscoveredServices[addr].Add(service);
                                 if (requiredServices.All((service) => {
                                     return deviceToDiscoveredServices[addr].Contains(service); }))
@@ -185,10 +185,10 @@ namespace Psix
                                     ProcessDeviceMatch(addr);
                                 }
                             }, (addr, service, characteristic) => {
-                                Debug.Log($"discover characteristic {characteristic} ({addr})");
+                                BLE.Log($"discover characteristic {characteristic} ({addr})");
                             }, (addr) =>
                             {
-                                Debug.Log($"disconnect {addr}");
+                                BLE.Log($"disconnect {addr}");
                                 if (addr == serverAddress) disconnectAction?.Invoke();
                                 connectedDevices.Remove(addr);
                             }
@@ -204,7 +204,7 @@ namespace Psix
             {
                 if (serverAddress == "")
                 {
-                    Debug.Log($"MATCH: {address}");
+                    BLE.Log($"MATCH: {address}");
                     serverAddress = address;
                     foreach (string addr in connectedDevices)
                     {

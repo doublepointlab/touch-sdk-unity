@@ -169,16 +169,16 @@ public class BluetoothLEHardwareInterface
 
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLELog (string message);
-	
+
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLEInitialize (bool asCentral, bool asPeripheral);
-	
+
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLEDeInitialize ();
-	
+
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLEPauseMessages (bool isPaused);
-	
+
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLEScanForPeripheralsWithServices (string serviceUUIDsString, bool allowDuplicates, bool rssiOnly, bool clearPeripheralList);
 
@@ -190,19 +190,19 @@ public class BluetoothLEHardwareInterface
 
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLEConnectToPeripheral (string name);
-	
+
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLEDisconnectPeripheral (string name);
-	
+
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLEReadCharacteristic (string name, string service, string characteristic);
 
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLEWriteCharacteristic (string name, string service, string characteristic, byte[] data, int length, bool withResponse);
-	
+
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLESubscribeCharacteristic (string name, string service, string characteristic);
-	
+
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLEUnSubscribeCharacteristic (string name, string service, string characteristic);
 
@@ -223,25 +223,25 @@ public class BluetoothLEHardwareInterface
 
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLECreateService (string uuid, bool primary);
-	
+
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLERemoveService (string uuid);
-	
+
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLERemoveServices ();
 
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLECreateCharacteristic (string uuid, int properties, int permissions, byte[] data, int length);
-	
+
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLERemoveCharacteristic (string uuid);
-	
+
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLERemoveCharacteristics ();
 
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLEStartAdvertising ();
-	
+
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLEStopAdvertising ();
 
@@ -256,7 +256,7 @@ public class BluetoothLEHardwareInterface
 
 	public static void Log (string message)
 	{
-#if UNIY_EDITOR
+#if PSIX_DEBUG
 		Debug.Log(message);
 #else
 		if (!Application.isEditor)
@@ -353,7 +353,7 @@ public class BluetoothLEHardwareInterface
 
 		return bluetoothDeviceScript;
 	}
-	
+
 	public static void DeInitialize (Action action)
 	{
 		if (bluetoothDeviceScript != null)
@@ -562,7 +562,7 @@ public class BluetoothLEHardwareInterface
 				break;
 #endif
 		}
-#else	
+#else
 
 #if UNITY_STANDALONE_OSX
 		OSXBluetoothLEScanForPeripheralsWithServices (serviceUUIDsString, (actionAdvertisingInfo != null), rssiOnly, clearPeripheralList);
@@ -593,16 +593,16 @@ public class BluetoothLEHardwareInterface
 			if (bluetoothDeviceScript != null)
 			{
 				bluetoothDeviceScript.RetrievedConnectedPeripheralAction = action;
-				
+
 				if (bluetoothDeviceScript.DiscoveredDeviceList != null)
 					bluetoothDeviceScript.DiscoveredDeviceList.Clear ();
 			}
-			
+
 			string serviceUUIDsString = serviceUUIDs.Length > 0 ? "" : null;
-			
+
 			foreach (string serviceUUID in serviceUUIDs)
 				serviceUUIDsString += serviceUUID + "|";
-			
+
 			// strip the last delimeter
 			serviceUUIDsString = serviceUUIDsString.Substring (0, serviceUUIDsString.Length - 1);
 
@@ -686,8 +686,8 @@ public class BluetoothLEHardwareInterface
 #if EXPERIMENTAL_MACOS_EDITOR
 			case RuntimePlatform.OSXEditor:
 				OSXBluetoothLEConnectToPeripheral (name);
-				break;	
-#endif	
+				break;
+#endif
 		}
 #else
 #if UNITY_STANDALONE_OSX
@@ -718,8 +718,8 @@ public class BluetoothLEHardwareInterface
 #if EXPERIMENTAL_MACOS_EDITOR
 			case RuntimePlatform.OSXEditor:
 				OSXBluetoothLEDisconnectPeripheral (name);
-				break;	
-#endif	
+				break;
+#endif
 		}
 #else
 #if UNITY_STANDALONE_OSX
@@ -767,7 +767,7 @@ public class BluetoothLEHardwareInterface
         }
 #endif
     }
-	
+
 	public static void WriteCharacteristic (string name, string service, string characteristic, byte[] data, int length, bool withResponse, Action<string> action)
 	{
 		if (bluetoothDeviceScript != null)
@@ -781,8 +781,8 @@ public class BluetoothLEHardwareInterface
 #if EXPERIMENTAL_MACOS_EDITOR
 			case RuntimePlatform.OSXEditor:
 				OSXBluetoothLEWriteCharacteristic(name, service, characteristic, data, length, withResponse);
-				break;	
-#endif	
+				break;
+#endif
 		}
 #else
 #if UNITY_STANDALONE_OSX
@@ -799,7 +799,7 @@ public class BluetoothLEHardwareInterface
 #endif
 #endif // UNITY_EDITOR
     }
-	
+
 	public static void SubscribeCharacteristic (string name, string service, string characteristic, Action<string> notificationAction, Action<string, byte[]> action)
 	{
 #if !UNITY_EDITOR_OSX || !EXPERIMENTAL_MACOS_EDITOR
@@ -843,7 +843,7 @@ public class BluetoothLEHardwareInterface
         }
 #endif
     }
-	
+
 	public static void SubscribeCharacteristicWithDeviceAddress (string name, string service, string characteristic, Action<string, string> notificationAction, Action<string, string, byte[]> action)
 	{
 		if (bluetoothDeviceScript != null)
@@ -868,7 +868,7 @@ public class BluetoothLEHardwareInterface
 			if (!bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicAction.ContainsKey(name))
 				bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicAction[name] = new Dictionary<string, Action<string>>();
 			bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicAction[name][FullUUID (characteristic).ToLower ()] = null;
-			
+
 			if (!bluetoothDeviceScript.DidUpdateCharacteristicValueWithDeviceAddressAction.ContainsKey (name))
 				bluetoothDeviceScript.DidUpdateCharacteristicValueWithDeviceAddressAction[name] = new Dictionary<string, Action<string, string, byte[]>>();
 			bluetoothDeviceScript.DidUpdateCharacteristicValueWithDeviceAddressAction[name][FullUUID (characteristic).ToLower ()] = action;
@@ -929,7 +929,7 @@ public class BluetoothLEHardwareInterface
                 if (!bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicWithDeviceAddressAction.ContainsKey (name))
 					bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicWithDeviceAddressAction[name] = new Dictionary<string, Action<string, string>>();
 				bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicWithDeviceAddressAction[name][FullUUID (characteristic).ToLower ()] = null;
-				
+
 				if (!bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicAction.ContainsKey (name))
 					bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicAction[name] = new Dictionary<string, Action<string>> ();
 				bluetoothDeviceScript.DidUpdateNotificationStateForCharacteristicAction[name][FullUUID (characteristic).ToLower ()] = action;
@@ -979,7 +979,7 @@ public class BluetoothLEHardwareInterface
 #endif
 		}
 	}
-	
+
 	public static void RemoveService (string uuid)
 	{
 		if (!Application.isEditor)
@@ -1050,7 +1050,7 @@ public class BluetoothLEHardwareInterface
 #endif
 		}
 	}
-	
+
 	public static void StartAdvertising (Action action, bool isConnectable = true, bool includeName = true, int manufacturerId = 0, byte[] manufacturerSpecificData = null)
 	{
 		if (!Application.isEditor)
@@ -1066,7 +1066,7 @@ public class BluetoothLEHardwareInterface
 #endif
 		}
 	}
-	
+
 	public static void StopAdvertising (Action action)
 	{
 		if (!Application.isEditor)
@@ -1082,7 +1082,7 @@ public class BluetoothLEHardwareInterface
 #endif
 		}
 	}
-	
+
 	public static void UpdateCharacteristicValue (string uuid, byte[] data, int length)
 	{
 		if (!Application.isEditor)
@@ -1095,7 +1095,7 @@ public class BluetoothLEHardwareInterface
 #endif
 		}
 	}
-	
+
 	public static string FullUUID (string uuid)
 	{
 		if (uuid.Length == 4)

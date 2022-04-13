@@ -36,14 +36,14 @@ public class BluetoothLEW32
         {
             _bluetoothDeviceScript.MessagesToProcess = new Queue<string>();
             lock(_bluetoothDeviceScript.MessagesToProcess)
-            {   
+            {
                 _bluetoothDeviceScript.MessagesToProcess.Enqueue("Initialized");
             }
 
             _bluetoothDeviceScript.StartCoroutine(PollDevice());
         }
     }
-    
+
     IEnumerator PollDevice()
     {
         while (true)
@@ -94,8 +94,8 @@ public class BluetoothLEW32
             BleApi.GetError(out Errorres);
             if (lastError != Errorres.msg)
             {
-                if(Errorres.msg != "Ok");
-                    Debug.Log(Errorres.msg);
+                if(Errorres.msg != "Ok")
+                    BluetoothLEHardwareInterface.Log(Errorres.msg);
                 lastError = Errorres.msg;
             }
             yield return null;
