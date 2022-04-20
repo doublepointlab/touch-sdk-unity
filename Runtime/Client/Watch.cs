@@ -57,7 +57,7 @@ public class Watch {
         client = new GattClient(name);
 
         client.SubscribeToCharacteristic(DisconnectServiceUUID, DisconnectUUID,
-            (data) => { Disconnect(); }
+            (data) => { if (data.Length > 0 && data[0] == 0) Disconnect(); }
         );
 
         client.SubscribeToCharacteristic(SensorServiceUUID, gyroUUID, gyroCallback);
