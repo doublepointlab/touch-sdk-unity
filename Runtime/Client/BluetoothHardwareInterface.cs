@@ -309,20 +309,17 @@ public class BluetoothLEHardwareInterface
 		}
 
 		GameObject.DontDestroyOnLoad (bluetoothLEReceiver);
-#if UNITY_EDITOR
 		switch(Application.platform)
 		{
 			case RuntimePlatform.WindowsEditor:
 				BluetoothLEW32.Instance.Initialize(bluetoothDeviceScript, asCentral, asPeripheral);
 				break;
 		}
-#else
 #if UNITY_STANDALONE_WIN
 		BluetoothLEW32.Instance.Initialize(bluetoothDeviceScript, asCentral, asPeripheral);
 #elif UNITY_WSA
 		BluetoothLEUWP.Instance.Initialize(bluetoothDeviceScript, asCentral, asPeripheral);
 #endif
-#endif // UNITY_EDITOR
 
 #if EXPERIMENTAL_MACOS_EDITOR && (UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX)
 		ConnectUnitySendMessageCallback ((objectName, commandName, commandData) => {
@@ -527,6 +524,7 @@ public class BluetoothLEHardwareInterface
 
 	public static void ScanForPeripheralsWithServices (string[] serviceUUIDs, Action<string, string> action, Action<string, string, int, byte[]> actionAdvertisingInfo = null, bool rssiOnly = false, bool clearPeripheralList = true, int recordType = 0xFF)
 	{
+
 		if (bluetoothDeviceScript != null)
 		{
 			bluetoothDeviceScript.DiscoveredPeripheralAction = action;
@@ -551,19 +549,15 @@ public class BluetoothLEHardwareInterface
 
 			serviceUUIDsString = serviceUUIDsString.Substring (0, serviceUUIDsString.Length - 1);
 		}
-#if UNITY_EDITOR
 		switch(Application.platform)
 		{
 			case RuntimePlatform.WindowsEditor:
 				BluetoothLEW32.Instance.ScanForPeripheralsWithServices(serviceUUIDs, rssiOnly, clearPeripheralList, recordType);
 				break;
-#if EXPERIMENTAL_MACOS_EDITOR && UNITY_STANDALONE_OSX
 			case RuntimePlatform.OSXEditor:
 				OSXBluetoothLEScanForPeripheralsWithServices(serviceUUIDsString, (actionAdvertisingInfo != null), rssiOnly, clearPeripheralList);
 				break;
-#endif
 		}
-#else
 
 #if UNITY_STANDALONE_OSX
 		OSXBluetoothLEScanForPeripheralsWithServices (serviceUUIDsString, (actionAdvertisingInfo != null), rssiOnly, clearPeripheralList);
@@ -582,7 +576,6 @@ public class BluetoothLEHardwareInterface
 #elif UNITY_STANDALONE_WIN
 		BluetoothLEW32.Instance.ScanForPeripheralsWithServices(serviceUUIDs, rssiOnly, clearPeripheralList, recordType);
 #endif
-#endif // UNITY_EDITOR
 	}
 
 	public static void RetrieveListOfPeripheralsWithServices (string[] serviceUUIDs, Action<string, string> action)
@@ -678,19 +671,15 @@ public class BluetoothLEHardwareInterface
 			bluetoothDeviceScript.DiscoveredCharacteristicAction = characteristicAction;
 			bluetoothDeviceScript.ConnectedDisconnectPeripheralAction = disconnectAction;
 		}
-#if UNITY_EDITOR
 		switch(Application.platform)
 		{
 			case RuntimePlatform.WindowsEditor:
 				BluetoothLEW32.Instance.ConnectToPeripheral(name);
 				break;
-#if EXPERIMENTAL_MACOS_EDITOR
 			case RuntimePlatform.OSXEditor:
 				OSXBluetoothLEConnectToPeripheral (name);
 				break;
-#endif
 		}
-#else
 #if UNITY_STANDALONE_OSX
 			OSXBluetoothLEConnectToPeripheral (name);
 #elif UNITY_IOS || UNITY_TVOS
@@ -703,26 +692,21 @@ public class BluetoothLEHardwareInterface
 #elif UNITY_STANDALONE_WIN
 		BluetoothLEW32.Instance.ConnectToPeripheral(name);
 #endif
-#endif // UNITY_EDITOR
 	}
 
 	public static void DisconnectPeripheral (string name, Action<string> action)
 	{
 		if (bluetoothDeviceScript != null)
 			bluetoothDeviceScript.DisconnectedPeripheralAction = action;
-#if UNITY_EDITOR
 		switch(Application.platform)
 		{
 			case RuntimePlatform.WindowsEditor:
 				BluetoothLEW32.Instance.DisconnectPeripheral(name);
 				break;
-#if EXPERIMENTAL_MACOS_EDITOR
 			case RuntimePlatform.OSXEditor:
 				OSXBluetoothLEDisconnectPeripheral (name);
 				break;
-#endif
 		}
-#else
 #if UNITY_STANDALONE_OSX
 			OSXBluetoothLEDisconnectPeripheral (name);
 #elif UNITY_IOS || UNITY_TVOS
@@ -735,7 +719,6 @@ public class BluetoothLEHardwareInterface
 #elif UNITY_STANDALONE_WIN
 		BluetoothLEW32.Instance.DisconnectPeripheral(name);
 #endif
-#endif // UNITY_EDITOR
 	}
 
 	public static void ReadCharacteristic (string name, string service, string characteristic, Action<string, byte[]> action)
@@ -773,19 +756,15 @@ public class BluetoothLEHardwareInterface
 	{
 		if (bluetoothDeviceScript != null)
 			bluetoothDeviceScript.DidWriteCharacteristicAction = action;
-#if UNITY_EDITOR
 		switch(Application.platform)
 		{
 			case RuntimePlatform.WindowsEditor:
 				BluetoothLEW32.Instance.WriteCharacteristic(name, service, characteristic, data, length, withResponse);
 				break;
-#if EXPERIMENTAL_MACOS_EDITOR
 			case RuntimePlatform.OSXEditor:
 				OSXBluetoothLEWriteCharacteristic(name, service, characteristic, data, length, withResponse);
 				break;
-#endif
 		}
-#else
 #if UNITY_STANDALONE_OSX
 		OSXBluetoothLEWriteCharacteristic(name, service, characteristic, data, length, withResponse);
 #elif UNITY_IOS || UNITY_TVOS
@@ -798,7 +777,6 @@ public class BluetoothLEHardwareInterface
 #elif UNITY_STANDALONE_WIN
 		BluetoothLEW32.Instance.WriteCharacteristic(name, service, characteristic, data, length, withResponse);
 #endif
-#endif // UNITY_EDITOR
     }
 
 	public static void SubscribeCharacteristic (string name, string service, string characteristic, Action<string> notificationAction, Action<string, byte[]> action)
@@ -876,19 +854,15 @@ public class BluetoothLEHardwareInterface
 #endif
 		}
 
-#if UNITY_EDITOR
 	switch (Application.platform)
 	{
 		case RuntimePlatform.WindowsEditor:
 			BluetoothLEW32.Instance.SubscribeCharacteristicWithDeviceAddress(name, service, characteristic);
 			break;
-#if EXPERIMENTAL_MACOS_EDITOR
 		case RuntimePlatform.OSXEditor:
 			OSXBluetoothLESubscribeCharacteristic (name, service, characteristic);
 			break;
-#endif
 	}
-#else
 
 #if UNITY_STANDALONE_OSX
 		OSXBluetoothLESubscribeCharacteristic (name, service, characteristic);
@@ -902,7 +876,6 @@ public class BluetoothLEHardwareInterface
 #elif UNITY_STANDALONE_WIN
 		BluetoothLEW32.Instance.SubscribeCharacteristicWithDeviceAddress(name, service, characteristic);
 #endif
-#endif // UNITY_EDITOR
 	}
 
 	public static void UnSubscribeCharacteristic (string name, string service, string characteristic, Action<string> action)
