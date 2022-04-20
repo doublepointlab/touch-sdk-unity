@@ -98,7 +98,7 @@ public class WatchManager : MonoBehaviour
 
         watch.OnGesture = (gesture) => {
             m_GestureEvent?.Invoke(gesture);
-            TapCount++;
+            if (gesture == Gesture.Tap) TapCount++;
         };
         watch.OnTouchEvent = (touchEventArgs) => {
 
