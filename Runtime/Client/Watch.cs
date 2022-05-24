@@ -193,7 +193,7 @@ public class Watch {
     private void quatCallback(byte[] data)
     {
         float[] quat = getFloatArray(data);
-        if (quat.Length == 4)
+        if (quat.Length >= 4)
         {
             Orientation = new Quaternion(quat[0], quat[1], quat[2], quat[3]);
             OnOrientationUpdated(Orientation);
