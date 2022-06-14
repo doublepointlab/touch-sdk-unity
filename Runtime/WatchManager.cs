@@ -65,7 +65,7 @@ public class WatchManager : MonoBehaviour
     /// Quaternion {x*sin(t/2), y*sin(t/2), z*sin(t/2), cos(t/2)} corresponds
     /// to a rotation of watch from the reference position around the unit vector
     /// axis {x, y, z}, such that the directions {1, 0, 0}, {0, 1, 0}, and {0, 0, 1}
-    /// correspond to the "magnetic" East, magnetic North, and upwards directions,
+    /// correspond to the "magnetic" West, downwards and magnetic South,
     /// respectively. Returns {0, 0, 0, 1} if no watch is connected.
     public Quaternion Orientation { get {return watch.Orientation; } }
 

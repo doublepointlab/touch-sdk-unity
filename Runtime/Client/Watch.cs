@@ -195,7 +195,10 @@ public class Watch {
         float[] quat = getFloatArray(data);
         if (quat.Length >= 4)
         {
-            Orientation = new Quaternion(quat[0], quat[1], quat[2], quat[3]);
+            // Not only are the axes from android in right handed coordinates and unity in left handed,
+            // Unity has its reference (I) pointing towards z axis, while on Android its the x axis.
+            // The following have been found by looking at the rotation directions and axes at I of the watch.
+            Orientation = new Quaternion(-quat[1], -quat[2], quat[0], quat[3]);
             OnOrientationUpdated(Orientation);
         }
     }
