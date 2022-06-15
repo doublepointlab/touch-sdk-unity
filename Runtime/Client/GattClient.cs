@@ -16,12 +16,9 @@ using Timer = System.Timers.Timer;
 
 namespace Psix
 {
+    using CharacQueue = Queue<(string service, string characteristic, Action<byte[]> callback)>;
     class GattClient
     {
-        private string serverName = "";
-        private string serverAddress = "";
-
-        private Thread? bluetoothThread = null;
 
         private Action? connectAction = null;
         private Action? disconnectAction = null;
@@ -30,24 +27,42 @@ namespace Psix
         private readonly object connectionLock = new object();
         private readonly object matchLock = new object();
 
-        private Timer ScanTimer = new Timer(20000); // Handles scan timeout
+        private Timer ScanTimer = new Timer(1); // Handles scan timeout
 
-        private Queue<(string service, string characteristic,Action<byte[]> callback)> subscriptions =
-            new Queue<(string service, string characteristic, Action<byte[]> callback)>();
+        private CharacQueue subscriptions = new CharacQueue();
 
+        private Queue<string> testableDevices = new Queue<string>();
+        private static int MAX_CONNECTIONS = 4;
         private HashSet<string> connectedDevices = new HashSet<string>();
+        private Dictionary<string, float> testedDevices = new Dictionary<string, float>(); // Prevent connect disconnect spamming
         private HashSet<string> requiredServices = new HashSet<string>();
+        private HashSet<string> requiredCharacteristics = new HashSet<string>();
         private List<string> advertisedServices = new List<string>();
 
         private Dictionary<string, HashSet<string>> deviceToDiscoveredServices =
             new Dictionary<string, HashSet<string>>();
 
+        private Dictionary<string, HashSet<string>> deviceToDiscoveredCharacteristics =
+            new Dictionary<string, HashSet<string>>();
+
+        private bool selected = false; // First watch to actually send data gets selected once connected
+        private string serverAddress = "";
+        private void Select(string addr)
+        {
+            lock (matchLock)
+            {
+                if (serverAddress != "")
+                    return;
+                serverAddress = addr;
+                connectAction?.Invoke();
+                CleanupScanning();
+            }
+        }
+
         public GattClient(
-           string name= "",
            string advertisedService = "008e74d0-7bb3-4ac5-8baf-e5e372cced76"
         )
         {
-            serverName = name;
             advertisedServices.Add(advertisedService);
         }
 
@@ -57,30 +72,51 @@ namespace Psix
             set { ScanTimer.Interval = value; }
         }
 
+        /* Add a characteristic to the subscription queue. The first characteristic
+         * will be used to detect if the device is sending data, so it should likely be
+         * an imu characteristic
+         */
         public void SubscribeToCharacteristic(
            string serviceUuid,
            string characteristicUuid,
            Action<byte[]> callback)
         {
             requiredServices.Add(serviceUuid);
+            requiredCharacteristics.Add(characteristicUuid);
             subscriptions.Enqueue((serviceUuid, characteristicUuid, callback));
         }
 
 
-        public bool Connect(
+        public bool ConnectToName(
+                string nameSubstring,
            Action? onConnected = null,
            Action? onDisconnected = null,
            Action? onTimeout = null,
-           int timeout = 20000
+           int timeout = 60000
         )
         {
             connectAction = onConnected;
             disconnectAction = onDisconnected;
             timeoutAction = onTimeout;
 
+            BLE.Log($"Timeout set to {timeout}");
             ScanTimeout = timeout;
 
-            Initiate();
+            InitiateScan(nameSubstring);
+
+            return true;
+        }
+
+        public bool ConnectToAddress(
+                string addr,
+           Action? onConnected = null,
+           Action? onDisconnected = null
+        )
+        {
+            connectAction = onConnected;
+            disconnectAction = onDisconnected;
+
+            InitiateConnect(addr);
 
             return true;
         }
@@ -91,7 +127,7 @@ namespace Psix
             {
                 BLE.DisconnectPeripheral(serverAddress, null);
             }
-            Cleanup();
+            CleanupScanning();
         }
 
         public void SendBytes(byte[] data, string serviceUuid, string characteristicUuid)
@@ -104,137 +140,268 @@ namespace Psix
             });
         }
 
-        private void Initiate()
+        private void InitiateScan(string nameSubstring)
         {
             BLE.BluetoothConnectionPriority(BLE.ConnectionPriority.High);
 
             BLE.BluetoothScanMode(BLE.ScanMode.LowLatency);
-            bluetoothThread = new Thread(new ThreadStart(StartScanning));
 
             BLE.Initialize(true, false,
-                () => { bluetoothThread?.Start(); },
+                () => { StartScanning(nameSubstring); },
                 (error) => { BLE.Log("BLE error: " + error); }
             );
         }
 
-        private void Cleanup()
+        private void InitiateConnect(string addr)
         {
+            BLE.BluetoothConnectionPriority(BLE.ConnectionPriority.High);
+
+            BLE.Initialize(true, false,
+                () => { ConnectToPeripheral(addr); },
+                (error) => { BLE.Log("BLE error: " + error); }
+            );
+        }
+
+        private void CleanupScanning()
+        {
+            BLE.Log("CleanupScanning");
 #if UNITY_ANDROID
             AndroidJNI.AttachCurrentThread();
 #endif
             BLE.StopScan();
             lock (matchLock)
             {
-                if (serverAddress == "")
+                foreach (string addr in connectedDevices.ToList())
                 {
-                    foreach (string addr in connectedDevices)
-                    {
+                    if (addr != serverAddress)
                         BLE.DisconnectPeripheral(addr, null);
-                    }
-                    BLE.DeInitialize(null);
-                    timeoutAction?.Invoke();
                 }
             }
-
-            subscriptions.Clear();
-            requiredServices.Clear();
-            deviceToDiscoveredServices.Clear();
         }
 
-        private void StartScanning()
+        private void StartScanning(string nameSubstring)
         {
 #if UNITY_ANDROID
             AndroidJNI.AttachCurrentThread();
 #endif
 
-            ScanTimer.Elapsed += (s, e) => { Cleanup(); };
+            ScanTimer.Elapsed += (s, e) =>
+            {
+                if (!selected)
+                {
+                    CleanupScanning();
+                    BLE.DeInitialize(null);
+                    timeoutAction?.Invoke();
+                }
+            };
             ScanTimer.AutoReset = false; // scanning is stopped only once
             ScanTimer.Start();
 
             BLE.ScanForPeripheralsWithServices(
                 advertisedServices.ToArray(),
-                null,
-                (address, name, rssi, advert) => { ProcessScanResult(address, name, advert); }
+                (address, name) => { BLE.Log($"Scan: {address}: {name}"); },
+                (address, name, rssi, advert) => { ProcessScanResult(nameSubstring, address, name, advert); }
             );
         }
 
-        private void ProcessScanResult(string address, string name, byte[] advertisedData)
+        private volatile bool subscribing = false;
+        private Timer ?cancelTimer;
+        private void ConnectToPeripheral(string address)
         {
-            if (System.Text.Encoding.UTF8.GetString(advertisedData.ToArray())
-                    .Contains(serverName)) {
-                lock (connectionLock)
-                {
-                    if (!connectedDevices.Contains(address))
-                    {
-                        try
-                        {
-                            deviceToDiscoveredServices.Add(address, new HashSet<string>());
-                        } catch (ArgumentException) {}
-
-                        connectedDevices.Add(address);
-
-                        BLE.Log($"connecting to {name} ({address})");
-                        BLE.ConnectToPeripheral(
-                            address, (addr) => {BLE.Log($"connected to {addr}"); },
-                            (addr, service) =>
-                            {
-                                BLE.Log($"discover service {service} ({addr})");
-                                deviceToDiscoveredServices[addr].Add(service);
-                                if (requiredServices.All((service) => {
-                                    return deviceToDiscoveredServices[addr].Contains(service); }))
-                                {
-                                    ProcessDeviceMatch(addr);
-                                }
-                            }, (addr, service, characteristic) => {
-                                BLE.Log($"discover characteristic {characteristic} ({addr})");
-                            }, (addr) =>
-                            {
-                                BLE.Log($"disconnect {addr}");
-                                if (addr == serverAddress) disconnectAction?.Invoke();
-                                connectedDevices.Remove(addr);
-                            }
-                        );
-                    }
-                }
-            }
-        }
-
-        private void ProcessDeviceMatch(string address)
-        {
-            lock (matchLock)
+            // If we are not waiting for a subscription, connect.
+            BLE.Log($"ConnectToPeripheral {address}");
+            lock (connectionLock)
             {
-                if (serverAddress == "")
+                if (!connectedDevices.Contains(address))
                 {
-                    BLE.Log($"MATCH: {address}");
-                    serverAddress = address;
-                    foreach (string addr in connectedDevices)
+                    try
                     {
-                        if (addr != serverAddress)
-                        {
-                            BLE.DisconnectPeripheral(addr, null);
-                        }
+                        deviceToDiscoveredServices.Add(address, new HashSet<string>());
+                        deviceToDiscoveredCharacteristics.Add(address, new HashSet<string>());
                     }
-                    BLE.StopScan();
-                    Subscribe();
+                    catch (ArgumentException) { }
+
+                    connectedDevices.Add(address);
+                    subscribing = true;
+                    cancelTimer = new Timer(CONNECTION_TEST_TIMEOUT * 1000 / 2);
+                    cancelTimer.Elapsed += (s, e) =>
+                    {
+#if UNITY_ANDROID
+                        AndroidJNI.AttachCurrentThread();
+#endif
+                        if (subscribing)
+                        {
+                            subscribing = false;
+                            BLE.DisconnectPeripheral(address, null);
+                        }
+                        cancelTimer = null;
+                    };
+                    cancelTimer.AutoReset = false;
+                    cancelTimer.Start();
+
+                    // Copy subscriptions so multiple devices can be subscribed to
+                    var subs = new CharacQueue(subscriptions);
+                    var len = subs.Count; // Subscribe should only be called once: this is to verify that.
+
+                    BLE.ConnectToPeripheral(
+                        address, (addr) => { BLE.Log($"connected to {addr}"); },
+                        (addr, service) =>
+                        {
+                            BLE.Log($"discover service {service} ({addr})");
+                        }, (addr, service, characteristic) =>
+                        {
+                            BLE.Log($"discover characteristic {characteristic} ({addr})");
+                            deviceToDiscoveredServices[addr].Add(service);
+                            if (!requiredServices.Contains(service))
+                                return;
+
+                            deviceToDiscoveredCharacteristics[addr].Add(characteristic);
+                            if (
+                                requiredServices.All((service) =>
+                            {
+                                return deviceToDiscoveredServices[addr].Contains(service);
+                            }) && requiredCharacteristics.All((charac) =>
+                            {
+                                return deviceToDiscoveredCharacteristics[addr].Contains(charac);
+                            })
+                            )
+                            {
+                                BLE.Log($"Connected device is a match: {address}. Already selected: {selected}. Currently {connectedDevices.Count} devices are connected");
+                                if (!selected)
+                                {
+                                    Subscribe(address, subs, len);
+                                }
+                            }
+                        }, (addr) =>
+                        {
+                            BLE.Log($"disconnect {addr}");
+                            if (addr == serverAddress) disconnectAction?.Invoke();
+                            lock (connectionLock)
+                            {
+                                connectedDevices.Remove(addr);
+                                deviceToDiscoveredServices[addr].Clear();
+                            }
+                        }
+                    );
                 }
             }
         }
 
-        private void Subscribe()
+        private static float CONNECTION_TEST_TIMEOUT = 10f;
+        private void ProcessScanResult(string nameSubstring, string address, string name, byte[] advertisedData)
         {
+            // Verify that name matches. If it does and device is not enqueued for testing nor been tested within
+            // last CONNECTION_TEST_TIMEOUT, enqueue.
+            lock (connectionLock)
+            {
+                if (Time.time - testedDevices.GetValueOrDefault(address, -CONNECTION_TEST_TIMEOUT) < CONNECTION_TEST_TIMEOUT)
+                    return;
+                testedDevices[address] = Time.time;
+                if ((nameSubstring == ""
+                    || System.Text.Encoding.UTF8.GetString(advertisedData.ToArray()).ToLower()
+                        .Contains(nameSubstring.ToLower()))
+                    && !connectedDevices.Contains(address)
+                    && !testableDevices.Contains(address))
+                {
+                    BLE.Log($"Adding {name} ({address}) to be tested");
+                    testableDevices.Enqueue(address);
+                }
+            }
+            HandleTestConnections();
+        }
+
+        private void HandleTestConnections()
+        {
+            // If a selection has not been made and we are not currently trying to subscribe to any device, try
+            // connecting to oldest testable device. Handle max connections.
+            if (selected)
+                return;
+            if (subscribing)
+            {
+                BLE.Log("Skip connect: waiting for previous");
+                return;
+            }
+            lock (connectionLock)
+            {
+                foreach (string device in connectedDevices)
+                {
+                    if (Time.time - testedDevices[device] >= CONNECTION_TEST_TIMEOUT)
+                    {
+                        BLE.DisconnectPeripheral(device, null);
+                        return;
+                    }
+                }
+                if (testableDevices.Count == 0)
+                    return;
+                if (connectedDevices.Count < MAX_CONNECTIONS)
+                {
+                    ConnectToPeripheral(testableDevices.Dequeue());
+                    return;
+                }
+            }
+        }
+
+        private void Subscribe(string address, CharacQueue subs, int subsCount)
+        {
+            // Subscribe to first characteristic: the device will be selected
+            // if no other selection has been made and the characteristic notifies data.
+            if (subs.Count != subsCount)
+            {
+                BLE.Log("Subscribe skipped");
+                return;
+            }
+            var sub = subs.Dequeue();
+            BLE.Log($"Subscribing {address} to {sub.characteristic}");
+
+            BLE.SubscribeCharacteristicWithDeviceAddress(
+                address, sub.service, sub.characteristic, (sth, sth2) =>
+                {
+                    cancelTimer?.Close();
+                    cancelTimer = null;
+                    BLE.Log($"Subscription notify: {sth} {sth2}");
+                    // We should only allow more subscriptions after this!
+                    subscribing = false;
+                },
+                (addr, characteristic, bytes) =>
+                {
+                    if (!selected)
+                    {
+                        selected = true;
+                        BLE.Log($"Selecting {addr} due to receiving {characteristic}");
+                        SubscribeRest(address, subs);
+                    }
+                    sub.callback(bytes);
+                }
+            );
+
+        }
+
+        private void SubscribeRest(string address, CharacQueue subs)
+        {
+            // Subscribe all characteristics remaining after Subscribe.
+            if (subscribing)
+            {
+                BLE.Log("Waiting: subscribing active");
+                selected = false;
+                return;
+            }
             (string service, string characteristic, Action<byte[]> callback) sub;
             try
             {
-                sub = subscriptions.Dequeue();
-            } catch (InvalidOperationException)
+                sub = subs.Dequeue();
+                BLE.Log($"Subscribing {address} to {sub.characteristic}");
+            }
+            catch (InvalidOperationException)
             {
-                connectAction?.Invoke();
+                BLE.Log($"All subscribed");
+                Select(address);
                 return;
             }
             BLE.SubscribeCharacteristicWithDeviceAddress(
-                serverAddress, sub.service, sub.characteristic, (addr, characteristic) =>
+                address, sub.service, sub.characteristic, (addr, characteristic) =>
                 {
-                    Subscribe();
+                    BLE.Log($"{sub.characteristic} subscribed");
+                    SubscribeRest(address, subs);
                 }, (addr, characteristic, bytes) =>
                 {
                     sub.callback(bytes);
