@@ -79,10 +79,14 @@ namespace Psix
         public void SubscribeToCharacteristic(
            string serviceUuid,
            string characteristicUuid,
-           Action<byte[]> callback)
+           Action<byte[]> callback,
+           bool required = true)
         {
-            requiredServices.Add(serviceUuid);
-            requiredCharacteristics.Add(characteristicUuid);
+            if (required)
+            {
+                requiredCharacteristics.Add(characteristicUuid);
+                requiredServices.Add(serviceUuid);
+            }
             subscriptions.Enqueue((serviceUuid, characteristicUuid, callback));
         }
 
@@ -252,10 +256,10 @@ namespace Psix
                         {
                             BLE.Log($"discover characteristic {characteristic} ({addr})");
                             deviceToDiscoveredServices[addr].Add(service);
+                            deviceToDiscoveredCharacteristics[addr].Add(characteristic);
                             if (!requiredServices.Contains(service))
                                 return;
 
-                            deviceToDiscoveredCharacteristics[addr].Add(characteristic);
                             if (
                                 requiredServices.All((service) =>
                             {
@@ -353,26 +357,32 @@ namespace Psix
             var sub = subs.Dequeue();
             BLE.Log($"Subscribing {address} to {sub.characteristic}");
 
-            BLE.SubscribeCharacteristicWithDeviceAddress(
-                address, sub.service, sub.characteristic, (sth, sth2) =>
-                {
-                    cancelTimer?.Close();
-                    cancelTimer = null;
-                    BLE.Log($"Subscription notify: {sth} {sth2}");
-                    // We should only allow more subscriptions after this!
-                    subscribing = false;
-                },
-                (addr, characteristic, bytes) =>
-                {
-                    if (!selected)
+            if (deviceToDiscoveredServices[address].Contains(sub.service)
+                    && deviceToDiscoveredCharacteristics[address].Contains(sub.characteristic)) {
+                BLE.SubscribeCharacteristicWithDeviceAddress(
+                    address, sub.service, sub.characteristic, (sth, sth2) =>
                     {
-                        selected = true;
-                        BLE.Log($"Selecting {addr} due to receiving {characteristic}");
-                        SubscribeRest(address, subs);
+                        cancelTimer?.Close();
+                        cancelTimer = null;
+                        BLE.Log($"Subscription notify: {sth} {sth2}");
+                        // We should only allow more subscriptions after this!
+                        subscribing = false;
+                    },
+                    (addr, characteristic, bytes) =>
+                    {
+                        if (!selected)
+                        {
+                            selected = true;
+                            BLE.Log($"Selecting {addr} due to receiving {characteristic}");
+                            SubscribeRest(address, subs);
+                        }
+                        sub.callback(bytes);
                     }
-                    sub.callback(bytes);
-                }
-            );
+                );
+
+            } else {
+                Subscribe(address, subs, subsCount - 1);
+            }
 
         }
 
@@ -397,17 +407,22 @@ namespace Psix
                 Select(address);
                 return;
             }
-            BLE.SubscribeCharacteristicWithDeviceAddress(
-                address, sub.service, sub.characteristic, (addr, characteristic) =>
-                {
-                    BLE.Log($"{sub.characteristic} subscribed");
-                    SubscribeRest(address, subs);
-                }, (addr, characteristic, bytes) =>
-                {
-                    sub.callback(bytes);
-                }
-            );
-
+            if (deviceToDiscoveredServices[address].Contains(sub.service)
+                    && deviceToDiscoveredCharacteristics[address].Contains(sub.characteristic))
+            {
+                BLE.SubscribeCharacteristicWithDeviceAddress(
+                    address, sub.service, sub.characteristic, (addr, characteristic) =>
+                    {
+                        BLE.Log($"{sub.characteristic} subscribed");
+                        SubscribeRest(address, subs);
+                    }, (addr, characteristic, bytes) =>
+                    {
+                        sub.callback(bytes);
+                    }
+                );
+            } else {
+                SubscribeRest(address, subs);
+            }
         }
     }
 }
