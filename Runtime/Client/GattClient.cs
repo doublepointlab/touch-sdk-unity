@@ -209,6 +209,7 @@ namespace Psix
         }
 
         private volatile bool subscribing = false;
+        private static int MTU = 256;
         private Timer ?cancelTimer;
         private void ConnectToPeripheral(string address)
         {
@@ -273,7 +274,10 @@ namespace Psix
                                 BLE.Log($"Connected device is a match: {address}. Already selected: {selected}. Currently {connectedDevices.Count} devices are connected");
                                 if (!selected)
                                 {
-                                    Subscribe(address, subs, len);
+                                    BLE.RequestMtu(addr, MTU, (addr, mtu) => {
+                                        BLE.Log($"{addr} got MTU {mtu}");
+                                        Subscribe(address, subs, len);
+                                    });
                                 }
                             }
                         }, (addr) =>
