@@ -35,6 +35,10 @@ namespace Psix
         private string gravUUID = "4b574af3-72d7-45d2-a1bb-23cd0ec20c57";
         private string quatUUID = "4b574af4-72d7-45d2-a1bb-23cd0ec20c57";
 
+        // Dataframe service
+        private string DataframeServiceUUID = "4c574af0-72d7-45d2-a1bb-23cd0ec20c57";
+        private string DataframeUUID = "4c574af1-72d7-45d2-a1bb-23cd0ec20c57";
+
         // Feedback service
         private string FeedbackServiceUUID = "42926760-277c-4298-acfe-226b8d1c8c88";
         private string HapticsUUID = "42926761-277c-4298-acfe-226b8d1c8c88";
@@ -59,16 +63,16 @@ namespace Psix
             client = new GattClient();
 
             // Use this to detect connection
-            client.SubscribeToCharacteristic(SensorServiceUUID, gyroUUID, gyroCallback);
+            client.SubscribeToCharacteristic(DataframeServiceUUID, DataframeUUID, dataframeCallback, required: false);
+
+            client.SubscribeToCharacteristic(SensorServiceUUID, gyroUUID, gyroCallback, required: false);
+            client.SubscribeToCharacteristic(SensorServiceUUID, accUUID, accCallback, required: false);
+            client.SubscribeToCharacteristic(SensorServiceUUID, gravUUID, gravityCallback, required: false);
+            client.SubscribeToCharacteristic(SensorServiceUUID, quatUUID, quatCallback, required: false);
 
             client.SubscribeToCharacteristic(DisconnectServiceUUID, DisconnectUUID,
                 (data) => { if (data.Length > 0 && data[0] == 0) Disconnect(); }
             );
-
-
-            client.SubscribeToCharacteristic(SensorServiceUUID, accUUID, accCallback);
-            client.SubscribeToCharacteristic(SensorServiceUUID, gravUUID, gravityCallback);
-            client.SubscribeToCharacteristic(SensorServiceUUID, quatUUID, quatCallback);
 
             client.SubscribeToCharacteristic(InteractionServiceUUID, GestureUUID, gestureCallback);
             client.SubscribeToCharacteristic(InteractionServiceUUID, TouchUUID, touchCallback);
@@ -206,6 +210,23 @@ namespace Psix
                 // Unity has its reference (I) pointing towards z axis, while on Android its the x axis.
                 // The following have been found by looking at the rotation directions and axes at I of the watch.
                 Orientation = new Quaternion(-quat[1], -quat[2], quat[0], quat[3]);
+                OnOrientationUpdated(Orientation);
+            }
+        }
+
+        private void dataframeCallback(byte[] data)
+        {
+            float[] df = getFloatArray(data);
+            if (df.Length >= 13)
+            {
+                Acceleration = new Vector3(df[0], df[1], df[2]);
+                Gravity = new Vector3(df[3], df[4], df[5]);
+                AngularVelocity = new Vector3(df[6], df[7], df[8]);
+                Orientation = new Quaternion(-df[10], -df[11], df[9], df[12]);
+
+                OnAccelerationUpdated(Acceleration);
+                OnGravityUpdated(Gravity);
+                OnAngularVelocityUpdated(AngularVelocity);
                 OnOrientationUpdated(Orientation);
             }
         }
