@@ -203,7 +203,7 @@ namespace Psix
 
             BLE.ScanForPeripheralsWithServices(
                 advertisedServices.ToArray(),
-                (address, name) => { BLE.Log($"Scan: {address}: {name}"); },
+                (address, name) => { ProcessScanResult(nameSubstring, address, name, new byte[]{}); },
                 (address, name, rssi, advert) => { ProcessScanResult(nameSubstring, address, name, advert); }
             );
         }
