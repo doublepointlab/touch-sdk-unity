@@ -307,7 +307,8 @@ namespace Psix
                 testedDevices[address] = Time.time;
                 if ((nameSubstring == ""
                     || System.Text.Encoding.UTF8.GetString(advertisedData.ToArray()).ToLower()
-                        .Contains(nameSubstring.ToLower()))
+                        .Contains(nameSubstring.ToLower())
+                    || name.ToLower().Contains(nameSubstring.ToLower()))
                     && !connectedDevices.Contains(address)
                     && !testableDevices.Contains(address))
                 {
