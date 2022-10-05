@@ -88,11 +88,11 @@ namespace Psix
 
 
         public bool ConnectToName(
-                string nameSubstring,
-           Action? onConnected = null,
-           Action? onDisconnected = null,
-           Action? onTimeout = null,
-           int timeout = 60000
+            string nameSubstring,
+            Action? onConnected = null,
+            Action? onDisconnected = null,
+            Action? onTimeout = null,
+            int timeout = 60000
         )
         {
             connectAction = onConnected;

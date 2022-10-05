@@ -28,26 +28,9 @@ namespace Psix
 
         private GattClient client;
 
-        // Sensor service
-        private string SensorServiceUUID = "4b574af0-72d7-45d2-a1bb-23cd0ec20c57";
-        private string gyroUUID = "4b574af1-72d7-45d2-a1bb-23cd0ec20c57";
-        private string accUUID = "4b574af2-72d7-45d2-a1bb-23cd0ec20c57";
-        private string gravUUID = "4b574af3-72d7-45d2-a1bb-23cd0ec20c57";
-        private string quatUUID = "4b574af4-72d7-45d2-a1bb-23cd0ec20c57";
-
-        // Feedback service
-        private string FeedbackServiceUUID = "42926760-277c-4298-acfe-226b8d1c8c88";
-        private string HapticsUUID = "42926761-277c-4298-acfe-226b8d1c8c88";
-
-        // Interaction service
-        private string InteractionServiceUUID = "008e74d0-7bb3-4ac5-8baf-e5e372cced76";
-        private string GestureUUID = "008e74d1-7bb3-4ac5-8baf-e5e372cced76";
-        private string TouchUUID = "008e74d2-7bb3-4ac5-8baf-e5e372cced76";
-        private string PhysicalUUID = "008e74d3-7bb3-4ac5-8baf-e5e372cced76";
-
-        // Disconnect service
-        private string DisconnectServiceUUID = "e23625a0-a6b6-4aa5-a1ad-b9c5d9158363";
-        private string DisconnectUUID = "e23625a1-a6b6-4aa5-a1ad-b9c5d9158363";
+        // Protobuf service
+        private string ProtobufServiceUUID = "f9d60370-5325-4c64-b874-a68c7c555bad";
+        private string ProtobufUUID = "f9d60371-5325-4c64-b874-a68c7c555bad";
 
         /**
          * Constructor.
@@ -59,20 +42,8 @@ namespace Psix
             client = new GattClient();
 
             // Use this to detect connection
-            client.SubscribeToCharacteristic(SensorServiceUUID, gyroUUID, gyroCallback);
+            client.SubscribeToCharacteristic(ProtobufServiceUUID, ProtobufUUID, protobufCallback);
 
-            client.SubscribeToCharacteristic(DisconnectServiceUUID, DisconnectUUID,
-                (data) => { if (data.Length > 0 && data[0] == 0) Disconnect(); }
-            );
-
-
-            client.SubscribeToCharacteristic(SensorServiceUUID, accUUID, accCallback);
-            client.SubscribeToCharacteristic(SensorServiceUUID, gravUUID, gravityCallback);
-            client.SubscribeToCharacteristic(SensorServiceUUID, quatUUID, quatCallback);
-
-            client.SubscribeToCharacteristic(InteractionServiceUUID, GestureUUID, gestureCallback);
-            client.SubscribeToCharacteristic(InteractionServiceUUID, TouchUUID, touchCallback);
-            client.SubscribeToCharacteristic(InteractionServiceUUID, PhysicalUUID, motionCallback);
         }
 
         /**
@@ -239,6 +210,12 @@ namespace Psix
             }
         }
 
+        private void protobufCallback(byte[] data)
+        {
+            Debug.Log($"Got {data.Length} bytes from protobuf service");
+            var update = Proto.Update.Parser.ParseFrom(data);
+            Debug.Log($"Got {update.SensorFrame.Count} sensor frames from protobuf service");
+        }
         // Internal connection lifecycle callbacks
 
         private void connectAction(Action? onConnected)
