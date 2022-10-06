@@ -235,7 +235,55 @@ namespace Psix
         {
             Debug.Log($"Got {data.Length} bytes from protobuf service");
             var update = Proto.Update.Parser.ParseFrom(data);
-            Debug.Log($"Got {update.SensorFrame.Count} sensor frames from protobuf service");
+            Debug.Log($"Got {update.SensorFrames.Count} sensor frames from protobuf service");
+
+            if (update.SensorFrames.Count > 0) {
+                var frame = update.SensorFrames.Last();
+                // Update sensor stuff
+                Acceleration = new Vector3(frame.Acc.X, frame.Acc.Y, frame.Acc.Z);
+                Gravity = new Vector3(frame.Grav.X, frame.Grav.Y, frame.Grav.Z);
+                AngularVelocity = new Vector3(frame.Gyro.X, frame.Gyro.Y, frame.Gyro.Z);
+                Orientation = new Quaternion(-frame.Quat.Y, -frame.Quat.Z, frame.Quat.X, frame.Quat.W);
+
+                OnAccelerationUpdated(Acceleration);
+                OnGravityUpdated(Gravity);
+                OnAngularVelocityUpdated(AngularVelocity);
+                OnOrientationUpdated(Orientation);
+            }
+
+            foreach (var gesture in update.Gestures) {
+                Debug.Log($"Got gesture");
+                OnGesture((Interaction.Gesture)gesture.Type);
+            }
+            foreach (var touchEvent in update.TouchEvents) {
+                Debug.Log($"Got touch");
+                var coords = touchEvent.Coords.First();
+                OnTouchEvent(new TouchEventArgs(
+                    (Interaction.TouchType)(touchEvent.EventType),
+                    new Vector2(coords.X, coords.Y)
+                ));
+            }
+
+            foreach (var buttonEvent in update.ButtonEvents) {
+                Debug.Log($"Got button");
+                OnMotionEvent(new MotionEventArgs(
+                    Interaction.MotionType.Button,
+                    (Interaction.MotionInfo)(buttonEvent.Id)
+                ));
+            }
+
+            foreach (var rotaryEvent in update.RotaryEvents) {
+                Debug.Log($"Got rotary");
+                OnMotionEvent(new MotionEventArgs(
+                    Interaction.MotionType.Rotary,
+                    (Interaction.MotionInfo)((rotaryEvent.Step > 0) ? 1 : 0)
+                ));
+            }
+
+            foreach (var signal in update.Signals) {
+                Debug.Log($"Got signal");
+            }
+
         }
         // Internal connection lifecycle callbacks
 
