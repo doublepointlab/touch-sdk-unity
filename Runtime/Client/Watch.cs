@@ -32,6 +32,10 @@ namespace Psix
         private string ProtobufServiceUUID = "f9d60370-5325-4c64-b874-a68c7c555bad";
         private string ProtobufUUID = "f9d60371-5325-4c64-b874-a68c7c555bad";
 
+        // Feedback service
+        private string FeedbackServiceUUID = "42926760-277c-4298-acfe-226b8d1c8c88";
+        private string HapticsUUID = "42926761-277c-4298-acfe-226b8d1c8c88";
+
         /**
          * Constructor.
          *
@@ -177,6 +181,23 @@ namespace Psix
                 // Unity has its reference (I) pointing towards z axis, while on Android its the x axis.
                 // The following have been found by looking at the rotation directions and axes at I of the watch.
                 Orientation = new Quaternion(-quat[1], -quat[2], quat[0], quat[3]);
+                OnOrientationUpdated(Orientation);
+            }
+        }
+
+        private void dataframeCallback(byte[] data)
+        {
+            float[] df = getFloatArray(data);
+            if (df.Length >= 13)
+            {
+                Acceleration = new Vector3(df[0], df[1], df[2]);
+                Gravity = new Vector3(df[3], df[4], df[5]);
+                AngularVelocity = new Vector3(df[6], df[7], df[8]);
+                Orientation = new Quaternion(-df[10], -df[11], df[9], df[12]);
+
+                OnAccelerationUpdated(Acceleration);
+                OnGravityUpdated(Gravity);
+                OnAngularVelocityUpdated(AngularVelocity);
                 OnOrientationUpdated(Orientation);
             }
         }
