@@ -209,7 +209,7 @@ namespace Psix
         }
 
         private volatile bool subscribing = false;
-        private static int MTU = 256;
+        private static int MTU = 515;
         private Timer ?cancelTimer;
         private void ConnectToPeripheral(string address)
         {
