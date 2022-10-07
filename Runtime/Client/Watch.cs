@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
+using Google.Protobuf;
+
 using UnityEngine;
 
 
@@ -30,11 +32,8 @@ namespace Psix
 
         // Protobuf service
         private string ProtobufServiceUUID = "f9d60370-5325-4c64-b874-a68c7c555bad";
-        private string ProtobufUUID = "f9d60371-5325-4c64-b874-a68c7c555bad";
-
-        // Feedback service
-        private string FeedbackServiceUUID = "42926760-277c-4298-acfe-226b8d1c8c88";
-        private string HapticsUUID = "42926761-277c-4298-acfe-226b8d1c8c88";
+        private string ProtobufOutputUUID = "f9d60371-5325-4c64-b874-a68c7c555bad";
+        private string ProtobufInputUUID = "f9d60372-5325-4c64-b874-a68c7c555bad";
 
         /**
          * Constructor.
@@ -46,8 +45,7 @@ namespace Psix
             client = new GattClient();
 
             // Use this to detect connection
-            client.SubscribeToCharacteristic(ProtobufServiceUUID, ProtobufUUID, protobufCallback);
-
+            client.SubscribeToCharacteristic(ProtobufServiceUUID, ProtobufOutputUUID, protobufCallback);
         }
 
         /**
@@ -93,13 +91,16 @@ namespace Psix
         {
             int clampedLength = Mathf.Clamp(length, 0, 5000);
             float clampedAmplitude = Mathf.Clamp(amplitude, 0.0f, 1.0f);
-            byte byteAmplitude = Convert.ToByte(Math.Round(255 * clampedAmplitude));
+            var update = new Proto.InputUpdate {
+                HapticEvent = new Proto.HapticEvent {
+                    Type = Proto.HapticEvent.Types.HapticType.Oneshot,
+                    Length = clampedLength,
+                    Intensity = clampedAmplitude
+                }
+            };
 
-            List<byte> data = BitConverter.GetBytes(clampedLength).Reverse().ToList();
-            data.Insert(0, 0); // One-shot effect
-            data.Add(byteAmplitude);
+            client.SendBytes(update.ToByteArray(), ProtobufServiceUUID, ProtobufInputUUID);
 
-            client.SendBytes(data.ToArray(), FeedbackServiceUUID, HapticsUUID);
         }
 
         /**
@@ -107,7 +108,13 @@ namespace Psix
          */
         public void CancelVibration()
         {
-            client.SendBytes(new byte[] { 0xff }, FeedbackServiceUUID, HapticsUUID);
+            var update = new Proto.InputUpdate {
+                HapticEvent = new Proto.HapticEvent {
+                    Type = Proto.HapticEvent.Types.HapticType.Cancel
+                }
+            };
+
+            client.SendBytes(update.ToByteArray(), ProtobufServiceUUID, ProtobufInputUUID);
         }
 
         /// Angular velocity of the watch in its own coordinate system, degrees per second.
@@ -140,97 +147,7 @@ namespace Psix
         public Action<MotionEventArgs> OnMotionEvent = (motionEvent) => { return; };
 
 
-        // Internal sensor and interaction event callbacks
-
-        private void gyroCallback(byte[] data)
-        {
-            float[] gyro = getFloatArray(data);
-            if (gyro.Length == 3)
-            {
-                AngularVelocity = new Vector3(gyro[0], gyro[1], gyro[2]);
-                OnAngularVelocityUpdated(AngularVelocity);
-            }
-        }
-
-        private void accCallback(byte[] data)
-        {
-            float[] accel = getFloatArray(data);
-            if (accel.Length == 3)
-            {
-                Acceleration = new Vector3(accel[0], accel[1], accel[2]);
-                OnAccelerationUpdated(Acceleration);
-            }
-        }
-
-        private void gravityCallback(byte[] data)
-        {
-            float[] grav = getFloatArray(data);
-            if (grav.Length == 3)
-            {
-                Gravity = new Vector3(grav[0], grav[1], grav[2]);
-                OnGravityUpdated(Gravity);
-            }
-        }
-
-        private void quatCallback(byte[] data)
-        {
-            float[] quat = getFloatArray(data);
-            if (quat.Length >= 4)
-            {
-                // Not only are the axes from android in right handed coordinates and unity in left handed,
-                // Unity has its reference (I) pointing towards z axis, while on Android its the x axis.
-                // The following have been found by looking at the rotation directions and axes at I of the watch.
-                Orientation = new Quaternion(-quat[1], -quat[2], quat[0], quat[3]);
-                OnOrientationUpdated(Orientation);
-            }
-        }
-
-        private void dataframeCallback(byte[] data)
-        {
-            float[] df = getFloatArray(data);
-            if (df.Length >= 13)
-            {
-                Acceleration = new Vector3(df[0], df[1], df[2]);
-                Gravity = new Vector3(df[3], df[4], df[5]);
-                AngularVelocity = new Vector3(df[6], df[7], df[8]);
-                Orientation = new Quaternion(-df[10], -df[11], df[9], df[12]);
-
-                OnAccelerationUpdated(Acceleration);
-                OnGravityUpdated(Gravity);
-                OnAngularVelocityUpdated(AngularVelocity);
-                OnOrientationUpdated(Orientation);
-            }
-        }
-
-        private void gestureCallback(byte[] data)
-        {
-            if (data.Length == 1)
-                OnGesture((Interaction.Gesture)Convert.ToInt32(data[0]));
-        }
-
-        private void touchCallback(byte[] data)
-        {
-            if (data.Length == 9)
-            {
-                float[] touchCoords = getFloatArray(data.Skip(1).ToArray());
-                OnTouchEvent(new TouchEventArgs(
-                    (Interaction.TouchType)Convert.ToInt32(data[0]),
-                    new Vector2(touchCoords[0], touchCoords[1])
-                ));
-            }
-        }
-
-        private void motionCallback(byte[] data)
-        {
-            if (data.Length == 2)
-            {
-                OnMotionEvent(new MotionEventArgs(
-                    (Interaction.MotionType)Convert.ToInt32(data[0]),
-                    (Interaction.MotionInfo)Convert.ToInt32(data[1])
-                ));
-            }
-        }
-
+        // Internal callback
         private void protobufCallback(byte[] data)
         {
             Debug.Log($"Got {data.Length} bytes from protobuf service");
@@ -310,19 +227,6 @@ namespace Psix
             BluetoothLEHardwareInterface.Log("timeout action");
             IsConnected = false;
             onTimeout?.Invoke();
-        }
-
-
-        // Convert array of bytes to array of floats, switching the byte endianness
-        private float[] getFloatArray(byte[] data)
-        {
-            byte[] reversed = data.Reverse().ToArray();
-            float[] vec = new float[data.Length / 4];
-            for (int i = vec.Length - 1; i >= 0; i--)
-            {
-                vec[i] = System.BitConverter.ToSingle(reversed, 4 * (vec.Length - 1 - i));
-            }
-            return vec;
         }
     }
 }
