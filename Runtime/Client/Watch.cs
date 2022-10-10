@@ -199,6 +199,9 @@ namespace Psix
 
             foreach (var signal in update.Signals) {
                 Debug.Log($"Got signal");
+                if (signal == Proto.Update.Types.Signal.Disconnect) {
+                    Disconnect();
+                }
             }
 
         }
