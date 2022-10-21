@@ -29,21 +29,22 @@ namespace Psix.Proto {
             "BGdyYXYYAyABKAsyBS5WZWMzEhMKBHF1YXQYBCABKAsyBS5RdWF0EhEKCWRl",
             "bHRhVGltZRgFIAEoBSJuCgdHZXN0dXJlEiIKBHR5cGUYASABKA4yFC5HZXN0",
             "dXJlLkdlc3R1cmVUeXBlEhEKCWRlbHRhVGltZRgCIAEoBSIsCgtHZXN0dXJl",
-            "VHlwZRIICgROT05FEAASBwoDVEFQEAESCgoGQ0xFTkNIEAIiygEKClRvdWNo",
+            "VHlwZRIICgROT05FEAASBwoDVEFQEAESCgoGQ0xFTkNIEAIi1AEKClRvdWNo",
             "RXZlbnQSLQoJZXZlbnRUeXBlGAEgASgOMhouVG91Y2hFdmVudC5Ub3VjaEV2",
             "ZW50VHlwZRITCgthY3Rpb25JbmRleBgCIAEoBRISCgpwb2ludGVySWRzGAMg",
             "AygFEhUKBmNvb3JkcxgEIAMoCzIFLlZlYzISEQoJZGVsdGFUaW1lGAUgASgF",
-            "IjoKDlRvdWNoRXZlbnRUeXBlEgkKBUJFR0lOEAASBwoDRU5EEAESCAoETU9W",
-            "RRACEgoKBkNBTkNFTBADIi4KC1JvdGFyeUV2ZW50EgwKBHN0ZXAYASABKAUS",
-            "EQoJZGVsdGFUaW1lGAIgASgFIiwKC0J1dHRvbkV2ZW50EgoKAmlkGAEgASgF",
-            "EhEKCWRlbHRhVGltZRgCIAEoBSK4AgoGVXBkYXRlEiIKDHNlbnNvckZyYW1l",
-            "cxgBIAMoCzIMLlNlbnNvckZyYW1lEhoKCGdlc3R1cmVzGAIgAygLMgguR2Vz",
-            "dHVyZRIgCgt0b3VjaEV2ZW50cxgDIAMoCzILLlRvdWNoRXZlbnQSIgoMYnV0",
-            "dG9uRXZlbnRzGAQgAygLMgwuQnV0dG9uRXZlbnQSIgoMcm90YXJ5RXZlbnRz",
-            "GAUgAygLMgwuUm90YXJ5RXZlbnQSHwoHc2lnbmFscxgGIAMoDjIOLlVwZGF0",
-            "ZS5TaWduYWwSEQoJZGVsdGFUaW1lGAcgASgFIlAKBlNpZ25hbBIICgROT05F",
-            "EAASDgoKRElTQ09OTkVDVBABEhQKEENPTk5FQ1RfQVBQUk9WRUQQAhIWChJE",
-            "RVNDUklQVElPTl9VUERBVEUQA0INqgIKUHNpeC5Qcm90b2IGcHJvdG8z"));
+            "IkQKDlRvdWNoRXZlbnRUeXBlEggKBE5PTkUQABIJCgVCRUdJThABEgcKA0VO",
+            "RBACEggKBE1PVkUQAxIKCgZDQU5DRUwQBCIuCgtSb3RhcnlFdmVudBIMCgRz",
+            "dGVwGAEgASgFEhEKCWRlbHRhVGltZRgCIAEoBSIsCgtCdXR0b25FdmVudBIK",
+            "CgJpZBgBIAEoBRIRCglkZWx0YVRpbWUYAiABKAUiuAIKBlVwZGF0ZRIiCgxz",
+            "ZW5zb3JGcmFtZXMYASADKAsyDC5TZW5zb3JGcmFtZRIaCghnZXN0dXJlcxgC",
+            "IAMoCzIILkdlc3R1cmUSIAoLdG91Y2hFdmVudHMYAyADKAsyCy5Ub3VjaEV2",
+            "ZW50EiIKDGJ1dHRvbkV2ZW50cxgEIAMoCzIMLkJ1dHRvbkV2ZW50EiIKDHJv",
+            "dGFyeUV2ZW50cxgFIAMoCzIMLlJvdGFyeUV2ZW50Eh8KB3NpZ25hbHMYBiAD",
+            "KA4yDi5VcGRhdGUuU2lnbmFsEhEKCWRlbHRhVGltZRgHIAEoBSJQCgZTaWdu",
+            "YWwSCAoETk9ORRAAEg4KCkRJU0NPTk5FQ1QQARIUChBDT05ORUNUX0FQUFJP",
+            "VkVEEAISFgoSREVTQ1JJUFRJT05fVVBEQVRFEANCDaoCClBzaXguUHJvdG9i",
+            "BnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Psix.Proto.VecReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -722,7 +723,7 @@ namespace Psix.Proto {
 
     /// <summary>Field number for the "eventType" field.</summary>
     public const int EventTypeFieldNumber = 1;
-    private global::Psix.Proto.TouchEvent.Types.TouchEventType eventType_ = global::Psix.Proto.TouchEvent.Types.TouchEventType.Begin;
+    private global::Psix.Proto.TouchEvent.Types.TouchEventType eventType_ = global::Psix.Proto.TouchEvent.Types.TouchEventType.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Psix.Proto.TouchEvent.Types.TouchEventType EventType {
@@ -805,7 +806,7 @@ namespace Psix.Proto {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (EventType != global::Psix.Proto.TouchEvent.Types.TouchEventType.Begin) hash ^= EventType.GetHashCode();
+      if (EventType != global::Psix.Proto.TouchEvent.Types.TouchEventType.None) hash ^= EventType.GetHashCode();
       if (ActionIndex != 0) hash ^= ActionIndex.GetHashCode();
       hash ^= pointerIds_.GetHashCode();
       hash ^= coords_.GetHashCode();
@@ -828,7 +829,7 @@ namespace Psix.Proto {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (EventType != global::Psix.Proto.TouchEvent.Types.TouchEventType.Begin) {
+      if (EventType != global::Psix.Proto.TouchEvent.Types.TouchEventType.None) {
         output.WriteRawTag(8);
         output.WriteEnum((int) EventType);
       }
@@ -852,7 +853,7 @@ namespace Psix.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (EventType != global::Psix.Proto.TouchEvent.Types.TouchEventType.Begin) {
+      if (EventType != global::Psix.Proto.TouchEvent.Types.TouchEventType.None) {
         output.WriteRawTag(8);
         output.WriteEnum((int) EventType);
       }
@@ -876,7 +877,7 @@ namespace Psix.Proto {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (EventType != global::Psix.Proto.TouchEvent.Types.TouchEventType.Begin) {
+      if (EventType != global::Psix.Proto.TouchEvent.Types.TouchEventType.None) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) EventType);
       }
       if (ActionIndex != 0) {
@@ -899,7 +900,7 @@ namespace Psix.Proto {
       if (other == null) {
         return;
       }
-      if (other.EventType != global::Psix.Proto.TouchEvent.Types.TouchEventType.Begin) {
+      if (other.EventType != global::Psix.Proto.TouchEvent.Types.TouchEventType.None) {
         EventType = other.EventType;
       }
       if (other.ActionIndex != 0) {
@@ -993,10 +994,11 @@ namespace Psix.Proto {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static partial class Types {
       public enum TouchEventType {
-        [pbr::OriginalName("BEGIN")] Begin = 0,
-        [pbr::OriginalName("END")] End = 1,
-        [pbr::OriginalName("MOVE")] Move = 2,
-        [pbr::OriginalName("CANCEL")] Cancel = 3,
+        [pbr::OriginalName("NONE")] None = 0,
+        [pbr::OriginalName("BEGIN")] Begin = 1,
+        [pbr::OriginalName("END")] End = 2,
+        [pbr::OriginalName("MOVE")] Move = 3,
+        [pbr::OriginalName("CANCEL")] Cancel = 4,
       }
 
     }
@@ -1052,6 +1054,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "step" field.</summary>
     public const int StepFieldNumber = 1;
     private int step_;
+    /// <summary>
+    /// 0 is used for None
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int Step {
@@ -1278,6 +1283,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "id" field.</summary>
     public const int IdFieldNumber = 1;
     private int id_;
+    /// <summary>
+    /// Must be non-negative for valid button. -1 is reserved for None
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int Id {

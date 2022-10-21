@@ -173,7 +173,7 @@ public class WatchManager : MonoBehaviour
     /**
      * Try to discover and connect to a watch. Return true if watch discovery was
      * initiated successfully and false if something went wrong. Times out after
-     * 20 seconds by default if no watch is found.
+     * 60 seconds by default if no watch is found.
      *
      * @param timeout Timeout interval in milliseconds.
      */

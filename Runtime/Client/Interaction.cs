@@ -14,9 +14,11 @@ namespace Psix.Interaction
 
     public enum TouchType
     {
-        On = 0,
-        Off = 1,
-        Move = 2,
+        None = 0,
+        On = 1,
+        Off = 2,
+        Move = 3,
+        Cancel = 4,
     };
 
     public enum MotionType
@@ -50,7 +52,7 @@ namespace Psix.Interaction
             type = t;
             info = i;
         }
-        
+
         public MotionType type;
         public MotionInfo info;
     };
