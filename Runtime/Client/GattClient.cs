@@ -23,6 +23,7 @@ namespace Psix
         private Action? connectAction = null;
         private Action? disconnectAction = null;
         private Action? timeoutAction = null;
+        private Func<byte[], bool> deviceSelector = (data => true);
 
         private readonly object connectionLock = new object();
         private readonly object matchLock = new object();
@@ -96,12 +97,16 @@ namespace Psix
             Action? onConnected = null,
             Action? onDisconnected = null,
             Action? onTimeout = null,
-            int timeout = 60000
+            int timeout = 60000,
+            Func<byte[], bool>? selector = null
         )
         {
             connectAction = onConnected;
             disconnectAction = onDisconnected;
             timeoutAction = onTimeout;
+
+            if (selector != null)
+                deviceSelector = selector;
 
             BLE.Log($"Timeout set to {timeout}");
             ScanTimeout = timeout;
@@ -377,11 +382,16 @@ namespace Psix
                     {
                         if (!selected)
                         {
-                            selected = true;
-                            BLE.Log($"Selecting {addr} due to receiving {characteristic}");
-                            SubscribeRest(address, subs);
+                            if (deviceSelector(bytes)) {
+                                selected = true;
+                                BLE.Log($"Selecting {addr} due to receiving {characteristic}");
+                                SubscribeRest(address, subs);
+                            }
                         }
-                        sub.callback(bytes);
+                        else
+                        {
+                            sub.callback(bytes);
+                        }
                     }
                 );
 

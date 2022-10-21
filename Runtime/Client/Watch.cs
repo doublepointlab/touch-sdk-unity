@@ -67,7 +67,8 @@ namespace Psix
                 onConnected: () => { connectAction(onConnected); },
                 onDisconnected: () => { disconnectAction(onDisconnected); },
                 onTimeout: () => { timeoutAction(onTimeout); },
-                timeout: timeoutInterval
+                timeout: timeoutInterval,
+                selector: select
             );
         }
 
@@ -146,6 +147,12 @@ namespace Psix
         public Action<TouchEventArgs> OnTouchEvent = (touchEvent) => { return; };
         public Action<MotionEventArgs> OnMotionEvent = (motionEvent) => { return; };
 
+
+        private bool select(byte[] data)
+        {
+            var update = Proto.Update.Parser.ParseFrom(data);
+            return update.Signals.All(signal => (signal != Proto.Update.Types.Signal.Disconnect));
+        }
 
         // Internal callback
         private void protobufCallback(byte[] data)
