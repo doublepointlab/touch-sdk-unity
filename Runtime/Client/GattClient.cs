@@ -61,7 +61,7 @@ namespace Psix
         }
 
         public GattClient(
-           string advertisedService = "008e74d0-7bb3-4ac5-8baf-e5e372cced76"
+           string advertisedService = "f9d60370-5325-4c64-b874-a68c7c555bad"
         )
         {
             advertisedServices.Add(advertisedService);
