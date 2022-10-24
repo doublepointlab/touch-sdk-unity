@@ -129,6 +129,19 @@ public class WatchManager : MonoBehaviour
             }
         };
 
+        if (Application.platform == RuntimePlatform.WindowsEditor)
+        {
+            Debug.LogWarning(
+                "Bluetooth support in Play Mode is unstable and may cause the editor to crash."
+            );
+        }
+        else if (Application.isEditor)
+        {
+            Debug.LogWarning(
+                "Bluetooth support is unavailable on this platform."
+            );
+        }
+
         Connect();
 
     }
