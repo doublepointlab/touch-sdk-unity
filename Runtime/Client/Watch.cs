@@ -157,9 +157,7 @@ namespace Psix
         // Internal callback
         private void protobufCallback(byte[] data)
         {
-            Debug.Log($"Got {data.Length} bytes from protobuf service");
             var update = Proto.Update.Parser.ParseFrom(data);
-            Debug.Log($"Got {update.SensorFrames.Count} sensor frames from protobuf service");
 
             if (update.SensorFrames.Count > 0) {
                 var frame = update.SensorFrames.Last();
@@ -176,11 +174,9 @@ namespace Psix
             }
 
             foreach (var gesture in update.Gestures) {
-                Debug.Log($"Got gesture");
                 OnGesture((Interaction.Gesture)gesture.Type);
             }
             foreach (var touchEvent in update.TouchEvents) {
-                Debug.Log($"Got touch");
                 var coords = touchEvent.Coords.First();
                 OnTouchEvent(new TouchEventArgs(
                     (Interaction.TouchType)(touchEvent.EventType),
@@ -189,7 +185,6 @@ namespace Psix
             }
 
             foreach (var buttonEvent in update.ButtonEvents) {
-                Debug.Log($"Got button");
                 OnMotionEvent(new MotionEventArgs(
                     Interaction.MotionType.Button,
                     (Interaction.MotionInfo)(buttonEvent.Id)
@@ -197,7 +192,6 @@ namespace Psix
             }
 
             foreach (var rotaryEvent in update.RotaryEvents) {
-                Debug.Log($"Got rotary");
                 OnMotionEvent(new MotionEventArgs(
                     Interaction.MotionType.Rotary,
                     (Interaction.MotionInfo)((rotaryEvent.Step > 0) ? 1 : 0)
@@ -205,7 +199,6 @@ namespace Psix
             }
 
             foreach (var signal in update.Signals) {
-                Debug.Log($"Got signal");
                 if (signal == Proto.Update.Types.Signal.Disconnect) {
                     Disconnect();
                 }
