@@ -118,18 +118,18 @@ namespace Psix
             client.SendBytes(update.ToByteArray(), ProtobufServiceUUID, ProtobufInputUUID);
         }
 
-        /// Angular velocity of the watch in its own coordinate system, degrees per second.
+        /// Angular velocity of the watch in degrees per second.
         /// Returns a zero vector if no watch is connected.
         public Vector3 AngularVelocity { get; private set; } = Vector3.zero;
         public Action<Vector3> OnAngularVelocityUpdated = (data) => { return; };
 
-        /// Acceleration of the watch in its own coordinate system, meters per second squared.
+        /// Acceleration of the watch in meters per second squared.
         /// Returns a zero vector if no watch is connected.
         public Vector3 Acceleration { get; private set; } = Vector3.zero;
         public Action<Vector3> OnAccelerationUpdated = (data) => { return; };
 
-        /// Estimated direction of gravity in the coordinate system of the watch,
-        /// meters per second squared. Returns a zero vector if no watch is connected.
+        /// Estimated direction of gravity meters per second squared.
+        /// Returns a zero vector if no watch is connected.
         public Vector3 Gravity { get; private set; } = Vector3.zero;
         public Action<Vector3> OnGravityUpdated = (data) => { return; };
 

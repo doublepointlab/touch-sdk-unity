@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
-using Psix;
 
 namespace Psix.Examples
 {
@@ -20,8 +16,8 @@ namespace Psix.Examples
         public void UpdateGyroscope(Vector3 gyro)
         {
             markerX.localEulerAngles = new Vector3(gyro.x*20, 0, 0);
-            markerY.localEulerAngles = new Vector3(gyro.y*20, 0, 0);
-            markerZ.localEulerAngles = new Vector3(gyro.z*20, 0, 0);
+            markerY.localEulerAngles = new Vector3(0, gyro.y*20, 0);
+            markerZ.localEulerAngles = new Vector3(0,0, gyro.z*20);
 
             textX.text = gyro.x.ToString("F4");
             textY.text = gyro.y.ToString("F4");

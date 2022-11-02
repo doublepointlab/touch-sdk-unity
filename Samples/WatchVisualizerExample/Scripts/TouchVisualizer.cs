@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
-using Psix;
 
 namespace Psix.Examples
 {
@@ -22,6 +18,7 @@ namespace Psix.Examples
         void Start()
         {
             watchDiameter = watchBody.localScale.x;
+            touchPoint.localPosition = new Vector3(0,0,0);
         }
 
         public void UpdateTouchIndicator(float w, float h, bool isTouching)
