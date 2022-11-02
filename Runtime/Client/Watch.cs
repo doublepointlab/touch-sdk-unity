@@ -162,9 +162,9 @@ namespace Psix
             if (update.SensorFrames.Count > 0) {
                 var frame = update.SensorFrames.Last();
                 // Update sensor stuff
-                Acceleration = new Vector3(frame.Acc.X, frame.Acc.Y, frame.Acc.Z);
-                Gravity = new Vector3(frame.Grav.X, frame.Grav.Y, frame.Grav.Z);
-                AngularVelocity = new Vector3(frame.Gyro.X, frame.Gyro.Y, frame.Gyro.Z);
+                Acceleration = new Vector3(frame.Acc.Y, frame.Acc.Z, -frame.Acc.X);
+                Gravity = new Vector3(frame.Grav.Y, frame.Grav.Z, -frame.Grav.X);
+                AngularVelocity = new Vector3(-frame.Gyro.Y, -frame.Gyro.Z, frame.Gyro.X);
                 Orientation = new Quaternion(-frame.Quat.Y, -frame.Quat.Z, frame.Quat.X, frame.Quat.W);
 
                 OnAccelerationUpdated(Acceleration);
