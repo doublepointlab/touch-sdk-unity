@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
-using Psix;
 
 namespace Psix.Examples
 {
@@ -30,9 +26,9 @@ namespace Psix.Examples
             accelerometerVector.localScale = new Vector3(0.002f, 0.002f, accelerometerMagnitude);
             accelerometerVector.LookAt(accelerometerTip);
             
-            thingX.localPosition = new Vector3(acceleration.x / 150, 0, 0);
-            thingY.localPosition = new Vector3(acceleration.y / 150, 0, 0);
-            thingZ.localPosition = new Vector3(acceleration.z / 150, 0, 0);
+            thingX.localPosition = new Vector3(0,0, acceleration.x / 150);
+            thingY.localPosition = new Vector3(0,0, acceleration.y / 150);
+            thingZ.localPosition = new Vector3(0,0, acceleration.z / 150);
 
             textX.text = acceleration.x.ToString("F4");
             textY.text = acceleration.y.ToString("F4");

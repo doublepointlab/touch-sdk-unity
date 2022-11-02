@@ -139,18 +139,18 @@ namespace Psix
             client.SendBytes(new byte[] { 0xff }, FeedbackServiceUUID, HapticsUUID);
         }
 
-        /// Angular velocity of the watch in its own coordinate system, degrees per second.
+        /// Angular velocity of the watch in degrees per second.
         /// Returns a zero vector if no watch is connected.
         public Vector3 AngularVelocity { get; private set; } = Vector3.zero;
         public Action<Vector3> OnAngularVelocityUpdated = (data) => { return; };
 
-        /// Acceleration of the watch in its own coordinate system, meters per second squared.
+        /// Acceleration of the watch in meters per second squared.
         /// Returns a zero vector if no watch is connected.
         public Vector3 Acceleration { get; private set; } = Vector3.zero;
         public Action<Vector3> OnAccelerationUpdated = (data) => { return; };
 
-        /// Estimated direction of gravity in the coordinate system of the watch,
-        /// meters per second squared. Returns a zero vector if no watch is connected.
+        /// Estimated direction of gravity meters per second squared. 
+        /// Returns a zero vector if no watch is connected.
         public Vector3 Gravity { get; private set; } = Vector3.zero;
         public Action<Vector3> OnGravityUpdated = (data) => { return; };
 
@@ -176,7 +176,7 @@ namespace Psix
             float[] gyro = getFloatArray(data);
             if (gyro.Length == 3)
             {
-                AngularVelocity = new Vector3(gyro[0], gyro[1], gyro[2]);
+                AngularVelocity = new Vector3(-gyro[1], -gyro[2], gyro[0]);
                 OnAngularVelocityUpdated(AngularVelocity);
             }
         }
@@ -186,7 +186,7 @@ namespace Psix
             float[] accel = getFloatArray(data);
             if (accel.Length == 3)
             {
-                Acceleration = new Vector3(accel[0], accel[1], accel[2]);
+                Acceleration = new Vector3(accel[1], accel[2], -accel[0]);
                 OnAccelerationUpdated(Acceleration);
             }
         }
@@ -196,7 +196,7 @@ namespace Psix
             float[] grav = getFloatArray(data);
             if (grav.Length == 3)
             {
-                Gravity = new Vector3(grav[0], grav[1], grav[2]);
+                Gravity = new Vector3(grav[1], grav[2], -grav[0]);
                 OnGravityUpdated(Gravity);
             }
         }
@@ -219,9 +219,9 @@ namespace Psix
             float[] df = getFloatArray(data);
             if (df.Length >= 13)
             {
-                Acceleration = new Vector3(df[0], df[1], df[2]);
-                Gravity = new Vector3(df[3], df[4], df[5]);
-                AngularVelocity = new Vector3(df[6], df[7], df[8]);
+                Acceleration = new Vector3(df[1], df[2], -df[0]);
+                Gravity = new Vector3(df[4], df[5], -df[3]);
+                AngularVelocity = new Vector3(-df[7], -df[8], df[6]);
                 Orientation = new Quaternion(-df[10], -df[11], df[9], df[12]);
 
                 OnAccelerationUpdated(Acceleration);

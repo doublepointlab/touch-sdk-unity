@@ -118,15 +118,18 @@ public class WatchManager : MonoBehaviour
         {
 
             m_MotionEvent?.Invoke(motionEventArgs);
+            if (motionEventArgs.type == Psix.Interaction.MotionType.Rotary)
+            {
+                if (motionEventArgs.info == Psix.Interaction.MotionInfo.Clockwise)
+                {
+                    RotaryPosition++;
+                }
+                else if (motionEventArgs.info == Psix.Interaction.MotionInfo.CounterClockwise)
+                {
+                    RotaryPosition--;
+                }
+            }
 
-            if (motionEventArgs.info == Psix.Interaction.MotionInfo.Clockwise)
-            {
-                RotaryPosition++;
-            }
-            else if (motionEventArgs.info == Psix.Interaction.MotionInfo.CounterClockwise)
-            {
-                RotaryPosition--;
-            }
         };
 
         if (Application.platform == RuntimePlatform.WindowsEditor)
