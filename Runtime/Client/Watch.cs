@@ -11,7 +11,7 @@ using System.Threading;
 using Google.Protobuf;
 
 using UnityEngine;
-using UnityEditor;
+
 
 namespace Psix
 {
@@ -231,18 +231,5 @@ namespace Psix
             IsConnected = false;
             onTimeout?.Invoke();
         }
-    }
-}
-
-/* Protobuf nuget library (dll) has a strongly named reference to a system assembly
-* which unlikely has the exact version. Binding redirect support on Unity is lacking,
-* so this seems like the only way to fix compilation.
-*/
-[InitializeOnLoad]
-public class AssemblyVersionValidationFix
-{
-    static AssemblyVersionValidationFix()
-    {
-        UnityEditor.PlayerSettings.assemblyVersionValidation = false;
     }
 }
