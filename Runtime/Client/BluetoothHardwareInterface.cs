@@ -168,6 +168,8 @@ public class BluetoothLEHardwareInterface
 	[DllImport ("BluetoothLEOSX")]
 	private static extern void OSXBluetoothLEUnSubscribeCharacteristic (string name, string service, string characteristic);
 
+#if UNITY_IOS || UNITY_TVOS
+
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLELog (string message);
 
@@ -248,6 +250,8 @@ public class BluetoothLEHardwareInterface
 
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLEUpdateCharacteristicValue (string uuid, byte[] data, int length);
+
+#endif
 
 #if UNITY_ANDROID
     static AndroidJavaObject _android = null;
