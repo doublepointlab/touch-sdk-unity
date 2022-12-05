@@ -1,7 +1,7 @@
 {
   "name": "io.port6.sdk",
   "displayName": "Port 6 SDK",
-  "version": "0.5.1-beta",
+  "version": "0.5.2-beta",
   "unity": "2020.3",
   "description": "C# scripts for bridging Unity applications with Port 6 enabled smart peripherals.",
   "keywords": [
