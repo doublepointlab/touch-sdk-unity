@@ -2,6 +2,10 @@
 // Licensed under the MIT License. See LICENSE for details.
 #nullable enable
 
+#if UNITY_EDITOR_WIN
+#warning "Bluetooth support in Play Mode is experimental and unstable."
+#endif
+
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Android;
@@ -26,7 +30,6 @@ public class PsixMotionEvent : UnityEvent<MotionEventArgs>
 
 public class WatchManager : MonoBehaviour
 {
-
     /// Invoked when a gesture is detected by the watch.
     public PsixGestureEvent? m_GestureEvent;
 
@@ -131,20 +134,6 @@ public class WatchManager : MonoBehaviour
             }
 
         };
-
-        if (Application.platform == RuntimePlatform.WindowsEditor)
-        {
-            Debug.LogWarning(
-                "Bluetooth support in Play Mode is unstable and may cause the editor to crash."
-            );
-        }
-        else if (Application.isEditor)
-        {
-            Debug.LogWarning(
-                "Bluetooth support is unavailable on this platform."
-            );
-        }
-
         Connect();
 
     }
@@ -187,20 +176,16 @@ public class WatchManager : MonoBehaviour
     }
 
     /**
-     * Try to discover and connect to a watch. Return true if watch discovery was
-     * initiated successfully and false if something went wrong. Times out after
-     * 60 seconds by default if no watch is found.
-     *
+     * Try to discover and connect to a watch. 
      * @param timeout Timeout interval in milliseconds.
      */
-    public bool Connect(int timeout = 60000)
+    public void Connect()
     {
-        return watch!.Connect(
+        watch!.Connect(
             watchName,
             onConnected: () => { m_ConnectEvent?.Invoke(); },
             onDisconnected: () => { m_DisconnectEvent?.Invoke(); },
-            onTimeout: () => { m_TimeoutEvent?.Invoke(); },
-            timeoutInterval: timeout
+            onTimeout: () => { m_TimeoutEvent?.Invoke(); }
         );
     }
 

@@ -47,23 +47,23 @@ public class BluetoothLEUWP
     //private BluetoothLEPreferredConnectionParameters _connectionPriorityParameter = BluetoothLEPreferredConnectionParameters.Balanced;
 #endif
 
-    public void ConnectionPriority(BluetoothLEHardwareInterface.ConnectionPriority connectionPriority)
+    public void ConnectionPriority(Gatt.ConnectionPriority connectionPriority)
     {
         switch (connectionPriority)
         {
-            case BluetoothLEHardwareInterface.ConnectionPriority.Balanced:
+            case Gatt.ConnectionPriority.Balanced:
 #if ENABLE_WINMD_SUPPORT
                 //_connectionPriorityParameter = BluetoothLEPreferredConnectionParameters.Balanced;
 #endif
                 break;
 
-            case BluetoothLEHardwareInterface.ConnectionPriority.High:
+            case Gatt.ConnectionPriority.High:
 #if ENABLE_WINMD_SUPPORT
                 //_connectionPriorityParameter = BluetoothLEPreferredConnectionParameters.ThroughPutOptimized;
 #endif
                 break;
 
-            case BluetoothLEHardwareInterface.ConnectionPriority.LowPower:
+            case Gatt.ConnectionPriority.LowPower:
 #if ENABLE_WINMD_SUPPORT
                 //_connectionPriorityParameter = BluetoothLEPreferredConnectionParameters.PowerOptimized;
 #endif
@@ -171,7 +171,8 @@ public class BluetoothLEUWP
 #endif
     }
 
-    public async void ConnectToPeripheral(string id)
+    // Async removed: No awaits
+    public void ConnectToPeripheral(string id)
     {
 #if ENABLE_WINMD_SUPPORT
         // Check permission of this device.
@@ -251,7 +252,8 @@ public class BluetoothLEUWP
 #endif
     }
 
-    public async void RequestMTU(string id)
+    // Async removed: no awaits
+    public void RequestMTU(string id)
     {
 #if ENABLE_WINMD_SUPPORT
         var bluetoothLeDevice = GetAddDevice(id);
@@ -273,7 +275,8 @@ public class BluetoothLEUWP
     private List<GattCharacteristic> _dontAllowGCCharacteristicList;
 #endif
 
-    public async void SubscribeCharacteristicWithDeviceAddress(string id, string serviceUuid, string characteristicUuid)
+    // Async removed: No awaits
+    public void SubscribeCharacteristicWithDeviceAddress(string id, string serviceUuid, string characteristicUuid)
     {
 #if ENABLE_WINMD_SUPPORT
         var bluetoothLeDevice = GetAddDevice(id);
@@ -342,7 +345,8 @@ public class BluetoothLEUWP
     }
 #endif
 
-    public async void UnSubscribeCharacteristic(string id, string serviceUuid, string characteristicUuid)
+    // Async removed: no awaits
+    public void UnSubscribeCharacteristic(string id, string serviceUuid, string characteristicUuid)
     {
 #if ENABLE_WINMD_SUPPORT
         var bluetoothLeDevice = GetAddDevice(id);
@@ -406,7 +410,8 @@ public class BluetoothLEUWP
 #endif
     }
 
-    public async void WriteCharacteristic(string id, string serviceUuid, string characteristicUuid, byte[] data, int length, bool withResponse)
+    // Async removed: no awaits
+    public void WriteCharacteristic(string id, string serviceUuid, string characteristicUuid, byte[] data, int length, bool withResponse)
     {
 #if ENABLE_WINMD_SUPPORT
         var bluetoothLeDevice = GetAddDevice(id);

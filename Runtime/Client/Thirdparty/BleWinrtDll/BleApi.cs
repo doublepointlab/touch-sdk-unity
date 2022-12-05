@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
-using UnityEngine;
 
-public class BleWinrt
+public class BleApi
 {
     // dll calls
     public enum ScanStatus { PROCESSING, AVAILABLE, FINISHED };
@@ -19,10 +15,16 @@ public class BleWinrt
         public bool isConnectable;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
         public string name;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
+	    public byte []advData;
+
+        [MarshalAs(UnmanagedType.U4)]
+	    public UInt32 advDataLen;
     }
 
-    [DllImport("BleWinrtDll.dll", EntryPoint = "StartDeviceScan", CharSet = CharSet.Unicode)]
-    public static extern void StartDeviceScan(string[] requiredServices);
+    [DllImport("BleWinrtDll.dll", EntryPoint = "StartDeviceScan", CharSet=CharSet.Unicode)]
+    public static extern void StartDeviceScan(string[] requiredServices, int n);
 
     [DllImport("BleWinrtDll.dll", EntryPoint = "PollDevice")]
     public static extern ScanStatus PollDevice(ref DeviceUpdate device, bool block);
@@ -82,9 +84,6 @@ public class BleWinrt
     [DllImport("BleWinrtDll.dll", EntryPoint = "SendData")]
     public static extern bool SendData(in BLEData data, bool block);
 
-    [DllImport("BleWinrtDll.dll", EntryPoint = "Disconnect", CharSet = CharSet.Unicode)]
-    public static extern void Disconnect(string deviceId);
-
     [DllImport("BleWinrtDll.dll", EntryPoint = "Quit")]
     public static extern void Quit();
 
@@ -97,4 +96,11 @@ public class BleWinrt
 
     [DllImport("BleWinrtDll.dll", EntryPoint = "GetError")]
     public static extern void GetError(out ErrorMessage buf);
+
+    [DllImport("BleWinrtDll.dll", EntryPoint = "Disconnect", CharSet=CharSet.Unicode)]
+    public static extern void Disconnect(string deviceId);
+
+    public delegate void DebugLogCallback(string message);
+    [DllImport("BleWinrtDll.dll", EntryPoint = "RegisterLogCallback")]
+    public static extern void RegisterLogCallback(DebugLogCallback deviceId);
 }
