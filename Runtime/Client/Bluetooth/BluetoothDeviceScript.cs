@@ -9,9 +9,6 @@ public class BluetoothDeviceScript : MonoBehaviour
 {
     public static Gatt BLE = GattImpl.Instance;
     static Psix.PsixLogger logger = new Psix.PsixLogger("BluetoothDeviceScript");
-#if UNITY_IOS
-    public Dictionary<string, string> BLEStandardUUIDs = new Dictionary<string, string>();
-#endif
 
     public Queue<string> MessagesToProcess = null;
 
@@ -49,9 +46,6 @@ public class BluetoothDeviceScript : MonoBehaviour
         DidUpdateCharacteristicValueAction = new Dictionary<string, Dictionary<string, Action<string, byte[]>>>();
         DidUpdateCharacteristicValueWithDeviceAddressAction = new Dictionary<string, Dictionary<string, Action<string, string, byte[]>>>();
 
-#if UNITY_IOS
-        BLEStandardUUIDs["Heart Rate Measurement"] = "00002A37-0000-1000-8000-00805F9B34FB";
-#endif
     }
 
     // Update is called once per frame
@@ -321,11 +315,6 @@ public class BluetoothDeviceScript : MonoBehaviour
                 //deviceAddress = deviceAddress.ToUpper ();
                 //characteristic = characteristic.ToUpper ();
 
-#if UNITY_IOS
-                if (BLEStandardUUIDs.ContainsKey(characteristic))
-                    characteristic = BLEStandardUUIDs[characteristic];
-#endif
-
                 if (logger.IsEnabledFor(Psix.LogLevel.Verbose))
                 {
                     logger.Verbose("Device: " + deviceAddress + " Characteristic Received: " + characteristic);
@@ -386,15 +375,6 @@ public class BluetoothDeviceScript : MonoBehaviour
             }
         }
     }
-
-#if UNITY_IOS
-	private void IncludeCoreLocationFramework()
-	{
-		// this method is here because Unity now only includes CoreLocation
-		// if there are methods in the .cs code that access it
-		Input.location.Stop ();
-	}
-#endif
 
     public void OnApplicationQuit()
     {
