@@ -27,13 +27,18 @@ namespace Psix.Proto {
             "ChF3YXRjaF9pbnB1dC5wcm90byJ+CgtIYXB0aWNFdmVudBIlCgR0eXBlGAEg",
             "ASgOMhcuSGFwdGljRXZlbnQuSGFwdGljVHlwZRIRCglpbnRlbnNpdHkYAiAB",
             "KAISDgoGbGVuZ3RoGAMgASgFIiUKCkhhcHRpY1R5cGUSCgoGQ0FOQ0VMEAAS",
-            "CwoHT05FU0hPVBABIjAKC0lucHV0VXBkYXRlEiEKC2hhcHRpY0V2ZW50GAEg",
-            "ASgLMgwuSGFwdGljRXZlbnRCDaoCClBzaXguUHJvdG9iBnByb3RvMw=="));
+            "CwoHT05FU0hPVBABIpABCgpDbGllbnRJbmZvEhMKC2RldmljZU1vZGVsGAEg",
+            "ASgJEhIKCmRldmljZU5hbWUYAiABKAkSEgoKZGV2aWNlVHlwZRgDIAEoCRIQ",
+            "CghkZXZpY2VJZBgEIAEoCRIPCgdhcHBOYW1lGAUgASgJEg0KBWFwcElkGAYg",
+            "ASgJEhMKC2Rlc2NyaXB0aW9uGAcgASgJIlEKC0lucHV0VXBkYXRlEiEKC2hh",
+            "cHRpY0V2ZW50GAEgASgLMgwuSGFwdGljRXZlbnQSHwoKY2xpZW50SW5mbxgC",
+            "IAEoCzILLkNsaWVudEluZm9CDaoCClBzaXguUHJvdG9iBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.HapticEvent), global::Psix.Proto.HapticEvent.Parser, new[]{ "Type", "Intensity", "Length" }, null, new[]{ typeof(global::Psix.Proto.HapticEvent.Types.HapticType) }, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.InputUpdate), global::Psix.Proto.InputUpdate.Parser, new[]{ "HapticEvent" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.ClientInfo), global::Psix.Proto.ClientInfo.Parser, new[]{ "DeviceModel", "DeviceName", "DeviceType", "DeviceId", "AppName", "AppId", "Description" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.InputUpdate), global::Psix.Proto.InputUpdate.Parser, new[]{ "HapticEvent", "ClientInfo" }, null, null, null, null)
           }));
     }
     #endregion
@@ -316,6 +321,417 @@ namespace Psix.Proto {
 
   }
 
+  public sealed partial class ClientInfo : pb::IMessage<ClientInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ClientInfo> _parser = new pb::MessageParser<ClientInfo>(() => new ClientInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ClientInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Psix.Proto.WatchInputReflection.Descriptor.MessageTypes[1]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ClientInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ClientInfo(ClientInfo other) : this() {
+      deviceModel_ = other.deviceModel_;
+      deviceName_ = other.deviceName_;
+      deviceType_ = other.deviceType_;
+      deviceId_ = other.deviceId_;
+      appName_ = other.appName_;
+      appId_ = other.appId_;
+      description_ = other.description_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ClientInfo Clone() {
+      return new ClientInfo(this);
+    }
+
+    /// <summary>Field number for the "deviceModel" field.</summary>
+    public const int DeviceModelFieldNumber = 1;
+    private string deviceModel_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string DeviceModel {
+      get { return deviceModel_; }
+      set {
+        deviceModel_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "deviceName" field.</summary>
+    public const int DeviceNameFieldNumber = 2;
+    private string deviceName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string DeviceName {
+      get { return deviceName_; }
+      set {
+        deviceName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "deviceType" field.</summary>
+    public const int DeviceTypeFieldNumber = 3;
+    private string deviceType_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string DeviceType {
+      get { return deviceType_; }
+      set {
+        deviceType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "deviceId" field.</summary>
+    public const int DeviceIdFieldNumber = 4;
+    private string deviceId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string DeviceId {
+      get { return deviceId_; }
+      set {
+        deviceId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "appName" field.</summary>
+    public const int AppNameFieldNumber = 5;
+    private string appName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string AppName {
+      get { return appName_; }
+      set {
+        appName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "appId" field.</summary>
+    public const int AppIdFieldNumber = 6;
+    private string appId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string AppId {
+      get { return appId_; }
+      set {
+        appId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "description" field.</summary>
+    public const int DescriptionFieldNumber = 7;
+    private string description_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Description {
+      get { return description_; }
+      set {
+        description_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ClientInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ClientInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (DeviceModel != other.DeviceModel) return false;
+      if (DeviceName != other.DeviceName) return false;
+      if (DeviceType != other.DeviceType) return false;
+      if (DeviceId != other.DeviceId) return false;
+      if (AppName != other.AppName) return false;
+      if (AppId != other.AppId) return false;
+      if (Description != other.Description) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (DeviceModel.Length != 0) hash ^= DeviceModel.GetHashCode();
+      if (DeviceName.Length != 0) hash ^= DeviceName.GetHashCode();
+      if (DeviceType.Length != 0) hash ^= DeviceType.GetHashCode();
+      if (DeviceId.Length != 0) hash ^= DeviceId.GetHashCode();
+      if (AppName.Length != 0) hash ^= AppName.GetHashCode();
+      if (AppId.Length != 0) hash ^= AppId.GetHashCode();
+      if (Description.Length != 0) hash ^= Description.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (DeviceModel.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(DeviceModel);
+      }
+      if (DeviceName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(DeviceName);
+      }
+      if (DeviceType.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(DeviceType);
+      }
+      if (DeviceId.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(DeviceId);
+      }
+      if (AppName.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(AppName);
+      }
+      if (AppId.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(AppId);
+      }
+      if (Description.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(Description);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (DeviceModel.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(DeviceModel);
+      }
+      if (DeviceName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(DeviceName);
+      }
+      if (DeviceType.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(DeviceType);
+      }
+      if (DeviceId.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(DeviceId);
+      }
+      if (AppName.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(AppName);
+      }
+      if (AppId.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(AppId);
+      }
+      if (Description.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(Description);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (DeviceModel.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DeviceModel);
+      }
+      if (DeviceName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DeviceName);
+      }
+      if (DeviceType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DeviceType);
+      }
+      if (DeviceId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DeviceId);
+      }
+      if (AppName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(AppName);
+      }
+      if (AppId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(AppId);
+      }
+      if (Description.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Description);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ClientInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.DeviceModel.Length != 0) {
+        DeviceModel = other.DeviceModel;
+      }
+      if (other.DeviceName.Length != 0) {
+        DeviceName = other.DeviceName;
+      }
+      if (other.DeviceType.Length != 0) {
+        DeviceType = other.DeviceType;
+      }
+      if (other.DeviceId.Length != 0) {
+        DeviceId = other.DeviceId;
+      }
+      if (other.AppName.Length != 0) {
+        AppName = other.AppName;
+      }
+      if (other.AppId.Length != 0) {
+        AppId = other.AppId;
+      }
+      if (other.Description.Length != 0) {
+        Description = other.Description;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            DeviceModel = input.ReadString();
+            break;
+          }
+          case 18: {
+            DeviceName = input.ReadString();
+            break;
+          }
+          case 26: {
+            DeviceType = input.ReadString();
+            break;
+          }
+          case 34: {
+            DeviceId = input.ReadString();
+            break;
+          }
+          case 42: {
+            AppName = input.ReadString();
+            break;
+          }
+          case 50: {
+            AppId = input.ReadString();
+            break;
+          }
+          case 58: {
+            Description = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            DeviceModel = input.ReadString();
+            break;
+          }
+          case 18: {
+            DeviceName = input.ReadString();
+            break;
+          }
+          case 26: {
+            DeviceType = input.ReadString();
+            break;
+          }
+          case 34: {
+            DeviceId = input.ReadString();
+            break;
+          }
+          case 42: {
+            AppName = input.ReadString();
+            break;
+          }
+          case 50: {
+            AppId = input.ReadString();
+            break;
+          }
+          case 58: {
+            Description = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
   public sealed partial class InputUpdate : pb::IMessage<InputUpdate>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -330,7 +746,7 @@ namespace Psix.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Psix.Proto.WatchInputReflection.Descriptor.MessageTypes[1]; }
+      get { return global::Psix.Proto.WatchInputReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -351,6 +767,7 @@ namespace Psix.Proto {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public InputUpdate(InputUpdate other) : this() {
       hapticEvent_ = other.hapticEvent_ != null ? other.hapticEvent_.Clone() : null;
+      clientInfo_ = other.clientInfo_ != null ? other.clientInfo_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -372,6 +789,18 @@ namespace Psix.Proto {
       }
     }
 
+    /// <summary>Field number for the "clientInfo" field.</summary>
+    public const int ClientInfoFieldNumber = 2;
+    private global::Psix.Proto.ClientInfo clientInfo_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Psix.Proto.ClientInfo ClientInfo {
+      get { return clientInfo_; }
+      set {
+        clientInfo_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -388,6 +817,7 @@ namespace Psix.Proto {
         return true;
       }
       if (!object.Equals(HapticEvent, other.HapticEvent)) return false;
+      if (!object.Equals(ClientInfo, other.ClientInfo)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -396,6 +826,7 @@ namespace Psix.Proto {
     public override int GetHashCode() {
       int hash = 1;
       if (hapticEvent_ != null) hash ^= HapticEvent.GetHashCode();
+      if (clientInfo_ != null) hash ^= ClientInfo.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -418,6 +849,10 @@ namespace Psix.Proto {
         output.WriteRawTag(10);
         output.WriteMessage(HapticEvent);
       }
+      if (clientInfo_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(ClientInfo);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -432,6 +867,10 @@ namespace Psix.Proto {
         output.WriteRawTag(10);
         output.WriteMessage(HapticEvent);
       }
+      if (clientInfo_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(ClientInfo);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -444,6 +883,9 @@ namespace Psix.Proto {
       int size = 0;
       if (hapticEvent_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(HapticEvent);
+      }
+      if (clientInfo_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ClientInfo);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -462,6 +904,12 @@ namespace Psix.Proto {
           HapticEvent = new global::Psix.Proto.HapticEvent();
         }
         HapticEvent.MergeFrom(other.HapticEvent);
+      }
+      if (other.clientInfo_ != null) {
+        if (clientInfo_ == null) {
+          ClientInfo = new global::Psix.Proto.ClientInfo();
+        }
+        ClientInfo.MergeFrom(other.ClientInfo);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -485,6 +933,13 @@ namespace Psix.Proto {
             input.ReadMessage(HapticEvent);
             break;
           }
+          case 18: {
+            if (clientInfo_ == null) {
+              ClientInfo = new global::Psix.Proto.ClientInfo();
+            }
+            input.ReadMessage(ClientInfo);
+            break;
+          }
         }
       }
     #endif
@@ -505,6 +960,13 @@ namespace Psix.Proto {
               HapticEvent = new global::Psix.Proto.HapticEvent();
             }
             input.ReadMessage(HapticEvent);
+            break;
+          }
+          case 18: {
+            if (clientInfo_ == null) {
+              ClientInfo = new global::Psix.Proto.ClientInfo();
+            }
+            input.ReadMessage(ClientInfo);
             break;
           }
         }
