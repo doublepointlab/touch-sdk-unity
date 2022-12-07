@@ -88,21 +88,6 @@ abstract public class Gatt
         High = 2,
     }
 
-    public enum AdvertisingMode
-    {
-        LowPower = 0,
-        Balanced = 1,
-        LowLatency = 2
-    }
-
-    public enum AdvertisingPower
-    {
-        UltraLow = 0,
-        Low = 1,
-        Medium = 2,
-        High = 3,
-    }
-
     public enum iOSProximity
     {
         Unknown = 0,
@@ -128,8 +113,6 @@ abstract public class Gatt
     abstract public void BluetoothEnable(bool enable);
     abstract public void BluetoothScanMode(ScanMode scanMode);
     abstract public void BluetoothConnectionPriority(ConnectionPriority connectionPriority);
-    abstract public void BluetoothAdvertisingMode(AdvertisingMode advertisingMode);
-    abstract public void BluetoothAdvertisingPower(AdvertisingPower advertisingPower);
     abstract public void PauseMessages(bool isPaused);
     abstract public void ScanForBeacons(string[] proximityUUIDs, Action<iBeaconData> actionBeaconResponse);
     abstract public void RequestMtu(string name, int mtu, Action<string, int> action);
@@ -145,16 +128,6 @@ abstract public class Gatt
     abstract public void SubscribeCharacteristic(string name, string service, string characteristic, Action<string> notificationAction, Action<string, byte[]> action);
     abstract public void SubscribeCharacteristicWithDeviceAddress(string name, string service, string characteristic, Action<string, string> notificationAction, Action<string, string, byte[]> action);
     abstract public void UnSubscribeCharacteristic(string name, string service, string characteristic, Action<string> action);
-    abstract public void PeripheralName(string newName);
-    abstract public void CreateService(string uuid, bool primary, Action<string> action);
-    abstract public void CreateCharacteristic(string uuid, CharacteristicProperties properties, CharacteristicPermissions permissions, byte[] data, int length, Action<string, byte[]> action);
-    abstract public void RemoveService(string uuid);
-    abstract public void RemoveServices();
-    abstract public void RemoveCharacteristic(string uuid);
-    abstract public void RemoveCharacteristics();
-    abstract public void StartAdvertising(Action action, bool isConnectable = true, bool includeName = true, int manufacturerId = 0, byte[] manufacturerSpecificData = null);
-    abstract public void StopAdvertising(Action action);
-    abstract public void UpdateCharacteristicValue(string uuid, byte[] data, int length);
 }
 
 // Thread-safe singleton pattern from

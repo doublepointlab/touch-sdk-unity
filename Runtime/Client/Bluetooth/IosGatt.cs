@@ -60,36 +60,6 @@ public class IosGatt: Gatt
 	[DllImport ("__Internal")]
 	private static extern void _iOSBluetoothLEStopBeaconScan ();
 
-	[DllImport ("__Internal")]
-	private static extern void _iOSBluetoothLEPeripheralName (string newName);
-
-	[DllImport ("__Internal")]
-	private static extern void _iOSBluetoothLECreateService (string uuid, bool primary);
-
-	[DllImport ("__Internal")]
-	private static extern void _iOSBluetoothLERemoveService (string uuid);
-
-	[DllImport ("__Internal")]
-	private static extern void _iOSBluetoothLERemoveServices ();
-
-	[DllImport ("__Internal")]
-	private static extern void _iOSBluetoothLECreateCharacteristic (string uuid, int properties, int permissions, byte[] data, int length);
-
-	[DllImport ("__Internal")]
-	private static extern void _iOSBluetoothLERemoveCharacteristic (string uuid);
-
-	[DllImport ("__Internal")]
-	private static extern void _iOSBluetoothLERemoveCharacteristics ();
-
-	[DllImport ("__Internal")]
-	private static extern void _iOSBluetoothLEStartAdvertising ();
-
-	[DllImport ("__Internal")]
-	private static extern void _iOSBluetoothLEStopAdvertising ();
-
-	[DllImport ("__Internal")]
-	private static extern void _iOSBluetoothLEUpdateCharacteristicValue (string uuid, byte[] data, int length);
-
     private static Psix.PsixLogger logger = new Psix.PsixLogger("IosGatt");
     override public void Log(string message)
     {
@@ -128,10 +98,6 @@ public class IosGatt: Gatt
    override public void BluetoothScanMode(ScanMode scanMode) { }
 
    override public void BluetoothConnectionPriority(ConnectionPriority connectionPriority) { }
-
-   override public void BluetoothAdvertisingMode(AdvertisingMode advertisingMode) { }
-
-   override public void BluetoothAdvertisingPower(AdvertisingPower advertisingPower) { }
 
    override public void PauseMessages(bool isPaused)
     {
@@ -380,100 +346,6 @@ public class IosGatt: Gatt
             }
 
 			_iOSBluetoothLEUnSubscribeCharacteristic (name, service, characteristic);
-        }
-    }
-
-
-    override public void PeripheralName(string newName)
-    {
-        if (!Application.isEditor)
-			_iOSBluetoothLEPeripheralName (newName);
-    }
-
-    override public void CreateService(string uuid, bool primary, Action<string> action)
-    {
-        if (!Application.isEditor)
-        {
-            if (bluetoothDeviceScript != null)
-                bluetoothDeviceScript.ServiceAddedAction = action;
-
-			_iOSBluetoothLECreateService (uuid, primary);
-        }
-    }
-
-    override public void RemoveService(string uuid)
-    {
-        if (!Application.isEditor)
-        {
-			_iOSBluetoothLERemoveService (uuid);
-        }
-    }
-
-    override public void RemoveServices()
-    {
-        if (!Application.isEditor)
-        {
-			_iOSBluetoothLERemoveServices ();
-        }
-    }
-
-    override public void CreateCharacteristic(string uuid, CharacteristicProperties properties, CharacteristicPermissions permissions, byte[] data, int length, Action<string, byte[]> action)
-    {
-        if (!Application.isEditor)
-        {
-            if (bluetoothDeviceScript != null)
-                bluetoothDeviceScript.PeripheralReceivedWriteDataAction = action;
-
-			_iOSBluetoothLECreateCharacteristic (uuid, (int)properties, (int)permissions, data, length);
-        }
-    }
-
-    override public void RemoveCharacteristic(string uuid)
-    {
-        if (!Application.isEditor)
-        {
-            if (bluetoothDeviceScript != null)
-                bluetoothDeviceScript.PeripheralReceivedWriteDataAction = null;
-
-			_iOSBluetoothLERemoveCharacteristic (uuid);
-        }
-    }
-
-    override public void RemoveCharacteristics()
-    {
-        if (!Application.isEditor)
-        {
-			_iOSBluetoothLERemoveCharacteristics ();
-        }
-    }
-
-    override public void StartAdvertising(Action action, bool isConnectable = true, bool includeName = true, int manufacturerId = 0, byte[] manufacturerSpecificData = null)
-    {
-        if (!Application.isEditor)
-        {
-            if (bluetoothDeviceScript != null)
-                bluetoothDeviceScript.StartedAdvertisingAction = action;
-
-			_iOSBluetoothLEStartAdvertising ();
-        }
-    }
-
-    override public void StopAdvertising(Action action)
-    {
-        if (!Application.isEditor)
-        {
-            if (bluetoothDeviceScript != null)
-                bluetoothDeviceScript.StoppedAdvertisingAction = action;
-
-			_iOSBluetoothLEStopAdvertising ();
-        }
-    }
-
-    override public void UpdateCharacteristicValue(string uuid, byte[] data, int length)
-    {
-        if (!Application.isEditor)
-        {
-			_iOSBluetoothLEUpdateCharacteristicValue (uuid, data, length);
         }
     }
 }

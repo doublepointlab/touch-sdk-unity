@@ -17,14 +17,10 @@ public class BluetoothDeviceScript : MonoBehaviour
     public Action InitializedAction;
     public Action DeinitializedAction;
     public Action<string> ErrorAction;
-    public Action<string> ServiceAddedAction;
-    public Action StartedAdvertisingAction;
-    public Action StoppedAdvertisingAction;
     public Action<string, string> DiscoveredPeripheralAction;
     public Action<string, string, int, byte[]> DiscoveredPeripheralWithAdvertisingInfoAction;
     public Action<Gatt.iBeaconData> DiscoveredBeaconAction;
     public Action<string, string> RetrievedConnectedPeripheralAction;
-    public Action<string, byte[]> PeripheralReceivedWriteDataAction;
     public Action<string> ConnectedPeripheralAction;
     public Action<string> ConnectedDisconnectPeripheralAction;
     public Action<string> DisconnectedPeripheralAction;
@@ -70,13 +66,9 @@ public class BluetoothDeviceScript : MonoBehaviour
     const string deviceInitializedString = "Initialized";
     const string deviceDeInitializedString = "DeInitialized";
     const string deviceErrorString = "Error";
-    const string deviceServiceAdded = "ServiceAdded";
-    const string deviceStartedAdvertising = "StartedAdvertising";
-    const string deviceStoppedAdvertising = "StoppedAdvertising";
     const string deviceDiscoveredPeripheral = "DiscoveredPeripheral";
     const string deviceDiscoveredBeacon = "DiscoveredBeacon";
     const string deviceRetrievedConnectedPeripheral = "RetrievedConnectedPeripheral";
-    const string devicePeripheralReceivedWriteData = "PeripheralReceivedWriteData";
     const string deviceConnectedPeripheral = "ConnectedPeripheral";
     const string deviceDisconnectedPeripheral = "DisconnectedPeripheral";
     const string deviceDiscoveredService = "DiscoveredService";
@@ -130,28 +122,6 @@ public class BluetoothDeviceScript : MonoBehaviour
 
                 if (ErrorAction != null)
                     ErrorAction(error);
-            }
-            else if (MessageStartsWith(deviceServiceAdded))
-            {
-                if (parts.Length >= 2)
-                {
-                    if (ServiceAddedAction != null)
-                        ServiceAddedAction(parts[1]);
-                }
-            }
-            else if (MessageStartsWith(deviceStartedAdvertising))
-            {
-                logger.Debug("Started Advertising");
-
-                if (StartedAdvertisingAction != null)
-                    StartedAdvertisingAction();
-            }
-            else if (MessageStartsWith(deviceStoppedAdvertising))
-            {
-                logger.Debug("Stopped Advertising");
-
-                if (StoppedAdvertisingAction != null)
-                    StoppedAdvertisingAction();
             }
             else if (MessageStartsWith(deviceDiscoveredPeripheral))
             {
@@ -216,11 +186,6 @@ public class BluetoothDeviceScript : MonoBehaviour
                     if (RetrievedConnectedPeripheralAction != null)
                         RetrievedConnectedPeripheralAction(parts[1], parts[2]);
                 }
-            }
-            else if (MessageStartsWith(devicePeripheralReceivedWriteData))
-            {
-                if (parts.Length >= 3)
-                    OnPeripheralData(parts[1], parts[2]);
             }
             else if (MessageStartsWith(deviceConnectedPeripheral))
             {
@@ -351,27 +316,6 @@ public class BluetoothDeviceScript : MonoBehaviour
                             action(deviceAddress, characteristic, bytes);
                     }
                 }
-            }
-        }
-    }
-
-    public void OnPeripheralData(string characteristic, string base64Data)
-    {
-        if (base64Data != null)
-        {
-            byte[] bytes = System.Convert.FromBase64String(base64Data);
-            if (bytes.Length > 0)
-            {
-                logger.Trace("Peripheral Received: " + characteristic);
-
-                string byteString = "";
-                foreach (byte b in bytes)
-                    byteString += string.Format("{0:X2}", b);
-
-                logger.Trace(byteString);
-
-                if (PeripheralReceivedWriteDataAction != null)
-                    PeripheralReceivedWriteDataAction(characteristic, bytes);
             }
         }
     }

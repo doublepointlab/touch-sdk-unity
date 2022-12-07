@@ -45,10 +45,6 @@ public class WinGatt : Gatt
 
     override public void BluetoothConnectionPriority(ConnectionPriority connectionPriority) { }
 
-    override public void BluetoothAdvertisingMode(AdvertisingMode advertisingMode) { }
-
-    override public void BluetoothAdvertisingPower(AdvertisingPower advertisingPower) { }
-
     override public void PauseMessages(bool isPaused) { }
 
     // scanning for beacons requires that you know the Proximity UUID
@@ -213,65 +209,6 @@ public class WinGatt : Gatt
             }
         }
     }
-
-    override public void PeripheralName(string newName) { }
-
-    override public void CreateService(string uuid, bool primary, Action<string> action)
-    {
-        if (!Application.isEditor)
-        {
-            if (bluetoothDeviceScript != null)
-                bluetoothDeviceScript.ServiceAddedAction = action;
-
-        }
-    }
-
-    override public void RemoveService(string uuid) { }
-
-    override public void RemoveServices() { }
-
-    override public void CreateCharacteristic(string uuid, CharacteristicProperties properties, CharacteristicPermissions permissions, byte[] data, int length, Action<string, byte[]> action)
-    {
-        if (!Application.isEditor)
-        {
-            if (bluetoothDeviceScript != null)
-                bluetoothDeviceScript.PeripheralReceivedWriteDataAction = action;
-
-        }
-    }
-
-    override public void RemoveCharacteristic(string uuid)
-    {
-        if (!Application.isEditor)
-        {
-            if (bluetoothDeviceScript != null)
-                bluetoothDeviceScript.PeripheralReceivedWriteDataAction = null;
-
-        }
-    }
-
-    override public void RemoveCharacteristics() { }
-
-    override public void StartAdvertising(Action action, bool isConnectable = true, bool includeName = true, int manufacturerId = 0, byte[] manufacturerSpecificData = null)
-    {
-        if (!Application.isEditor)
-        {
-            if (bluetoothDeviceScript != null)
-                bluetoothDeviceScript.StartedAdvertisingAction = action;
-        }
-    }
-
-    override public void StopAdvertising(Action action)
-    {
-        if (!Application.isEditor)
-        {
-            if (bluetoothDeviceScript != null)
-                bluetoothDeviceScript.StoppedAdvertisingAction = action;
-        }
-    }
-
-    override public void UpdateCharacteristicValue(string uuid, byte[] data, int length) { }
-
 }
 
 //#endif

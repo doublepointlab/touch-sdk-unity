@@ -82,24 +82,6 @@ public class AndroidGatt : Gatt
         }
     }
 
-    override public void BluetoothAdvertisingMode(AdvertisingMode advertisingMode)
-    {
-        if (!Application.isEditor)
-        {
-            if (_android != null)
-                _android.Call("androidBluetoothAdvertisingMode", (int)advertisingMode);
-        }
-    }
-
-    override public void BluetoothAdvertisingPower(AdvertisingPower advertisingPower)
-    {
-        if (!Application.isEditor)
-        {
-            if (_android != null)
-                _android.Call("androidBluetoothAdvertisingPower", (int)advertisingPower);
-        }
-    }
-
     override public void PauseMessages(bool isPaused)
     {
         if (!Application.isEditor)
@@ -368,110 +350,6 @@ public class AndroidGatt : Gatt
 
             if (_android != null)
                 _android.Call("androidUnsubscribeCharacteristic", name, service, characteristic);
-        }
-    }
-
-    override public void PeripheralName(string newName)
-    {
-        if (!Application.isEditor)
-        {
-            if (_android != null)
-                _android.Call("androidPeripheralName", newName);
-        }
-    }
-
-    override public void CreateService(string uuid, bool primary, Action<string> action)
-    {
-        if (!Application.isEditor)
-        {
-            if (bluetoothDeviceScript != null)
-                bluetoothDeviceScript.ServiceAddedAction = action;
-
-            if (_android != null)
-                _android.Call("androidCreateService", uuid, primary);
-        }
-    }
-
-    override public void CreateCharacteristic(string uuid, CharacteristicProperties properties, CharacteristicPermissions permissions, byte[] data, int length, Action<string, byte[]> action)
-    {
-        if (!Application.isEditor)
-        {
-            if (bluetoothDeviceScript != null)
-                bluetoothDeviceScript.PeripheralReceivedWriteDataAction = action;
-
-            if (_android != null)
-                _android.Call("androidCreateCharacteristic", uuid, (int)properties, (int)permissions, data, length);
-        }
-    }
-
-    override public void RemoveService(string uuid)
-    {
-        if (!Application.isEditor)
-        {
-            if (_android != null)
-                _android.Call("androidRemoveService", uuid);
-        }
-    }
-
-    override public void RemoveServices()
-    {
-        if (!Application.isEditor)
-        {
-            if (_android != null)
-                _android.Call("androidRemoveServices");
-        }
-    }
-
-    override public void RemoveCharacteristic(string uuid)
-    {
-        if (!Application.isEditor)
-        {
-            if (bluetoothDeviceScript != null)
-                bluetoothDeviceScript.PeripheralReceivedWriteDataAction = null;
-
-            if (_android != null)
-                _android.Call("androidRemoveCharacteristic", uuid);
-        }
-    }
-
-    override public void RemoveCharacteristics()
-    {
-        if (!Application.isEditor)
-        {
-            if (_android != null)
-                _android.Call("androidRemoveCharacteristics");
-        }
-    }
-
-    override public void StartAdvertising(Action action, bool isConnectable = true, bool includeName = true, int manufacturerId = 0, byte[] manufacturerSpecificData = null)
-    {
-        if (!Application.isEditor)
-        {
-            if (bluetoothDeviceScript != null)
-                bluetoothDeviceScript.StartedAdvertisingAction = action;
-            if (_android != null)
-                _android.Call("androidStartAdvertising", isConnectable, includeName, manufacturerId, manufacturerSpecificData);
-        }
-    }
-
-    override public void StopAdvertising(Action action)
-    {
-        if (!Application.isEditor)
-        {
-            if (bluetoothDeviceScript != null)
-                bluetoothDeviceScript.StoppedAdvertisingAction = action;
-
-            if (_android != null)
-                _android.Call("androidStopAdvertising");
-        }
-    }
-
-    override public void UpdateCharacteristicValue(string uuid, byte[] data, int length)
-    {
-        if (!Application.isEditor)
-        {
-            if (_android != null)
-                _android.Call("androidUpdateCharacteristicValue", uuid, data, length);
         }
     }
 }
