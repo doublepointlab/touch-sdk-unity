@@ -91,34 +91,6 @@ public class AndroidGatt : Gatt
         }
     }
 
-    // scanning for beacons requires that you know the Proximity UUID
-    override public void ScanForBeacons(string[] proximityUUIDs, Action<iBeaconData> actionBeaconResponse)
-    {
-        if (proximityUUIDs != null && proximityUUIDs.Length >= 0)
-        {
-            if (!Application.isEditor)
-            {
-                if (bluetoothDeviceScript != null)
-                    bluetoothDeviceScript.DiscoveredBeaconAction = actionBeaconResponse;
-
-                string proximityUUIDsString = null;
-
-                if (proximityUUIDs != null && proximityUUIDs.Length > 0)
-                {
-                    proximityUUIDsString = "";
-
-                    foreach (string proximityUUID in proximityUUIDs)
-                        proximityUUIDsString += proximityUUID + "|";
-
-                    proximityUUIDsString = proximityUUIDsString.Substring(0, proximityUUIDsString.Length - 1);
-                }
-
-                if (_android != null)
-                    _android.Call("androidBluetoothScanForBeacons", proximityUUIDsString);
-            }
-        }
-    }
-
     override public void RequestMtu(string name, int mtu, Action<string, int> action)
     {
         Log($"Request MTU {mtu}");
@@ -206,15 +178,6 @@ public class AndroidGatt : Gatt
         else
         {
             //BluetoothLEW32.Instance.StopScan();
-        }
-    }
-
-    override public void StopBeaconScan()
-    {
-        if (!Application.isEditor)
-        {
-            if (_android != null)
-                _android.Call("androidBluetoothStopBeaconScan");
         }
     }
 

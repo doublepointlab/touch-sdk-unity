@@ -19,7 +19,6 @@ public class BluetoothDeviceScript : MonoBehaviour
     public Action<string> ErrorAction;
     public Action<string, string> DiscoveredPeripheralAction;
     public Action<string, string, int, byte[]> DiscoveredPeripheralWithAdvertisingInfoAction;
-    public Action<Gatt.iBeaconData> DiscoveredBeaconAction;
     public Action<string, string> RetrievedConnectedPeripheralAction;
     public Action<string> ConnectedPeripheralAction;
     public Action<string> ConnectedDisconnectPeripheralAction;
@@ -67,7 +66,6 @@ public class BluetoothDeviceScript : MonoBehaviour
     const string deviceDeInitializedString = "DeInitialized";
     const string deviceErrorString = "Error";
     const string deviceDiscoveredPeripheral = "DiscoveredPeripheral";
-    const string deviceDiscoveredBeacon = "DiscoveredBeacon";
     const string deviceRetrievedConnectedPeripheral = "RetrievedConnectedPeripheral";
     const string deviceConnectedPeripheral = "ConnectedPeripheral";
     const string deviceDisconnectedPeripheral = "DisconnectedPeripheral";
@@ -151,30 +149,6 @@ public class BluetoothDeviceScript : MonoBehaviour
 
                         DiscoveredPeripheralWithAdvertisingInfoAction(parts[1], parts[2], rssi, bytes);
                     }
-                }
-            }
-            else if (MessageStartsWith(deviceDiscoveredBeacon))
-            {
-                if (parts.Length >= 7)
-                {
-                    var iBeaconData = new Gatt.iBeaconData();
-
-                    iBeaconData.UUID = parts[1];
-                    if (!int.TryParse(parts[2], out iBeaconData.Major))
-                        iBeaconData.Major = 0;
-                    if (!int.TryParse(parts[3], out iBeaconData.Minor))
-                        iBeaconData.Minor = 0;
-                    if (!int.TryParse(parts[4], out iBeaconData.RSSI))
-                        iBeaconData.RSSI = 0;
-                    if (!int.TryParse(parts[5], out iBeaconData.AndroidSignalPower))
-                        iBeaconData.AndroidSignalPower = 0;
-                    int iOSProximity = 0;
-                    if (!int.TryParse(parts[6], out iOSProximity))
-                        iOSProximity = 0;
-                    iBeaconData.iOSProximity = (Gatt.iOSProximity)iOSProximity;
-
-                    if (DiscoveredBeaconAction != null)
-                        DiscoveredBeaconAction(iBeaconData);
                 }
             }
             else if (MessageStartsWith(deviceRetrievedConnectedPeripheral))

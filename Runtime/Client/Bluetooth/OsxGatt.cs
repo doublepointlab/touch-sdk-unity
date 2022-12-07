@@ -128,31 +128,6 @@ public class OsxGatt : Gatt
         OSXBluetoothLEPauseMessages(isPaused);
     }
 
-    // scanning for beacons requires that you know the Proximity UUID
-    override public void ScanForBeacons(string[] proximityUUIDs, Action<iBeaconData> actionBeaconResponse)
-    {
-        if (proximityUUIDs != null && proximityUUIDs.Length >= 0)
-        {
-            if (!Application.isEditor)
-            {
-                if (bluetoothDeviceScript != null)
-                    bluetoothDeviceScript.DiscoveredBeaconAction = actionBeaconResponse;
-
-                string proximityUUIDsString = null;
-
-                if (proximityUUIDs != null && proximityUUIDs.Length > 0)
-                {
-                    proximityUUIDsString = "";
-
-                    foreach (string proximityUUID in proximityUUIDs)
-                        proximityUUIDsString += proximityUUID + "|";
-
-                    proximityUUIDsString = proximityUUIDsString.Substring(0, proximityUUIDsString.Length - 1);
-                }
-            }
-        }
-    }
-
     override public void RequestMtu(string name, int mtu, Action<string, int> action)
     {
         if (bluetoothDeviceScript != null)
@@ -221,8 +196,6 @@ public class OsxGatt : Gatt
     {
         OSXBluetoothLEStopScan();
     }
-
-    override public void StopBeaconScan() { }
 
     override public void DisconnectAll()
     {

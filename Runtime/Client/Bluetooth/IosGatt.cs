@@ -54,12 +54,6 @@ public class IosGatt: Gatt
 	[DllImport("__Internal")]
 	private static extern void _iOSBluetoothLERequestMtu(string name, int mtu);
 
-	[DllImport ("__Internal")]
-	private static extern void _iOSBluetoothLEScanForBeacons (string proximityUUIDsString);
-
-	[DllImport ("__Internal")]
-	private static extern void _iOSBluetoothLEStopBeaconScan ();
-
     private static Psix.PsixLogger logger = new Psix.PsixLogger("IosGatt");
     override public void Log(string message)
     {
@@ -104,32 +98,6 @@ public class IosGatt: Gatt
         if (!Application.isEditor)
         {
 			_iOSBluetoothLEPauseMessages (isPaused);
-        }
-    }
-
-    // scanning for beacons requires that you know the Proximity UUID
-    override public void ScanForBeacons(string[] proximityUUIDs, Action<iBeaconData> actionBeaconResponse)
-    {
-        if (proximityUUIDs != null && proximityUUIDs.Length >= 0)
-        {
-            if (!Application.isEditor)
-            {
-                if (bluetoothDeviceScript != null)
-                    bluetoothDeviceScript.DiscoveredBeaconAction = actionBeaconResponse;
-
-                string proximityUUIDsString = null;
-
-                if (proximityUUIDs != null && proximityUUIDs.Length > 0)
-                {
-                    proximityUUIDsString = "";
-
-                    foreach (string proximityUUID in proximityUUIDs)
-                        proximityUUIDsString += proximityUUID + "|";
-
-                    proximityUUIDsString = proximityUUIDsString.Substring(0, proximityUUIDsString.Length - 1);
-                }
-				_iOSBluetoothLEScanForBeacons (proximityUUIDsString);
-            }
         }
     }
 
@@ -209,14 +177,6 @@ public class IosGatt: Gatt
         else
         {
             BluetoothLEW32.Instance.StopScan();
-        }
-    }
-
-    override public void StopBeaconScan()
-    {
-        if (!Application.isEditor)
-        {
-			_iOSBluetoothLEStopBeaconScan ();
         }
     }
 

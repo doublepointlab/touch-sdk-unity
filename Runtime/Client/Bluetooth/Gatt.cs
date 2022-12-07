@@ -96,17 +96,6 @@ abstract public class Gatt
         Far = 3,
     }
 
-    public struct iBeaconData
-    {
-        public string UUID;
-        public int Major;
-        public int Minor;
-        public int RSSI;
-        public int AndroidSignalPower;
-        public iOSProximity iOSProximity;
-    }
-
-
     abstract public void Log(string message);
     abstract public BluetoothDeviceScript Initialize(bool asCentral, bool asPeripheral, Action action, Action<string> errorAction);
     abstract public void DeInitialize(Action action);
@@ -114,12 +103,10 @@ abstract public class Gatt
     abstract public void BluetoothScanMode(ScanMode scanMode);
     abstract public void BluetoothConnectionPriority(ConnectionPriority connectionPriority);
     abstract public void PauseMessages(bool isPaused);
-    abstract public void ScanForBeacons(string[] proximityUUIDs, Action<iBeaconData> actionBeaconResponse);
     abstract public void RequestMtu(string name, int mtu, Action<string, int> action);
     abstract public void ScanForPeripheralsWithServices(string[] serviceUUIDs, Action<string, string> action, Action<string, string, int, byte[]> actionAdvertisingInfo = null, bool rssiOnly = false, bool clearPeripheralList = true, int recordType = 0xFF);
     abstract public void RetrieveListOfPeripheralsWithServices(string[] serviceUUIDs, Action<string, string> action);
     abstract public void StopScan();
-    abstract public void StopBeaconScan();
     abstract public void DisconnectAll();
     abstract public void ConnectToPeripheral(string name, Action<string> connectAction, Action<string, string> serviceAction, Action<string, string, string> characteristicAction, Action<string> disconnectAction = null);
     abstract public void DisconnectPeripheral(string name, Action<string> action);
