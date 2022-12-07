@@ -9,6 +9,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Google.Protobuf;
+
 using System.Timers;
 
 using Timer = System.Timers.Timer;
@@ -55,7 +57,7 @@ namespace Psix
             get; private set;
         } = false;
 
-        /** Construct a gatt connection. 
+        /** Construct a gatt connection.
         * @param address Ble address of the device. Retrieve by scanning.
         * @param subscriptions Characteristics to subscribe to. Data from the first one will be forwarded to acceptor
         * @param acceptor Take data from the first characteristic and determine if the device is acceptable.
@@ -67,7 +69,7 @@ namespace Psix
             if (acceptor != null)
                 _acceptor = acceptor;
         }
-        /** Connect. You need to initialize bluetooth beforehand! 
+        /** Connect. You need to initialize bluetooth beforehand!
         * @param onAccepted Device is sending data that is accepted by acceptor.
         * @param onDisconnect Connection has either timed out or disconnect has been called.
         * @param connectionTimeout Disconnect after this seconds unless <= 0 or the device is accepted.
@@ -96,6 +98,22 @@ namespace Psix
             {
                 logger.Trace("Write succ");
             });
+        }
+
+        /* Send information about this device and app to the peripheral */
+        private void SendClientInfo() {
+            var update = new Proto.InputUpdate {
+                ClientInfo = new Proto.ClientInfo {
+                    DeviceModel = SystemInfo.deviceModel,
+                    DeviceName = SystemInfo.deviceName,
+                    DeviceType = SystemInfo.deviceType.ToString(),
+                    DeviceId = SystemInfo.deviceUniqueIdentifier,
+                    AppName = Application.productName,
+                    AppId = Application.identifier
+                }
+            };
+
+            SendBytes(update.ToByteArray(), GattServices.ProtobufServiceUUID, GattServices.ProtobufInputUUID);
         }
 
         /* Disconnect device */
@@ -165,6 +183,7 @@ namespace Psix
                         BLE.RequestMtu(addr, MTU, (addr, mtu) =>
                         {
                             logger.Debug($"{addr} got MTU {mtu}");
+                            self.SendClientInfo();
                             self.Subscribe(self._subscriptions.Count);
                         });
                     }
