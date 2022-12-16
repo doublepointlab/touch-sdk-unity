@@ -104,12 +104,9 @@ namespace Psix
         private void SendClientInfo() {
             var update = new Proto.InputUpdate {
                 ClientInfo = new Proto.ClientInfo {
-                    DeviceModel = SystemInfo.deviceModel,
-                    DeviceName = SystemInfo.deviceName,
-                    DeviceType = SystemInfo.deviceType.ToString(),
-                    DeviceId = SystemInfo.deviceUniqueIdentifier,
                     AppName = Application.productName,
-                    AppId = Application.identifier
+                    DeviceName = SystemInfo.deviceName,
+                    Os = Application.platform.ToString()
                 }
             };
 
