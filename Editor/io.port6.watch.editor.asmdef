@@ -13,12 +13,6 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [
-        {
-            "name": "com.unity.xr.oculus",
-            "expression": "",
-            "define": "PSIX_OCULUS"
-        }
-    ],
+    "versionDefines": [],
     "noEngineReferences": false
 }
