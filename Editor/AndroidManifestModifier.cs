@@ -7,9 +7,6 @@ using UnityEditor;
 #if UNITY_ANDROID
 using UnityEditor.Android;
 
-#if PSIX_OCULUS
-using UnityEditor.XR.Oculus;
-
 internal class OculusManifestBTFixer : IPostGenerateGradleAndroidProject
 {
     static readonly string k_AndroidURI = "http://schemas.android.com/apk/res/android";
@@ -55,8 +52,6 @@ internal class OculusManifestBTFixer : IPostGenerateGradleAndroidProject
 
     public void OnPostGenerateGradleAndroidProject(string path)
     {
-        if (!OculusBuildTools.OculusLoaderPresentInSettingsForBuildTarget(BuildTargetGroup.Android))
-            return;
 
         var manifestPath = path + k_AndroidManifestPath;
         var manifestDoc = new XmlDocument();
@@ -73,5 +68,4 @@ internal class OculusManifestBTFixer : IPostGenerateGradleAndroidProject
 
     public int callbackOrder { get { return 20000; } }
 }
-#endif // PSIX_OCULUS
 #endif // UNITY_ANDROID
