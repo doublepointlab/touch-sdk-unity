@@ -50,8 +50,12 @@ namespace Psix
         public bool Completed { get; private set; } = false;
 
         public GattConnector(
-                Action<GattConnection> onAccepted,
-            string nameSubstring, List<Subscription> subscriptions, List<string> advertisedServices, long timeout, Func<byte[], bool>? acceptor = null
+            Action<GattConnection> onAccepted,
+            string nameSubstring,
+            List<Subscription> subscriptions,
+            List<string> advertisedServices,
+            long timeout,
+            Func<byte[], bool>? acceptor = null
          )
         {
             _scanner = new GattScanner(advertisedServices);
@@ -126,7 +130,7 @@ namespace Psix
                 _connections.Remove(conn);
                 logger.Trace("OnDeclined {0}. {1} remain.", conn.Address, _connections.Count);
                 if (logger.IsEnabledFor(LogLevel.Verbose)){
-                    foreach (var c in _connections) 
+                    foreach (var c in _connections)
                         logger.Verbose("Remains: {0}", c.Address);
                 }
                 // We don't have to worry about future connections, because

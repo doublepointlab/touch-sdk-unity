@@ -61,7 +61,7 @@ namespace Psix
                 conn.OnDisconnect += (c) =>
                 {
                     // Unfortunately the action delegates do not seem immutable
-                    // as would be intuitive, but this action gets called to every 
+                    // as would be intuitive, but this action gets called to every
                     // disconnecting device.
                     if (c.Address == conn.Address)
                     {
@@ -163,6 +163,14 @@ namespace Psix
             return update.Signals.All(signal => (signal != Proto.Update.Types.Signal.Disconnect));
         }
 
+        private void RequestInfo() {
+            client?.RequestBytes(
+                GattServices.ProtobufServiceUUID,
+                GattServices.ProtobufInfoUUID,
+                infoAction
+            );
+        }
+
         // Internal callback
         private void protobufCallback(byte[] data)
         {
@@ -225,6 +233,7 @@ namespace Psix
 
         private void connectAction()
         {
+            RequestInfo();
             connector = null;
             logger.Debug("connect action");
             IsConnected = true;
@@ -244,6 +253,11 @@ namespace Psix
         {
             logger.Debug("timeout action");
             IsConnected = false;
+        }
+
+        private void infoAction(byte[] data)
+        {
+            Debug.Log("info action");
         }
     }
 }

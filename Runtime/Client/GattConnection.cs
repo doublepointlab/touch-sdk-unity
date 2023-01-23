@@ -100,6 +100,15 @@ namespace Psix
             });
         }
 
+        /** Gatt read operation
+        * @param serviceUuid UUID of the gatt service to be written to
+        * @param characteristicUUID UUID of the gatt characteristic to be written to
+        */
+        public void RequestBytes(string serviceUuid, string characteristicUuid, Action<byte[]> onData)
+        {
+            BLE.ReadCharacteristic(_address, serviceUuid, characteristicUuid, (charac, data) => onData(data));
+        }
+
         /* Send information about this device and app to the peripheral */
         private void SendClientInfo() {
             var update = new Proto.InputUpdate {
