@@ -69,6 +69,9 @@ public class WatchManager : MonoBehaviour
     /// respectively. Returns {0, 0, 0, 1} if no watch is connected.
     public Quaternion Orientation { get { return watch?.Orientation ?? default; } }
 
+    // Which hand the watch is worn on?
+    public Hand Handedness { get { return watch?.Handedness ?? default; } }
+
     /// Indicates whether the touch screen of the watch is being touched.
     public bool IsTouching { get; private set; }
 
@@ -176,7 +179,7 @@ public class WatchManager : MonoBehaviour
     }
 
     /**
-     * Try to discover and connect to a watch. 
+     * Try to discover and connect to a watch.
      * @param timeout Timeout interval in milliseconds.
      */
     public void Connect()

@@ -151,6 +151,9 @@ namespace Psix
         public Quaternion? Orientation { get; private set; } = null;
         public Action<Quaternion> OnOrientationUpdated = (data) => { return; };
 
+        // Which hand the watch is worn on?
+        public Hand Handedness = Hand.None;
+
         // User callbacks for interaction events
         public Action<Gesture> OnGesture = (gesture) => { return; };
         public Action<TouchEventArgs> OnTouchEvent = (touchEvent) => { return; };
@@ -257,7 +260,13 @@ namespace Psix
 
         private void infoAction(byte[] data)
         {
-            Debug.Log("info action");
+            var info = Proto.Info.Parser.ParseFrom(data);
+
+            if (info.Hand == Proto.Info.Types.Hand.Right)
+                Handedness = Hand.Right;
+            if (info.Hand == Proto.Info.Types.Hand.Left)
+                Handedness = Hand.Left;
+
         }
     }
 }
