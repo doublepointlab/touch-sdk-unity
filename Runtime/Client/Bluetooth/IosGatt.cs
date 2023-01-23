@@ -1,4 +1,4 @@
-//#if UNITY_IOS || UNITY_TVOS
+#if UNITY_IOS || UNITY_TVOS
 
 using UnityEngine;
 using System;
@@ -309,4 +309,4 @@ public class IosGatt: Gatt
         }
     }
 }
-//#endif
+#endif
