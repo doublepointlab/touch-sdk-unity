@@ -36,7 +36,7 @@ namespace Psix
 
         public Watch()
         {
-            subs.Add(new Subscription(GattServices.ProtobufServiceUUID, GattServices.ProtobufOutputUUID, protobufCallback));
+            subs.Add(new Subscription(GattServices.ProtobufServiceUUID, GattServices.ProtobufOutputUUID, updateCallback));
         }
 
         /**
@@ -158,6 +158,7 @@ namespace Psix
         public Action<Gesture> OnGesture = (gesture) => { return; };
         public Action<TouchEventArgs> OnTouchEvent = (touchEvent) => { return; };
         public Action<MotionEventArgs> OnMotionEvent = (motionEvent) => { return; };
+        public Action<Hand> OnHandednessChangeEvent = (hand) => { return; };
 
 
         private bool select(byte[] data)
@@ -170,12 +171,12 @@ namespace Psix
             client?.RequestBytes(
                 GattServices.ProtobufServiceUUID,
                 GattServices.ProtobufInfoUUID,
-                infoAction
+                infoCallback
             );
         }
 
-        // Internal callback
-        private void protobufCallback(byte[] data)
+        // Internal callbacks
+        private void updateCallback(byte[] data)
         {
             var update = Proto.Update.Parser.ParseFrom(data);
 
@@ -232,6 +233,26 @@ namespace Psix
             }
 
         }
+
+        private void infoCallback(byte[] data)
+        {
+            var info = Proto.Info.Parser.ParseFrom(data);
+
+            var newHandedness = Hand.None;
+
+            if (info.Hand == Proto.Info.Types.Hand.Right)
+                newHandedness = Hand.Right;
+            if (info.Hand == Proto.Info.Types.Hand.Left)
+                newHandedness = Hand.Left;
+
+            if (newHandedness != Handedness) {
+                OnHandednessChangeEvent(newHandedness);
+            }
+
+            Handedness = newHandedness;
+
+        }
+
         // Internal connection lifecycle callbacks
 
         private void connectAction()
@@ -254,19 +275,9 @@ namespace Psix
 
         private void timeoutAction()
         {
-            logger.Debug("timeout action");
+            Debug.Log("timeout action");
             IsConnected = false;
         }
 
-        private void infoAction(byte[] data)
-        {
-            var info = Proto.Info.Parser.ParseFrom(data);
-
-            if (info.Hand == Proto.Info.Types.Hand.Right)
-                Handedness = Hand.Right;
-            if (info.Hand == Proto.Info.Types.Hand.Left)
-                Handedness = Hand.Left;
-
-        }
     }
 }

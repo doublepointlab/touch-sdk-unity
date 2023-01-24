@@ -40,6 +40,9 @@ public class WatchManager : MonoBehaviour
     /// is detected by the watch.
     public PsixMotionEvent? m_MotionEvent;
 
+    /// Invoked when information about watch handedness is received
+    public UnityEvent<Hand>? m_HandednessChangeEvent;
+
     /// Invoked when a connection to the watch is established.
     public UnityEvent? m_ConnectEvent;
 
@@ -136,6 +139,10 @@ public class WatchManager : MonoBehaviour
                 }
             }
 
+        };
+        watch.OnHandednessChangeEvent = (handedness) =>
+        {
+            m_HandednessChangeEvent?.Invoke(handedness);
         };
         Connect();
 
