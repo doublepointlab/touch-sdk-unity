@@ -170,7 +170,7 @@ namespace Psix
         private void RequestInfo() {
             client?.RequestBytes(
                 GattServices.ProtobufServiceUUID,
-                GattServices.ProtobufInfoUUID,
+                GattServices.ProtobufOutputUUID,
                 infoCallback
             );
         }
@@ -236,7 +236,8 @@ namespace Psix
 
         private void infoCallback(byte[] data)
         {
-            var info = Proto.Info.Parser.ParseFrom(data);
+            var update = Proto.Update.Parser.ParseFrom(data);
+            var info = update.Info;
 
             var newHandedness = Hand.None;
 
