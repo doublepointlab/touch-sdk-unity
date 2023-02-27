@@ -276,7 +276,7 @@ namespace Psix
 
         private void timeoutAction()
         {
-            Debug.Log("timeout action");
+            logger.Debug("timeout action");
             IsConnected = false;
         }
 
