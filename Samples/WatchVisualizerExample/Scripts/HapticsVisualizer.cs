@@ -7,7 +7,7 @@ namespace Psix.Examples
 {
     public class HapticsVisualizer : MonoBehaviour
     {
-        [SerializeField] private WatchManager watchManager;
+        [SerializeField] private Watch watch;
 
         [Space]
 
@@ -44,6 +44,8 @@ namespace Psix.Examples
 
         void Update()
         {
+            if (Camera.main == null)
+                return;
             Ray cameraRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
 
             // Return everything to the right color after timeout
@@ -82,7 +84,7 @@ namespace Psix.Examples
                     {
                         timeOfLastPulse = Time.time;
                         
-                        watchManager.Vibrate((int)Mathf.Round(scaledDuration), normalizedPower);
+                        watch.Vibrate((int)Mathf.Round(scaledDuration), normalizedPower);
                         cursorHead.material.color = Color.white;
                         powerText.color = Color.white;
                         lengthText.color = Color.white;

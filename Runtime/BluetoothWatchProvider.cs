@@ -6,11 +6,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 using Google.Protobuf;
 
 using UnityEngine;
+
+#if UNITY_EDITOR_WIN
+#warning "Bluetooth support in Play Mode is experimental and unstable."
+#endif
+
+#if UNITY_ANDROID
+using UnityEngine.Android;
+#endif
 
 
 namespace Psix
@@ -19,39 +26,31 @@ namespace Psix
     using Interaction;
 
     /**
-     * Smartwatch interface.
-     *
+     * Implementation of smartwatch interface for bluetooth devices.
      * Provides methods and callbacks related to connecting to Port 6 XR Controller
      * smartwatch app.
-     *
+     * Check also IWatch.
      */
-    public class Watch
+    [DefaultExecutionOrder(-50)]
+    public class BluetoothWatchProvider : MonoBehaviour, IWatch
     {
-        private static PsixLogger logger = new PsixLogger("Watch");
+        [SerializeField] public string watchName = "";
+
+        // Connecting to a gatt server might take minutes at worst on some
+        // machines.  Most devices will hopefully connect within 30 seconds.
+        [HideInInspector] public int connectionTimeoutSeconds = 120;
+
+        private static PsixLogger logger = new PsixLogger("BluetoothWatchProvider");
 
         private GattConnection? client;
         private GattConnector? connector;
 
         List<Subscription> subs = new List<Subscription>();
 
-        public Watch()
-        {
-            subs.Add(new Subscription(GattServices.ProtobufServiceUUID, GattServices.ProtobufOutputUUID, protobufCallback));
-        }
-
         /**
          * Connect to the watch running Port 6 XR Controller app.
-         *
-         * @param onConnected Action that is called once the connection is established.
-         * @param onDisconnected Action that is called when the connection is severed.
-         * @param onTimeout Action that is called if no matching device is found.
          */
-        public void Connect(
-            string name,
-            Action? onConnected = null,
-            Action? onDisconnected = null,
-            Action? onTimeout = null,
-            int timeout = 120 * 1000)
+        public void Connect()
         {
             connector = new GattConnector(onAccepted: (conn) =>
             {
@@ -66,13 +65,13 @@ namespace Psix
                     if (c.Address == conn.Address)
                     {
                         disconnectAction();
-                        onDisconnected?.Invoke();
+                        OnDisconnect?.Invoke();
                     }
                 };
                 connectAction();
-                onConnected?.Invoke();
-            }, name, subs,
-            new List<string>() { GattServices.InteractionServiceUUID }, timeout, select);
+                OnConnect?.Invoke();
+            }, watchName, subs,
+            new List<string>() { GattServices.InteractionServiceUUID }, connectionTimeoutSeconds * 1000, select);
         }
 
         /**
@@ -85,7 +84,7 @@ namespace Psix
             client?.Disconnect();
         }
 
-        public bool IsConnected { get; private set; } = false;
+        public bool Connected { get; private set; } = false;
 
         /**
          * Trigger a one-shot haptic feedback effect on the watch.
@@ -127,34 +126,49 @@ namespace Psix
             client?.SendBytes(update.ToByteArray(), GattServices.ProtobufServiceUUID, GattServices.ProtobufInputUUID);
         }
 
-        /// Angular velocity of the watch in degrees per second.
-        /// Returns a zero vector if no watch is connected.
-        public Vector3? AngularVelocity { get; private set; } = null;
-        public Action<Vector3> OnAngularVelocityUpdated = (data) => { return; };
+        private void Awake()
+        {
+            Watch.Instance.RegisterProvider(this);
+        }
 
-        /// Acceleration of the watch in meters per second squared.
-        /// Returns a zero vector if no watch is connected.
-        public Vector3? Acceleration { get; private set; } = null;
-        public Action<Vector3> OnAccelerationUpdated = (data) => { return; };
+        private void Start()
+        {
+#if UNITY_ANDROID
+            if (!Permission.HasUserAuthorizedPermission(Permission.FineLocation))
+            {
+                Debug.Log("No location permission.");
+                Permission.RequestUserPermission(Permission.FineLocation);
+            }
+#else
+            Connect();
+#endif
+        }
 
-        /// Estimated direction of gravity meters per second squared.
-        /// Returns a zero vector if no watch is connected.
-        public Vector3? Gravity { get; private set; } = null;
-        public Action<Vector3> OnGravityUpdated = (data) => { return; };
+#if UNITY_ANDROID
+        private void Update()
+        {
+            if (Permission.HasUserAuthorizedPermission(Permission.FineLocation) && client == null && connector == null)
+                Connect();
+        }
+#endif
 
-        /// Absolute orientation quaternion of watch in a reference coordinate system.
-        /// Quaternion {x*sin(t/2), y*sin(t/2), z*sin(t/2), cos(t/2)} corresponds
-        /// to a rotation of watch from the reference position around the unit vector
-        /// axis {x, y, z}, such that the directions {1, 0, 0}, {0, 1, 0}, and {0, 0, 1}
-        /// correspond to the "magnetic" East, magnetic North, and upwards directions,
-        /// respectively. Returns {0, 0, 0, 1} if no watch is connected.
-        public Quaternion? Orientation { get; private set; } = null;
-        public Action<Quaternion> OnOrientationUpdated = (data) => { return; };
+        public BluetoothWatchProvider()
+        {
+            subs.Add(new Subscription(GattServices.ProtobufServiceUUID, GattServices.ProtobufOutputUUID, protobufCallback));
+        }
 
-        // User callbacks for interaction events
-        public Action<Gesture> OnGesture = (gesture) => { return; };
-        public Action<TouchEventArgs> OnTouchEvent = (touchEvent) => { return; };
-        public Action<MotionEventArgs> OnMotionEvent = (motionEvent) => { return; };
+        /* Documented in WatchInterface */
+        public event Action<Vector3>? OnAngularVelocity = null;
+        public event Action<Vector3>? OnAcceleration = null;
+        public event Action<Vector3>? OnGravity = null;
+        public event Action<Quaternion>? OnOrientation = null;
+        public event Action<Gesture>? OnGesture = null;
+        public event Action<TouchEvent>? OnTouch = null;
+        public event Action? OnButton = null;
+        public event Action<Direction>? OnRotary = null;
+
+        public event Action? OnConnect = null;
+        public event Action? OnDisconnect = null;
 
 
         private bool select(byte[] data)
@@ -172,52 +186,52 @@ namespace Psix
             {
                 var frame = update.SensorFrames.Last();
                 // Update sensor stuff
-                Acceleration = new Vector3(frame.Acc.Y, frame.Acc.Z, -frame.Acc.X);
-                Gravity = new Vector3(frame.Grav.Y, frame.Grav.Z, -frame.Grav.X);
-                AngularVelocity = new Vector3(-frame.Gyro.Y, -frame.Gyro.Z, frame.Gyro.X);
-                Orientation = new Quaternion(-frame.Quat.Y, -frame.Quat.Z, frame.Quat.X, frame.Quat.W);
 
-                OnAccelerationUpdated(Acceleration ?? new Vector3());
-                OnGravityUpdated(Gravity ?? new Vector3());
-                OnAngularVelocityUpdated(AngularVelocity ?? new Vector3());
-                OnOrientationUpdated(Orientation ?? new Quaternion());
+                OnAcceleration?.Invoke(new Vector3(frame.Acc.Y, frame.Acc.Z, -frame.Acc.X));
+                OnGravity?.Invoke(new Vector3(frame.Grav.Y, frame.Grav.Z, frame.Grav.X));
+                OnAngularVelocity?.Invoke(new Vector3(-frame.Gyro.Y, -frame.Gyro.Z, frame.Gyro.X));
+                OnOrientation?.Invoke(new Quaternion(-frame.Quat.Y, -frame.Quat.Z, frame.Quat.X, frame.Quat.W));
             }
 
             foreach (var gesture in update.Gestures)
-            {
-                OnGesture((Interaction.Gesture)gesture.Type);
-            }
+                OnGesture?.Invoke((Interaction.Gesture)gesture.Type);
             foreach (var touchEvent in update.TouchEvents)
             {
+                Interaction.TouchType type = TouchType.None;
+                switch (touchEvent.EventType)
+                {
+                    case Proto.TouchEvent.Types.TouchEventType.Begin:
+                        type = TouchType.On;
+                        break;
+                    case Proto.TouchEvent.Types.TouchEventType.End:
+                        type = TouchType.Off;
+                        break;
+                    case Proto.TouchEvent.Types.TouchEventType.Move:
+                        type = TouchType.Move;
+                        break;
+                    case Proto.TouchEvent.Types.TouchEventType.Cancel:
+                        type = TouchType.Cancel;
+                        break;
+                    default: break;
+                }
                 var coords = touchEvent.Coords.First();
-                OnTouchEvent(new TouchEventArgs(
-                    (Interaction.TouchType)(touchEvent.EventType),
+                OnTouch?.Invoke(new TouchEvent(
+                            type,
                     new Vector2(coords.X, coords.Y)
                 ));
             }
 
             foreach (var buttonEvent in update.ButtonEvents)
-            {
-                OnMotionEvent(new MotionEventArgs(
-                    Interaction.MotionType.Button,
-                    (Interaction.MotionInfo)(buttonEvent.Id)
-                ));
-            }
+                OnButton?.Invoke();
 
+            // TODO: Is the direction correct??
             foreach (var rotaryEvent in update.RotaryEvents)
-            {
-                OnMotionEvent(new MotionEventArgs(
-                    Interaction.MotionType.Rotary,
-                    (Interaction.MotionInfo)((rotaryEvent.Step > 0) ? 1 : 0)
-                ));
-            }
+                OnRotary?.Invoke((rotaryEvent.Step > 0) ? Direction.CounterClockwise : Direction.Clockwise);
 
             foreach (var signal in update.Signals)
             {
                 if (signal == Proto.Update.Types.Signal.Disconnect)
-                {
                     Disconnect();
-                }
             }
 
         }
@@ -227,23 +241,27 @@ namespace Psix
         {
             connector = null;
             logger.Debug("connect action");
-            IsConnected = true;
+            Connected = true;
         }
 
         private void disconnectAction()
         {
             logger.Debug("disconnect action");
-            IsConnected = false;
-            AngularVelocity = null;
-            Acceleration = null;
-            Gravity = null;
-            Orientation = null;
+            Connected = false;
         }
 
-        private void timeoutAction()
+        public void ClearSubscriptions()
         {
-            logger.Debug("timeout action");
-            IsConnected = false;
+            OnGesture = null;
+            OnTouch = null;
+            OnButton = null;
+            OnRotary = null;
+            OnAcceleration = null;
+            OnAngularVelocity = null;
+            OnOrientation = null;
+            OnGravity = null;
+            OnConnect = null;
+            OnDisconnect = null;
         }
     }
 }

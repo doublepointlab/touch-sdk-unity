@@ -3,13 +3,15 @@ using TMPro;
 
 namespace Psix.Examples
 {
+    using Psix.Interaction;
+
     public class TouchVisualizer : MonoBehaviour
     {
 
         [SerializeField] private Transform touchPoint;
         [SerializeField] private Renderer touchPointRenderer;
         [SerializeField] private Transform watchBody;
-        
+
         [SerializeField] private TextMeshPro textW;
         [SerializeField] private TextMeshPro textH;
 
@@ -18,27 +20,31 @@ namespace Psix.Examples
         void Start()
         {
             watchDiameter = watchBody.localScale.x;
-            touchPoint.localPosition = new Vector3(0,0,0);
+            touchPoint.localPosition = new Vector3(0, 0, 0);
         }
 
-        public void UpdateTouchIndicator(float w, float h, bool isTouching)
+        public void UpdateTouchIndicator(TouchEvent args)
         {
-            touchPoint.localPosition = new Vector3(w * watchDiameter - watchDiameter / 2, h * watchDiameter - watchDiameter / 2, 0);
-            textW.text = w.ToString("F4");
-            textH.text = h.ToString("F4");
-
-            if (isTouching) {
-                textW.color = Color.white;
-                textH.color = Color.white;
-                touchPointRenderer.material.color = Color.white;
-            }
-            else
+            switch (args.type)
             {
-                textW.color = Color.grey;
-                textH.color = Color.grey;
-                touchPointRenderer.material.color = Color.grey;
-            }
+                case TouchType.On:
+                    textW.color = Color.white;
+                    textH.color = Color.white;
+                    touchPointRenderer.material.color = Color.white;
+                    goto case TouchType.Move;
+                case TouchType.Move:
+                    touchPoint.localPosition = new Vector3(args.coords.x * watchDiameter - watchDiameter / 2, args.coords.y * watchDiameter - watchDiameter / 2, 0);
+                    textW.text = args.coords.x.ToString("F4");
+                    textH.text = args.coords.y.ToString("F4");
+                    break;
+                case TouchType.Off:
+                    textW.color = Color.grey;
+                    textH.color = Color.grey;
+                    touchPointRenderer.material.color = Color.grey;
+                    break;
 
+
+            }
         }
     }
 }

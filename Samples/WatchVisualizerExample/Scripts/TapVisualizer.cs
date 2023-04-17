@@ -1,20 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-using Psix;
 
 namespace Psix.Examples
 {
+    using Psix.Interaction;
     public class TapVisualizer : MonoBehaviour
     {
-    
+
         [SerializeField] private TextMeshPro tapCountText;
 
         [SerializeField] private Renderer tapThingRenderer;
 
-        private int tapCount;
+        private int tapCount = 0;
         private float timeOfLastTap;
 
         void Update()
@@ -25,16 +23,15 @@ namespace Psix.Examples
             }
         }
 
-        public void UpdateTapCount(int newTapCount)
+        public void UpdateTapCount(Gesture gesture)
         {
-            tapCountText.text = newTapCount.ToString();
+            if (gesture != Gesture.Tap)
+                return;
+            tapCount++;
+            tapCountText.text = tapCount.ToString();
 
-            if (newTapCount != tapCount)
-            {
-                tapThingRenderer.material.color = Color.black;
-                timeOfLastTap = Time.time;
-                tapCount = newTapCount;
-            }
+            tapThingRenderer.material.color = Color.black;
+            timeOfLastTap = Time.time;
         }
     }
 }

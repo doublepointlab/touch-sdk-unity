@@ -1,15 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
-using Psix;
+using System.Collections.Generic;
 
 namespace Psix.Examples
 {
+
     public class VisualizationManager : MonoBehaviour
     {
-        public WatchManager watchManager;
+        // To be replaced with IWatch if Unity implements support
+        // https://forum.unity.com/threads/serialized-interface-fields.1238785/
         public TextMeshPro connectionText;
         public AccelerometerVisualizer accelerometerVisualizer;
         public GyroscopeVisualizer gyroscopeVisualizer;
@@ -18,25 +17,21 @@ namespace Psix.Examples
         public TapVisualizer tapVisualizer;
         public QuaternionVisualizer quaternionVisualizer;
 
-        void Update()
+        void Start()
         {
-            accelerometerVisualizer.UpdateVisualizer(watchManager.Acceleration);
-            gyroscopeVisualizer.UpdateGyroscope(watchManager.AngularVelocity);
-            touchVisualizer.UpdateTouchIndicator(watchManager.TouchCoordinates[0] / 450, watchManager.TouchCoordinates[1] / 450, watchManager.IsTouching);
-            dialVisualizer.UpdateDialPosition(watchManager.RotaryPosition);
-            tapVisualizer.UpdateTapCount(watchManager.TapCount);
-            quaternionVisualizer.UpdateOrientation(watchManager.Orientation);
+            if (Watch.Instance == null){
+                Debug.Log("VisualizationManager: Null watch");
+                return;
+            }
+            Watch.Instance.OnAcceleration += accelerometerVisualizer.UpdateVisualizer;
+            Watch.Instance.OnAngularVelocity += gyroscopeVisualizer.UpdateGyroscope;
+            Watch.Instance.OnTouch += touchVisualizer.UpdateTouchIndicator;
+            Watch.Instance.OnRotary += dialVisualizer.UpdateDialPosition;
+            Watch.Instance.OnGesture += tapVisualizer.UpdateTapCount;
+            Watch.Instance.OnOrientation += quaternionVisualizer.UpdateOrientation;
 
-            //inputText.text = watchManager.IsConnected.ToString() +":\n" +
-            //    watchManager.Acceleration.ToString("F4") + "\n" +
-            //    watchManager.AngularVelocity.ToString("F4") + "\n" +
-            //    watchManager.TouchCoordinates[0].ToString("F4") + ", " + watchManager.TouchCoordinates[1].ToString("F4") + "\n" +
-            //    watchManager.RotaryPosition.ToString() + "\n" +
-            //    watchManager.TapCount.ToString()
-            //    ;
-            connectionText.text = watchManager.IsConnected.ToString();
-
-
+            Watch.Instance.OnConnect += () => { connectionText.text = "Connected"; };
+            Watch.Instance.OnDisconnect += () => { connectionText.text = "Disconnected"; };
         }
     }
 }
