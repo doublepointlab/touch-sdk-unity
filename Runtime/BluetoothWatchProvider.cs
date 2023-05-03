@@ -36,9 +36,17 @@ namespace Psix
     {
         [SerializeField] public string watchName = "";
 
+        // The bluetooth name of the watch */
+        public string ConnectedWatchName {
+            get;
+            private set; 
+        }
+
         // Connecting to a gatt server might take minutes at worst on some
         // machines.  Most devices will hopefully connect within 30 seconds.
         [HideInInspector] public int connectionTimeoutSeconds = 120;
+        
+        public bool ConnectOnStart = true;
 
         private static PsixLogger logger = new PsixLogger("BluetoothWatchProvider");
 
@@ -52,10 +60,11 @@ namespace Psix
          */
         public void Connect()
         {
-            connector = new GattConnector(onAccepted: (conn) =>
+            connector = new GattConnector(onAccepted: (conn, _watchName) =>
             {
-                logger.Trace("OnAccept");
+                logger.Info("Connected to \"{0}\"", _watchName);
                 client = conn;
+                ConnectedWatchName = _watchName;
                 // Add disconnect callbacks only once a connection is found
                 conn.OnDisconnect += (c) =>
                 {
@@ -71,7 +80,7 @@ namespace Psix
                 connectAction();
                 OnConnect?.Invoke();
             }, watchName, subs,
-            new List<string>() { GattServices.InteractionServiceUUID }, connectionTimeoutSeconds * 1000, select);
+            new List<string>() { GattServices.InteractionServiceUUID }, connectionTimeoutSeconds * 1000, select, OnScanTimeout);
         }
 
         /**
@@ -140,7 +149,8 @@ namespace Psix
                 Permission.RequestUserPermission(Permission.FineLocation);
             }
 #else
-            Connect();
+            if (ConnectOnStart)
+                Connect();
 #endif
         }
 
@@ -154,6 +164,7 @@ namespace Psix
 
         public BluetoothWatchProvider()
         {
+            ConnectedWatchName = "";
             subs.Add(new Subscription(GattServices.ProtobufServiceUUID, GattServices.ProtobufOutputUUID, protobufCallback));
         }
 
@@ -169,6 +180,9 @@ namespace Psix
 
         public event Action? OnConnect = null;
         public event Action? OnDisconnect = null;
+
+        /* Not part of generic interface */ 
+        public event Action? OnScanTimeout = null;
 
 
         private bool select(byte[] data)
@@ -188,7 +202,7 @@ namespace Psix
                 // Update sensor stuff
 
                 OnAcceleration?.Invoke(new Vector3(frame.Acc.Y, frame.Acc.Z, -frame.Acc.X));
-                OnGravity?.Invoke(new Vector3(frame.Grav.Y, frame.Grav.Z, frame.Grav.X));
+                OnGravity?.Invoke(new Vector3(frame.Grav.Y, frame.Grav.Z, -frame.Grav.X));
                 OnAngularVelocity?.Invoke(new Vector3(-frame.Gyro.Y, -frame.Gyro.Z, frame.Gyro.X));
                 OnOrientation?.Invoke(new Quaternion(-frame.Quat.Y, -frame.Quat.Z, frame.Quat.X, frame.Quat.W));
             }

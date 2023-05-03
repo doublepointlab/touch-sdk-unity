@@ -39,15 +39,18 @@ namespace Psix
         private Func<byte[], bool> _acceptor = (data => true);
 
         private Queue<string> _futureConnections = new Queue<string>();
+        private Dictionary<string, string> _devNames = new Dictionary<string, string>();
         private HashSet<GattConnection> _connections = new HashSet<GattConnection>();
 
-        Action<GattConnection> _onAccepted;
+        Action<GattConnection, string> _onAccepted;
+        Action? _onTimeout;
 
         public bool Completed { get; private set; } = false;
 
         public GattConnector(
-                Action<GattConnection> onAccepted,
-            string nameSubstring, List<Subscription> subscriptions, List<string> advertisedServices, long timeout, Func<byte[], bool>? acceptor = null
+                Action<GattConnection, string> onAccepted,
+            string nameSubstring, List<Subscription> subscriptions, List<string> advertisedServices, long timeout, Func<byte[], bool>? acceptor = null,
+            Action? onTimeout=null
          )
         {
             _scanner = new GattScanner(advertisedServices);
@@ -55,6 +58,7 @@ namespace Psix
             _subs = subscriptions;
             _acceptor += acceptor;
             _onAccepted = onAccepted;
+            _onTimeout = onTimeout;
             MaxConnections = nameSubstring != "" ? 1 : 4;
             StartConnectionTimeout(timeout);
             GattImpl.Instance.Initialize(true, false,
@@ -112,7 +116,7 @@ namespace Psix
                     c.Disconnect();
                 _connections.Clear();
             }
-            _onAccepted(conn);
+            _onAccepted.Invoke(conn, _devNames[conn.Address]);
         }
 
         void OnDeclined(GattConnection conn)
@@ -141,11 +145,13 @@ namespace Psix
             logger.Trace("ConnectNext");
             lock (_futureConnections)
             {
-                if (_futureConnections.Count == 0)
+                if (_futureConnections.Count == 0){
+                    logger.Trace($"ConnectNext no more devices");
                     return;
+                }
                 var address = _futureConnections.Dequeue();
+                logger.Trace("Testing connection to ({0})", address);
                 var conn = new GattConnection(address, _subs, _acceptor);
-                logger.Trace($"GattConnection({conn.Address})");
                 lock (_connections)
                     _connections.Add(conn);
                 // R value lambdas are singletons !?!?!?
@@ -157,12 +163,18 @@ namespace Psix
         {
             lock (_futureConnections)
             {
+                logger.Trace("{0} scan results for TestConnections", scanResults.Count);
                 foreach (var res in scanResults)
                 {
+                    logger.Trace("ScanResult: {0}", res.address);
                     _testedAddresses.Add(res.address);
                     _futureConnections.Enqueue(res.address);
+                    logger.Trace("Deduced device name \"{0}\" out of \"{1}\" \"{2}\"", res.deducedName, res.name, res.adString);
+                    _devNames[res.address] = res.deducedName;
                 }
+                logger.Trace("Out");
             }
+            logger.Trace("Calling ConnectNext");
             ConnectNext();
         }
 
@@ -172,6 +184,7 @@ namespace Psix
             if (_hasTimedOut)
             {
                 logger.Debug("Device scan timed out");
+                _onTimeout?.Invoke();
                 return;
             }
             var scanResults = _scanner?.PeekResults();
