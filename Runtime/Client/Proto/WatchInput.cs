@@ -24,20 +24,21 @@ namespace Psix.Proto {
     static WatchInputReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChF3YXRjaF9pbnB1dC5wcm90byJ+CgtIYXB0aWNFdmVudBIlCgR0eXBlGAEg",
-            "ASgOMhcuSGFwdGljRXZlbnQuSGFwdGljVHlwZRIRCglpbnRlbnNpdHkYAiAB",
-            "KAISDgoGbGVuZ3RoGAMgASgFIiUKCkhhcHRpY1R5cGUSCgoGQ0FOQ0VMEAAS",
-            "CwoHT05FU0hPVBABIkwKCkNsaWVudEluZm8SDwoHYXBwTmFtZRgBIAEoCRIS",
-            "CgpkZXZpY2VOYW1lGAIgASgJEg0KBXRpdGxlGAMgASgJEgoKAm9zGAQgASgJ",
-            "IlEKC0lucHV0VXBkYXRlEiEKC2hhcHRpY0V2ZW50GAEgASgLMgwuSGFwdGlj",
-            "RXZlbnQSHwoKY2xpZW50SW5mbxgCIAEoCzILLkNsaWVudEluZm9CDaoCClBz",
-            "aXguUHJvdG9iBnByb3RvMw=="));
+            "ChF3YXRjaF9pbnB1dC5wcm90bxoMY29tbW9uLnByb3RvIn4KC0hhcHRpY0V2",
+            "ZW50EiUKBHR5cGUYASABKA4yFy5IYXB0aWNFdmVudC5IYXB0aWNUeXBlEhEK",
+            "CWludGVuc2l0eRgCIAEoAhIOCgZsZW5ndGgYAyABKAUiJQoKSGFwdGljVHlw",
+            "ZRIKCgZDQU5DRUwQABILCgdPTkVTSE9UEAEiTAoKQ2xpZW50SW5mbxIPCgdh",
+            "cHBOYW1lGAEgASgJEhIKCmRldmljZU5hbWUYAiABKAkSDQoFdGl0bGUYAyAB",
+            "KAkSCgoCb3MYBCABKAkibwoLSW5wdXRVcGRhdGUSIQoLaGFwdGljRXZlbnQY",
+            "ASABKAsyDC5IYXB0aWNFdmVudBIfCgpjbGllbnRJbmZvGAIgASgLMgsuQ2xp",
+            "ZW50SW5mbxIcCgxtb2RlbFJlcXVlc3QYAyABKAsyBi5Nb2RlbEINqgIKUHNp",
+            "eC5Qcm90b2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { },
+          new pbr::FileDescriptor[] { global::Psix.Proto.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.HapticEvent), global::Psix.Proto.HapticEvent.Parser, new[]{ "Type", "Intensity", "Length" }, null, new[]{ typeof(global::Psix.Proto.HapticEvent.Types.HapticType) }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.ClientInfo), global::Psix.Proto.ClientInfo.Parser, new[]{ "AppName", "DeviceName", "Title", "Os" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.InputUpdate), global::Psix.Proto.InputUpdate.Parser, new[]{ "HapticEvent", "ClientInfo" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.InputUpdate), global::Psix.Proto.InputUpdate.Parser, new[]{ "HapticEvent", "ClientInfo", "ModelRequest" }, null, null, null, null)
           }));
     }
     #endregion
@@ -656,6 +657,7 @@ namespace Psix.Proto {
     public InputUpdate(InputUpdate other) : this() {
       hapticEvent_ = other.hapticEvent_ != null ? other.hapticEvent_.Clone() : null;
       clientInfo_ = other.clientInfo_ != null ? other.clientInfo_.Clone() : null;
+      modelRequest_ = other.modelRequest_ != null ? other.modelRequest_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -689,6 +691,18 @@ namespace Psix.Proto {
       }
     }
 
+    /// <summary>Field number for the "modelRequest" field.</summary>
+    public const int ModelRequestFieldNumber = 3;
+    private global::Psix.Proto.Model modelRequest_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Psix.Proto.Model ModelRequest {
+      get { return modelRequest_; }
+      set {
+        modelRequest_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -706,6 +720,7 @@ namespace Psix.Proto {
       }
       if (!object.Equals(HapticEvent, other.HapticEvent)) return false;
       if (!object.Equals(ClientInfo, other.ClientInfo)) return false;
+      if (!object.Equals(ModelRequest, other.ModelRequest)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -715,6 +730,7 @@ namespace Psix.Proto {
       int hash = 1;
       if (hapticEvent_ != null) hash ^= HapticEvent.GetHashCode();
       if (clientInfo_ != null) hash ^= ClientInfo.GetHashCode();
+      if (modelRequest_ != null) hash ^= ModelRequest.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -741,6 +757,10 @@ namespace Psix.Proto {
         output.WriteRawTag(18);
         output.WriteMessage(ClientInfo);
       }
+      if (modelRequest_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(ModelRequest);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -759,6 +779,10 @@ namespace Psix.Proto {
         output.WriteRawTag(18);
         output.WriteMessage(ClientInfo);
       }
+      if (modelRequest_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(ModelRequest);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -774,6 +798,9 @@ namespace Psix.Proto {
       }
       if (clientInfo_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(ClientInfo);
+      }
+      if (modelRequest_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ModelRequest);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -798,6 +825,12 @@ namespace Psix.Proto {
           ClientInfo = new global::Psix.Proto.ClientInfo();
         }
         ClientInfo.MergeFrom(other.ClientInfo);
+      }
+      if (other.modelRequest_ != null) {
+        if (modelRequest_ == null) {
+          ModelRequest = new global::Psix.Proto.Model();
+        }
+        ModelRequest.MergeFrom(other.ModelRequest);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -828,6 +861,13 @@ namespace Psix.Proto {
             input.ReadMessage(ClientInfo);
             break;
           }
+          case 26: {
+            if (modelRequest_ == null) {
+              ModelRequest = new global::Psix.Proto.Model();
+            }
+            input.ReadMessage(ModelRequest);
+            break;
+          }
         }
       }
     #endif
@@ -855,6 +895,13 @@ namespace Psix.Proto {
               ClientInfo = new global::Psix.Proto.ClientInfo();
             }
             input.ReadMessage(ClientInfo);
+            break;
+          }
+          case 26: {
+            if (modelRequest_ == null) {
+              ModelRequest = new global::Psix.Proto.Model();
+            }
+            input.ReadMessage(ModelRequest);
             break;
           }
         }

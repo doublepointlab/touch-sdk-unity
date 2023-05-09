@@ -24,42 +24,398 @@ namespace Psix.Proto {
     static WatchOutputReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChJ3YXRjaF9vdXRwdXQucHJvdG8aCXZlYy5wcm90byJzCgtTZW5zb3JGcmFt",
-            "ZRITCgRneXJvGAEgASgLMgUuVmVjMxISCgNhY2MYAiABKAsyBS5WZWMzEhMK",
-            "BGdyYXYYAyABKAsyBS5WZWMzEhMKBHF1YXQYBCABKAsyBS5RdWF0EhEKCWRl",
-            "bHRhVGltZRgFIAEoBSJuCgdHZXN0dXJlEiIKBHR5cGUYASABKA4yFC5HZXN0",
-            "dXJlLkdlc3R1cmVUeXBlEhEKCWRlbHRhVGltZRgCIAEoBSIsCgtHZXN0dXJl",
-            "VHlwZRIICgROT05FEAASBwoDVEFQEAESCgoGQ0xFTkNIEAIi1AEKClRvdWNo",
-            "RXZlbnQSLQoJZXZlbnRUeXBlGAEgASgOMhouVG91Y2hFdmVudC5Ub3VjaEV2",
-            "ZW50VHlwZRITCgthY3Rpb25JbmRleBgCIAEoBRISCgpwb2ludGVySWRzGAMg",
-            "AygFEhUKBmNvb3JkcxgEIAMoCzIFLlZlYzISEQoJZGVsdGFUaW1lGAUgASgF",
-            "IkQKDlRvdWNoRXZlbnRUeXBlEggKBE5PTkUQABIJCgVCRUdJThABEgcKA0VO",
-            "RBACEggKBE1PVkUQAxIKCgZDQU5DRUwQBCIuCgtSb3RhcnlFdmVudBIMCgRz",
-            "dGVwGAEgASgFEhEKCWRlbHRhVGltZRgCIAEoBSIsCgtCdXR0b25FdmVudBIK",
-            "CgJpZBgBIAEoBRIRCglkZWx0YVRpbWUYAiABKAUiuAIKBlVwZGF0ZRIiCgxz",
-            "ZW5zb3JGcmFtZXMYASADKAsyDC5TZW5zb3JGcmFtZRIaCghnZXN0dXJlcxgC",
-            "IAMoCzIILkdlc3R1cmUSIAoLdG91Y2hFdmVudHMYAyADKAsyCy5Ub3VjaEV2",
-            "ZW50EiIKDGJ1dHRvbkV2ZW50cxgEIAMoCzIMLkJ1dHRvbkV2ZW50EiIKDHJv",
-            "dGFyeUV2ZW50cxgFIAMoCzIMLlJvdGFyeUV2ZW50Eh8KB3NpZ25hbHMYBiAD",
-            "KA4yDi5VcGRhdGUuU2lnbmFsEhEKCWRlbHRhVGltZRgHIAEoBSJQCgZTaWdu",
-            "YWwSCAoETk9ORRAAEg4KCkRJU0NPTk5FQ1QQARIUChBDT05ORUNUX0FQUFJP",
-            "VkVEEAISFgoSREVTQ1JJUFRJT05fVVBEQVRFEANCDaoCClBzaXguUHJvdG9i",
-            "BnByb3RvMw=="));
+            "ChJ3YXRjaF9vdXRwdXQucHJvdG8aDGNvbW1vbi5wcm90byKoAQoESW5mbxIY",
+            "CgRoYW5kGAEgASgOMgouSW5mby5IYW5kEg0KBWFwcElkGAIgASgJEhIKCmFw",
+            "cFZlcnNpb24YAyABKAkSHwoPYXZhaWxhYmxlTW9kZWxzGAQgAygLMgYuTW9k",
+            "ZWwSGwoLYWN0aXZlTW9kZWwYBSABKAsyBi5Nb2RlbCIlCgRIYW5kEggKBE5P",
+            "TkUQABIJCgVSSUdIVBABEggKBExFRlQQAiKeAQoLU2Vuc29yRnJhbWUSEwoE",
+            "Z3lybxgBIAEoCzIFLlZlYzMSEgoDYWNjGAIgASgLMgUuVmVjMxITCgRncmF2",
+            "GAMgASgLMgUuVmVjMxITCgRxdWF0GAQgASgLMgUuUXVhdBISCgNtYWcYBiAB",
+            "KAsyBS5WZWMzEhUKBm1hZ0NhbBgHIAEoCzIFLlZlYzMSEQoJZGVsdGFUaW1l",
+            "GAUgASgFIoUBCgdHZXN0dXJlEiIKBHR5cGUYASABKA4yFC5HZXN0dXJlLkdl",
+            "c3R1cmVUeXBlEhEKCWRlbHRhVGltZRgCIAEoBSJDCgtHZXN0dXJlVHlwZRII",
+            "CgROT05FEAASDQoJUElOQ0hfVEFQEAESCgoGQ0xFTkNIEAISDwoLU1VSRkFD",
+            "RV9UQVAQAyLUAQoKVG91Y2hFdmVudBItCglldmVudFR5cGUYASABKA4yGi5U",
+            "b3VjaEV2ZW50LlRvdWNoRXZlbnRUeXBlEhMKC2FjdGlvbkluZGV4GAIgASgF",
+            "EhIKCnBvaW50ZXJJZHMYAyADKAUSFQoGY29vcmRzGAQgAygLMgUuVmVjMhIR",
+            "CglkZWx0YVRpbWUYBSABKAUiRAoOVG91Y2hFdmVudFR5cGUSCAoETk9ORRAA",
+            "EgkKBUJFR0lOEAESBwoDRU5EEAISCAoETU9WRRADEgoKBkNBTkNFTBAEIi4K",
+            "C1JvdGFyeUV2ZW50EgwKBHN0ZXAYASABKAUSEQoJZGVsdGFUaW1lGAIgASgF",
+            "IiwKC0J1dHRvbkV2ZW50EgoKAmlkGAEgASgFEhEKCWRlbHRhVGltZRgCIAEo",
+            "BSLxAgoGVXBkYXRlEiIKDHNlbnNvckZyYW1lcxgBIAMoCzIMLlNlbnNvckZy",
+            "YW1lEhoKCGdlc3R1cmVzGAIgAygLMgguR2VzdHVyZRIgCgt0b3VjaEV2ZW50",
+            "cxgDIAMoCzILLlRvdWNoRXZlbnQSIgoMYnV0dG9uRXZlbnRzGAQgAygLMgwu",
+            "QnV0dG9uRXZlbnQSIgoMcm90YXJ5RXZlbnRzGAUgAygLMgwuUm90YXJ5RXZl",
+            "bnQSHwoHc2lnbmFscxgGIAMoDjIOLlVwZGF0ZS5TaWduYWwSEQoJZGVsdGFU",
+            "aW1lGAcgASgFEhAKCHVuaXhUaW1lGAggASgDEhMKBGluZm8YCSABKAsyBS5J",
+            "bmZvEhAKCHByZXNzdXJlGBAgASgCIlAKBlNpZ25hbBIICgROT05FEAASDgoK",
+            "RElTQ09OTkVDVBABEhQKEENPTk5FQ1RfQVBQUk9WRUQQAhIWChJERVNDUklQ",
+            "VElPTl9VUERBVEUQA0INqgIKUHNpeC5Qcm90b2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Psix.Proto.VecReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Psix.Proto.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.SensorFrame), global::Psix.Proto.SensorFrame.Parser, new[]{ "Gyro", "Acc", "Grav", "Quat", "DeltaTime" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.Info), global::Psix.Proto.Info.Parser, new[]{ "Hand", "AppId", "AppVersion", "AvailableModels", "ActiveModel" }, null, new[]{ typeof(global::Psix.Proto.Info.Types.Hand) }, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.SensorFrame), global::Psix.Proto.SensorFrame.Parser, new[]{ "Gyro", "Acc", "Grav", "Quat", "Mag", "MagCal", "DeltaTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.Gesture), global::Psix.Proto.Gesture.Parser, new[]{ "Type", "DeltaTime" }, null, new[]{ typeof(global::Psix.Proto.Gesture.Types.GestureType) }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.TouchEvent), global::Psix.Proto.TouchEvent.Parser, new[]{ "EventType", "ActionIndex", "PointerIds", "Coords", "DeltaTime" }, null, new[]{ typeof(global::Psix.Proto.TouchEvent.Types.TouchEventType) }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.RotaryEvent), global::Psix.Proto.RotaryEvent.Parser, new[]{ "Step", "DeltaTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.ButtonEvent), global::Psix.Proto.ButtonEvent.Parser, new[]{ "Id", "DeltaTime" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.Update), global::Psix.Proto.Update.Parser, new[]{ "SensorFrames", "Gestures", "TouchEvents", "ButtonEvents", "RotaryEvents", "Signals", "DeltaTime" }, null, new[]{ typeof(global::Psix.Proto.Update.Types.Signal) }, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.Update), global::Psix.Proto.Update.Parser, new[]{ "SensorFrames", "Gestures", "TouchEvents", "ButtonEvents", "RotaryEvents", "Signals", "DeltaTime", "UnixTime", "Info", "Pressure" }, null, new[]{ typeof(global::Psix.Proto.Update.Types.Signal) }, null, null)
           }));
     }
     #endregion
 
   }
   #region Messages
+  public sealed partial class Info : pb::IMessage<Info>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Info> _parser = new pb::MessageParser<Info>(() => new Info());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<Info> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Psix.Proto.WatchOutputReflection.Descriptor.MessageTypes[0]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Info() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Info(Info other) : this() {
+      hand_ = other.hand_;
+      appId_ = other.appId_;
+      appVersion_ = other.appVersion_;
+      availableModels_ = other.availableModels_.Clone();
+      activeModel_ = other.activeModel_ != null ? other.activeModel_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Info Clone() {
+      return new Info(this);
+    }
+
+    /// <summary>Field number for the "hand" field.</summary>
+    public const int HandFieldNumber = 1;
+    private global::Psix.Proto.Info.Types.Hand hand_ = global::Psix.Proto.Info.Types.Hand.None;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Psix.Proto.Info.Types.Hand Hand {
+      get { return hand_; }
+      set {
+        hand_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "appId" field.</summary>
+    public const int AppIdFieldNumber = 2;
+    private string appId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string AppId {
+      get { return appId_; }
+      set {
+        appId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "appVersion" field.</summary>
+    public const int AppVersionFieldNumber = 3;
+    private string appVersion_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string AppVersion {
+      get { return appVersion_; }
+      set {
+        appVersion_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "availableModels" field.</summary>
+    public const int AvailableModelsFieldNumber = 4;
+    private static readonly pb::FieldCodec<global::Psix.Proto.Model> _repeated_availableModels_codec
+        = pb::FieldCodec.ForMessage(34, global::Psix.Proto.Model.Parser);
+    private readonly pbc::RepeatedField<global::Psix.Proto.Model> availableModels_ = new pbc::RepeatedField<global::Psix.Proto.Model>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Psix.Proto.Model> AvailableModels {
+      get { return availableModels_; }
+    }
+
+    /// <summary>Field number for the "activeModel" field.</summary>
+    public const int ActiveModelFieldNumber = 5;
+    private global::Psix.Proto.Model activeModel_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Psix.Proto.Model ActiveModel {
+      get { return activeModel_; }
+      set {
+        activeModel_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as Info);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(Info other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Hand != other.Hand) return false;
+      if (AppId != other.AppId) return false;
+      if (AppVersion != other.AppVersion) return false;
+      if(!availableModels_.Equals(other.availableModels_)) return false;
+      if (!object.Equals(ActiveModel, other.ActiveModel)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Hand != global::Psix.Proto.Info.Types.Hand.None) hash ^= Hand.GetHashCode();
+      if (AppId.Length != 0) hash ^= AppId.GetHashCode();
+      if (AppVersion.Length != 0) hash ^= AppVersion.GetHashCode();
+      hash ^= availableModels_.GetHashCode();
+      if (activeModel_ != null) hash ^= ActiveModel.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Hand != global::Psix.Proto.Info.Types.Hand.None) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Hand);
+      }
+      if (AppId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(AppId);
+      }
+      if (AppVersion.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(AppVersion);
+      }
+      availableModels_.WriteTo(output, _repeated_availableModels_codec);
+      if (activeModel_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(ActiveModel);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Hand != global::Psix.Proto.Info.Types.Hand.None) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Hand);
+      }
+      if (AppId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(AppId);
+      }
+      if (AppVersion.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(AppVersion);
+      }
+      availableModels_.WriteTo(ref output, _repeated_availableModels_codec);
+      if (activeModel_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(ActiveModel);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Hand != global::Psix.Proto.Info.Types.Hand.None) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Hand);
+      }
+      if (AppId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(AppId);
+      }
+      if (AppVersion.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(AppVersion);
+      }
+      size += availableModels_.CalculateSize(_repeated_availableModels_codec);
+      if (activeModel_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ActiveModel);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(Info other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Hand != global::Psix.Proto.Info.Types.Hand.None) {
+        Hand = other.Hand;
+      }
+      if (other.AppId.Length != 0) {
+        AppId = other.AppId;
+      }
+      if (other.AppVersion.Length != 0) {
+        AppVersion = other.AppVersion;
+      }
+      availableModels_.Add(other.availableModels_);
+      if (other.activeModel_ != null) {
+        if (activeModel_ == null) {
+          ActiveModel = new global::Psix.Proto.Model();
+        }
+        ActiveModel.MergeFrom(other.ActiveModel);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Hand = (global::Psix.Proto.Info.Types.Hand) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            AppId = input.ReadString();
+            break;
+          }
+          case 26: {
+            AppVersion = input.ReadString();
+            break;
+          }
+          case 34: {
+            availableModels_.AddEntriesFrom(input, _repeated_availableModels_codec);
+            break;
+          }
+          case 42: {
+            if (activeModel_ == null) {
+              ActiveModel = new global::Psix.Proto.Model();
+            }
+            input.ReadMessage(ActiveModel);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Hand = (global::Psix.Proto.Info.Types.Hand) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            AppId = input.ReadString();
+            break;
+          }
+          case 26: {
+            AppVersion = input.ReadString();
+            break;
+          }
+          case 34: {
+            availableModels_.AddEntriesFrom(ref input, _repeated_availableModels_codec);
+            break;
+          }
+          case 42: {
+            if (activeModel_ == null) {
+              ActiveModel = new global::Psix.Proto.Model();
+            }
+            input.ReadMessage(ActiveModel);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+    #region Nested types
+    /// <summary>Container for nested types declared in the Info message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static partial class Types {
+      public enum Hand {
+        [pbr::OriginalName("NONE")] None = 0,
+        [pbr::OriginalName("RIGHT")] Right = 1,
+        [pbr::OriginalName("LEFT")] Left = 2,
+      }
+
+    }
+    #endregion
+
+  }
+
   public sealed partial class SensorFrame : pb::IMessage<SensorFrame>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -74,7 +430,7 @@ namespace Psix.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Psix.Proto.WatchOutputReflection.Descriptor.MessageTypes[0]; }
+      get { return global::Psix.Proto.WatchOutputReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -98,6 +454,8 @@ namespace Psix.Proto {
       acc_ = other.acc_ != null ? other.acc_.Clone() : null;
       grav_ = other.grav_ != null ? other.grav_.Clone() : null;
       quat_ = other.quat_ != null ? other.quat_.Clone() : null;
+      mag_ = other.mag_ != null ? other.mag_.Clone() : null;
+      magCal_ = other.magCal_ != null ? other.magCal_.Clone() : null;
       deltaTime_ = other.deltaTime_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -156,6 +514,30 @@ namespace Psix.Proto {
       }
     }
 
+    /// <summary>Field number for the "mag" field.</summary>
+    public const int MagFieldNumber = 6;
+    private global::Psix.Proto.Vec3 mag_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Psix.Proto.Vec3 Mag {
+      get { return mag_; }
+      set {
+        mag_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "magCal" field.</summary>
+    public const int MagCalFieldNumber = 7;
+    private global::Psix.Proto.Vec3 magCal_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Psix.Proto.Vec3 MagCal {
+      get { return magCal_; }
+      set {
+        magCal_ = value;
+      }
+    }
+
     /// <summary>Field number for the "deltaTime" field.</summary>
     public const int DeltaTimeFieldNumber = 5;
     private int deltaTime_;
@@ -187,6 +569,8 @@ namespace Psix.Proto {
       if (!object.Equals(Acc, other.Acc)) return false;
       if (!object.Equals(Grav, other.Grav)) return false;
       if (!object.Equals(Quat, other.Quat)) return false;
+      if (!object.Equals(Mag, other.Mag)) return false;
+      if (!object.Equals(MagCal, other.MagCal)) return false;
       if (DeltaTime != other.DeltaTime) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -199,6 +583,8 @@ namespace Psix.Proto {
       if (acc_ != null) hash ^= Acc.GetHashCode();
       if (grav_ != null) hash ^= Grav.GetHashCode();
       if (quat_ != null) hash ^= Quat.GetHashCode();
+      if (mag_ != null) hash ^= Mag.GetHashCode();
+      if (magCal_ != null) hash ^= MagCal.GetHashCode();
       if (DeltaTime != 0) hash ^= DeltaTime.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -238,6 +624,14 @@ namespace Psix.Proto {
         output.WriteRawTag(40);
         output.WriteInt32(DeltaTime);
       }
+      if (mag_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(Mag);
+      }
+      if (magCal_ != null) {
+        output.WriteRawTag(58);
+        output.WriteMessage(MagCal);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -268,6 +662,14 @@ namespace Psix.Proto {
         output.WriteRawTag(40);
         output.WriteInt32(DeltaTime);
       }
+      if (mag_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(Mag);
+      }
+      if (magCal_ != null) {
+        output.WriteRawTag(58);
+        output.WriteMessage(MagCal);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -289,6 +691,12 @@ namespace Psix.Proto {
       }
       if (quat_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Quat);
+      }
+      if (mag_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Mag);
+      }
+      if (magCal_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(MagCal);
       }
       if (DeltaTime != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(DeltaTime);
@@ -328,6 +736,18 @@ namespace Psix.Proto {
           Quat = new global::Psix.Proto.Quat();
         }
         Quat.MergeFrom(other.Quat);
+      }
+      if (other.mag_ != null) {
+        if (mag_ == null) {
+          Mag = new global::Psix.Proto.Vec3();
+        }
+        Mag.MergeFrom(other.Mag);
+      }
+      if (other.magCal_ != null) {
+        if (magCal_ == null) {
+          MagCal = new global::Psix.Proto.Vec3();
+        }
+        MagCal.MergeFrom(other.MagCal);
       }
       if (other.DeltaTime != 0) {
         DeltaTime = other.DeltaTime;
@@ -379,6 +799,20 @@ namespace Psix.Proto {
             DeltaTime = input.ReadInt32();
             break;
           }
+          case 50: {
+            if (mag_ == null) {
+              Mag = new global::Psix.Proto.Vec3();
+            }
+            input.ReadMessage(Mag);
+            break;
+          }
+          case 58: {
+            if (magCal_ == null) {
+              MagCal = new global::Psix.Proto.Vec3();
+            }
+            input.ReadMessage(MagCal);
+            break;
+          }
         }
       }
     #endif
@@ -426,6 +860,20 @@ namespace Psix.Proto {
             DeltaTime = input.ReadInt32();
             break;
           }
+          case 50: {
+            if (mag_ == null) {
+              Mag = new global::Psix.Proto.Vec3();
+            }
+            input.ReadMessage(Mag);
+            break;
+          }
+          case 58: {
+            if (magCal_ == null) {
+              MagCal = new global::Psix.Proto.Vec3();
+            }
+            input.ReadMessage(MagCal);
+            break;
+          }
         }
       }
     }
@@ -447,7 +895,7 @@ namespace Psix.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Psix.Proto.WatchOutputReflection.Descriptor.MessageTypes[1]; }
+      get { return global::Psix.Proto.WatchOutputReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -664,8 +1112,9 @@ namespace Psix.Proto {
     public static partial class Types {
       public enum GestureType {
         [pbr::OriginalName("NONE")] None = 0,
-        [pbr::OriginalName("TAP")] Tap = 1,
+        [pbr::OriginalName("PINCH_TAP")] PinchTap = 1,
         [pbr::OriginalName("CLENCH")] Clench = 2,
+        [pbr::OriginalName("SURFACE_TAP")] SurfaceTap = 3,
       }
 
     }
@@ -687,7 +1136,7 @@ namespace Psix.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Psix.Proto.WatchOutputReflection.Descriptor.MessageTypes[2]; }
+      get { return global::Psix.Proto.WatchOutputReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1020,7 +1469,7 @@ namespace Psix.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Psix.Proto.WatchOutputReflection.Descriptor.MessageTypes[3]; }
+      get { return global::Psix.Proto.WatchOutputReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1249,7 +1698,7 @@ namespace Psix.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Psix.Proto.WatchOutputReflection.Descriptor.MessageTypes[4]; }
+      get { return global::Psix.Proto.WatchOutputReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1478,7 +1927,7 @@ namespace Psix.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Psix.Proto.WatchOutputReflection.Descriptor.MessageTypes[5]; }
+      get { return global::Psix.Proto.WatchOutputReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1505,6 +1954,9 @@ namespace Psix.Proto {
       rotaryEvents_ = other.rotaryEvents_.Clone();
       signals_ = other.signals_.Clone();
       deltaTime_ = other.deltaTime_;
+      unixTime_ = other.unixTime_;
+      info_ = other.info_ != null ? other.info_.Clone() : null;
+      pressure_ = other.pressure_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1592,6 +2044,42 @@ namespace Psix.Proto {
       }
     }
 
+    /// <summary>Field number for the "unixTime" field.</summary>
+    public const int UnixTimeFieldNumber = 8;
+    private long unixTime_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public long UnixTime {
+      get { return unixTime_; }
+      set {
+        unixTime_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "info" field.</summary>
+    public const int InfoFieldNumber = 9;
+    private global::Psix.Proto.Info info_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Psix.Proto.Info Info {
+      get { return info_; }
+      set {
+        info_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "pressure" field.</summary>
+    public const int PressureFieldNumber = 16;
+    private float pressure_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public float Pressure {
+      get { return pressure_; }
+      set {
+        pressure_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1614,6 +2102,9 @@ namespace Psix.Proto {
       if(!rotaryEvents_.Equals(other.rotaryEvents_)) return false;
       if(!signals_.Equals(other.signals_)) return false;
       if (DeltaTime != other.DeltaTime) return false;
+      if (UnixTime != other.UnixTime) return false;
+      if (!object.Equals(Info, other.Info)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Pressure, other.Pressure)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1628,6 +2119,9 @@ namespace Psix.Proto {
       hash ^= rotaryEvents_.GetHashCode();
       hash ^= signals_.GetHashCode();
       if (DeltaTime != 0) hash ^= DeltaTime.GetHashCode();
+      if (UnixTime != 0L) hash ^= UnixTime.GetHashCode();
+      if (info_ != null) hash ^= Info.GetHashCode();
+      if (Pressure != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Pressure);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1656,6 +2150,18 @@ namespace Psix.Proto {
         output.WriteRawTag(56);
         output.WriteInt32(DeltaTime);
       }
+      if (UnixTime != 0L) {
+        output.WriteRawTag(64);
+        output.WriteInt64(UnixTime);
+      }
+      if (info_ != null) {
+        output.WriteRawTag(74);
+        output.WriteMessage(Info);
+      }
+      if (Pressure != 0F) {
+        output.WriteRawTag(133, 1);
+        output.WriteFloat(Pressure);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1676,6 +2182,18 @@ namespace Psix.Proto {
         output.WriteRawTag(56);
         output.WriteInt32(DeltaTime);
       }
+      if (UnixTime != 0L) {
+        output.WriteRawTag(64);
+        output.WriteInt64(UnixTime);
+      }
+      if (info_ != null) {
+        output.WriteRawTag(74);
+        output.WriteMessage(Info);
+      }
+      if (Pressure != 0F) {
+        output.WriteRawTag(133, 1);
+        output.WriteFloat(Pressure);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1694,6 +2212,15 @@ namespace Psix.Proto {
       size += signals_.CalculateSize(_repeated_signals_codec);
       if (DeltaTime != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(DeltaTime);
+      }
+      if (UnixTime != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(UnixTime);
+      }
+      if (info_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Info);
+      }
+      if (Pressure != 0F) {
+        size += 2 + 4;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1715,6 +2242,18 @@ namespace Psix.Proto {
       signals_.Add(other.signals_);
       if (other.DeltaTime != 0) {
         DeltaTime = other.DeltaTime;
+      }
+      if (other.UnixTime != 0L) {
+        UnixTime = other.UnixTime;
+      }
+      if (other.info_ != null) {
+        if (info_ == null) {
+          Info = new global::Psix.Proto.Info();
+        }
+        Info.MergeFrom(other.Info);
+      }
+      if (other.Pressure != 0F) {
+        Pressure = other.Pressure;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1760,6 +2299,21 @@ namespace Psix.Proto {
             DeltaTime = input.ReadInt32();
             break;
           }
+          case 64: {
+            UnixTime = input.ReadInt64();
+            break;
+          }
+          case 74: {
+            if (info_ == null) {
+              Info = new global::Psix.Proto.Info();
+            }
+            input.ReadMessage(Info);
+            break;
+          }
+          case 133: {
+            Pressure = input.ReadFloat();
+            break;
+          }
         }
       }
     #endif
@@ -1802,6 +2356,21 @@ namespace Psix.Proto {
           }
           case 56: {
             DeltaTime = input.ReadInt32();
+            break;
+          }
+          case 64: {
+            UnixTime = input.ReadInt64();
+            break;
+          }
+          case 74: {
+            if (info_ == null) {
+              Info = new global::Psix.Proto.Info();
+            }
+            input.ReadMessage(Info);
+            break;
+          }
+          case 133: {
+            Pressure = input.ReadFloat();
             break;
           }
         }
