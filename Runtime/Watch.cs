@@ -35,7 +35,7 @@ public class Watch : MonoBehaviour
         watch.Disconnect();
     }
 
-    // Receive infered gestures
+    // Receive inferred gestures
     public event Action<Gesture> OnGesture
     {
         add { watch.OnGesture += value; }
@@ -49,7 +49,7 @@ public class Watch : MonoBehaviour
         remove { watch.OnTouch -= value; }
     }
 
-    // Receive button events 
+    // Receive button events
     public event Action OnButton
     {
         add { watch.OnButton += value; }
@@ -82,7 +82,7 @@ public class Watch : MonoBehaviour
     /// to a rotation of watch from the reference position around the unit vector
     /// axis {x, y, z}, where the axes correspond to Unity coordinate system. However,
     /// the "initial" reference direction of the watch may not correspond to the reference
-    /// direction within Unity. 
+    /// direction within Unity.
     public event Action<Quaternion> OnOrientation
     {
         add { watch.OnOrientation += value; }
@@ -120,15 +120,15 @@ public class Watch : MonoBehaviour
     }
 
     /* Property interface */
-    // Infered gestures
+    // Inferred gestures
     [HideInInspector] public int TapCount = 0;
     [HideInInspector] public int ClenchCount = 0;
 
-    // Touch screen 
+    // Touch screen
     [HideInInspector] public Vector2 TouchPosition = default;
     [HideInInspector] public bool IsTouched = false;
 
-    // Button events 
+    // Button events
     [HideInInspector] public int ButtonPressCount = 0;
     [HideInInspector] public int RotaryPosition = 0;
 
