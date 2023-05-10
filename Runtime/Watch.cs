@@ -3,6 +3,7 @@
 
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 using Psix.Interaction;
 using Psix;
 
@@ -108,6 +109,12 @@ public class Watch : MonoBehaviour
         remove { watch.OnHandednessChange -= value; }
     }
 
+    /// Changes in the set of gestures that the watch is trying to detect
+    public event Action<HashSet<Gesture>> OnDetectedGesturesChange {
+        add { watch.OnDetectedGesturesChange += value; }
+        remove { watch.OnDetectedGesturesChange -= value; }
+    }
+
     /**
      * Trigger a one-shot haptic feedback effect on the watch.
      *
@@ -150,6 +157,9 @@ public class Watch : MonoBehaviour
     // Which hand the watch is worn on?
     [HideInInspector] public Hand Handedness = Hand.None;
 
+    // Set of gestures that the watch is trying to detect
+    [HideInInspector] public HashSet<Gesture> DetectedGestures = new HashSet<Gesture>();
+
     public bool Connected
     {
         get { return watch.Connected; }
@@ -187,6 +197,7 @@ public class Watch : MonoBehaviour
         OnOrientation += (rot) => { Orientation = rot; };
         OnGravity += (grav) => { Gravity = grav; };
         OnHandednessChange += (hand) => { Handedness = hand; };
+        OnDetectedGesturesChange += (gestures) => { DetectedGestures = gestures; };
     }
 
     private void Start()

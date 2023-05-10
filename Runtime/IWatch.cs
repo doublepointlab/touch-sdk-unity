@@ -5,6 +5,7 @@
 
 using Psix.Interaction;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Psix
@@ -30,6 +31,8 @@ namespace Psix
         event Action<Vector3> OnGravity;
 
         event Action<Hand> OnHandednessChange;
+
+        event Action<HashSet<Gesture>> OnDetectedGesturesChange;
 
         event Action OnConnect;
         event Action OnDisconnect;

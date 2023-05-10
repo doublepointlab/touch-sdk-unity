@@ -194,6 +194,9 @@ namespace Psix
         private Hand Handedness = Hand.None;
         public event Action<Hand>? OnHandednessChange = null;
 
+        private HashSet<Gesture> ActiveGestures = new HashSet<Gesture>();
+        public event Action<HashSet<Gesture>>? OnDetectedGesturesChange = null;
+
         public event Action? OnConnect = null;
         public event Action? OnDisconnect = null;
 
@@ -291,6 +294,16 @@ namespace Psix
             if (newHandedness != Hand.None && newHandedness != Handedness) {
                 Handedness = newHandedness;
                 OnHandednessChange?.Invoke(newHandedness);
+            }
+
+            var newActiveGestures = new HashSet<Gesture>(info.ActiveModel.Gestures.Select(gesture =>
+                (Gesture)gesture
+            ));
+            if (newActiveGestures.Count > 0) {
+                if (newActiveGestures != ActiveGestures) {
+                    ActiveGestures = newActiveGestures;
+                    OnDetectedGesturesChange?.Invoke(newActiveGestures);
+                }
             }
         }
 
