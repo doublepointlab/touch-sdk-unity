@@ -27,7 +27,7 @@ namespace Psix.Examples
         {
             switch (args.type)
             {
-                case TouchType.On:
+                case TouchType.Press:
                     textW.color = Color.white;
                     textH.color = Color.white;
                     touchPointRenderer.material.color = Color.white;
@@ -37,7 +37,7 @@ namespace Psix.Examples
                     textW.text = args.coords.x.ToString("F4");
                     textH.text = args.coords.y.ToString("F4");
                     break;
-                case TouchType.Off:
+                case TouchType.Release:
                     textW.color = Color.grey;
                     textH.color = Color.grey;
                     touchPointRenderer.material.color = Color.grey;

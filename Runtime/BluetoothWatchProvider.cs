@@ -226,16 +226,13 @@ namespace Psix
                 switch (touchEvent.EventType)
                 {
                     case Proto.TouchEvent.Types.TouchEventType.Begin:
-                        type = TouchType.On;
+                        type = TouchType.Press;
                         break;
                     case Proto.TouchEvent.Types.TouchEventType.End:
-                        type = TouchType.Off;
+                        type = TouchType.Release;
                         break;
                     case Proto.TouchEvent.Types.TouchEventType.Move:
                         type = TouchType.Move;
-                        break;
-                    case Proto.TouchEvent.Types.TouchEventType.Cancel:
-                        type = TouchType.Cancel;
                         break;
                     default: break;
                 }

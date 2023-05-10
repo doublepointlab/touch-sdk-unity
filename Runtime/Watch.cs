@@ -163,16 +163,16 @@ public class Watch : MonoBehaviour
         this.watch = watch;
         OnGesture += (gesture) =>
         {
-            if (gesture == Gesture.Tap)
+            if (gesture == Gesture.PinchTap)
                 TapCount++;
             else if (gesture == Gesture.Clench)
                 ClenchCount++;
         };
         OnTouch += (touch) =>
         {
-            if (touch.type == Psix.Interaction.TouchType.On)
+            if (touch.type == Psix.Interaction.TouchType.Press)
                 IsTouched = true;
-            else if (touch.type == Psix.Interaction.TouchType.Off)
+            else if (touch.type == Psix.Interaction.TouchType.Release)
                 IsTouched = false;
             TouchPosition = touch.coords;
         };

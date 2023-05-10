@@ -25,7 +25,7 @@ namespace Psix.Examples
 
         public void UpdateTapCount(Gesture gesture)
         {
-            if (gesture != Gesture.Tap)
+            if (gesture != Gesture.PinchTap)
                 return;
             tapCount++;
             tapCountText.text = tapCount.ToString();
