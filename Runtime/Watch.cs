@@ -49,7 +49,7 @@ public class Watch : MonoBehaviour
         remove { watch.OnTouch -= value; }
     }
 
-    // Receive button events 
+    // Receive button events
     public event Action OnButton
     {
         add { watch.OnButton += value; }
@@ -82,7 +82,7 @@ public class Watch : MonoBehaviour
     /// to a rotation of watch from the reference position around the unit vector
     /// axis {x, y, z}, where the axes correspond to Unity coordinate system. However,
     /// the "initial" reference direction of the watch may not correspond to the reference
-    /// direction within Unity. 
+    /// direction within Unity.
     public event Action<Quaternion> OnOrientation
     {
         add { watch.OnOrientation += value; }
@@ -96,6 +96,12 @@ public class Watch : MonoBehaviour
     {
         add { watch.OnGravity += value; }
         remove { watch.OnGravity -= value; }
+    }
+
+    /// Changes in which hand the device is worn on
+    public event Action<Hand> OnHandednessChange {
+        add { watch.OnHandednessChange += value; }
+        remove { watch.OnHandednessChange -= value; }
     }
 
     /**
@@ -124,11 +130,11 @@ public class Watch : MonoBehaviour
     [HideInInspector] public int TapCount = 0;
     [HideInInspector] public int ClenchCount = 0;
 
-    // Touch screen 
+    // Touch screen
     [HideInInspector] public Vector2 TouchPosition = default;
     [HideInInspector] public bool IsTouched = false;
 
-    // Button events 
+    // Button events
     [HideInInspector] public int ButtonPressCount = 0;
     [HideInInspector] public int RotaryPosition = 0;
 
@@ -137,12 +143,13 @@ public class Watch : MonoBehaviour
     [HideInInspector] public Quaternion Orientation = Quaternion.identity;
     [HideInInspector] public Vector3 Gravity = default;
 
+    // Which hand the watch is worn on?
+    [HideInInspector] public Hand Handedness = Hand.None;
+
     public bool Connected
     {
         get { return watch.Connected; }
     }
-
-
 
     /* Called by a WatchProvider to register a watch data source */
     public void RegisterProvider(IWatch watch)
@@ -175,6 +182,7 @@ public class Watch : MonoBehaviour
         OnAngularVelocity += (ang) => { AngularVelocity = ang; };
         OnOrientation += (rot) => { Orientation = rot; };
         OnGravity += (grav) => { Gravity = grav; };
+        OnHandednessChange += (hand) => { Handedness = hand; };
     }
 
     private void Start()
