@@ -15,10 +15,9 @@ namespace Psix.Interaction
     public enum TouchType
     {
         None = 0,
-        On = 1,
-        Off = 2,
+        Press = 1,
+        Release = 2,
         Move = 3,
-        Cancel = 4,
     };
 
     public enum Direction{
