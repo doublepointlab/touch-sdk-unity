@@ -29,6 +29,8 @@ namespace Psix
 
         event Action<Vector3> OnGravity;
 
+        event Action<Hand> OnHandednessChange;
+
         event Action OnConnect;
         event Action OnDisconnect;
         public bool Connected { get; }

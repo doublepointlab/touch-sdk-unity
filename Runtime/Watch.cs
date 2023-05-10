@@ -98,6 +98,12 @@ public class Watch : MonoBehaviour
         remove { watch.OnGravity -= value; }
     }
 
+    /// Changes in which hand the device is worn on
+    public event Action<Hand> OnHandednessChange {
+        add { watch.OnHandednessChange += value; }
+        remove { watch.OnHandednessChange -= value; }
+    }
+
     /**
      * Trigger a one-shot haptic feedback effect on the watch.
      *
@@ -137,12 +143,13 @@ public class Watch : MonoBehaviour
     [HideInInspector] public Quaternion Orientation = Quaternion.identity;
     [HideInInspector] public Vector3 Gravity = default;
 
+    // Which hand the watch is worn on?
+    [HideInInspector] public Hand Handedness = Hand.None;
+
     public bool Connected
     {
         get { return watch.Connected; }
     }
-
-
 
     /* Called by a WatchProvider to register a watch data source */
     public void RegisterProvider(IWatch watch)
@@ -175,6 +182,7 @@ public class Watch : MonoBehaviour
         OnAngularVelocity += (ang) => { AngularVelocity = ang; };
         OnOrientation += (rot) => { Orientation = rot; };
         OnGravity += (grav) => { Gravity = grav; };
+        OnHandednessChange += (hand) => { Handedness = hand; };
     }
 
     private void Start()

@@ -28,6 +28,13 @@ namespace Psix.Interaction
         CounterClockwise = 1,
     };
 
+    public enum Hand
+    {
+        None = 0,
+        Right = 1,
+        Left = 2
+    };
+
     public struct TouchEvent
     {
         public TouchEvent(TouchType t, Vector2 c)

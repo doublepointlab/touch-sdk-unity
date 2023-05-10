@@ -39,13 +39,13 @@ namespace Psix
         // The bluetooth name of the watch */
         public string ConnectedWatchName {
             get;
-            private set; 
+            private set;
         }
 
         // Connecting to a gatt server might take minutes at worst on some
         // machines.  Most devices will hopefully connect within 30 seconds.
         [HideInInspector] public int connectionTimeoutSeconds = 120;
-        
+
         public bool ConnectOnStart = true;
 
         private static PsixLogger logger = new PsixLogger("BluetoothWatchProvider");
@@ -69,7 +69,7 @@ namespace Psix
                 conn.OnDisconnect += (c) =>
                 {
                     // Unfortunately the action delegates do not seem immutable
-                    // as would be intuitive, but this action gets called to every 
+                    // as would be intuitive, but this action gets called to every
                     // disconnecting device.
                     if (c.Address == conn.Address)
                     {
@@ -178,10 +178,13 @@ namespace Psix
         public event Action? OnButton = null;
         public event Action<Direction>? OnRotary = null;
 
+        private Hand Handedness = Hand.None;
+        public event Action<Hand>? OnHandednessChange = null;
+
         public event Action? OnConnect = null;
         public event Action? OnDisconnect = null;
 
-        /* Not part of generic interface */ 
+        /* Not part of generic interface */
         public event Action? OnScanTimeout = null;
 
 
@@ -191,7 +194,15 @@ namespace Psix
             return update.Signals.All(signal => (signal != Proto.Update.Types.Signal.Disconnect));
         }
 
-        // Internal callback
+        private void RequestInfo() {
+            client?.RequestBytes(
+                GattServices.ProtobufServiceUUID,
+                GattServices.ProtobufOutputUUID,
+                readCallback
+            );
+        }
+
+        // Internal callbacks
         private void protobufCallback(byte[] data)
         {
             var update = Proto.Update.Parser.ParseFrom(data);
@@ -248,11 +259,36 @@ namespace Psix
                     Disconnect();
             }
 
+            infoCallback(update.Info);
+
         }
+
+        private void readCallback(byte[] data)
+        {
+            var update = Proto.Update.Parser.ParseFrom(data);
+            var info = update.Info;
+            infoCallback(info);
+        }
+
+        private void infoCallback(Proto.Info info) {
+            var newHandedness = Hand.None;
+
+            if (info.Hand == Proto.Info.Types.Hand.Right)
+                newHandedness = Hand.Right;
+            if (info.Hand == Proto.Info.Types.Hand.Left)
+                newHandedness = Hand.Left;
+
+            if (newHandedness != Hand.None && newHandedness != Handedness) {
+                Handedness = newHandedness;
+                OnHandednessChange?.Invoke(newHandedness);
+            }
+        }
+
         // Internal connection lifecycle callbacks
 
         private void connectAction()
         {
+            RequestInfo();
             connector = null;
             logger.Debug("connect action");
             Connected = true;
@@ -270,6 +306,7 @@ namespace Psix
             OnTouch = null;
             OnButton = null;
             OnRotary = null;
+            OnHandednessChange = null;
             OnAcceleration = null;
             OnAngularVelocity = null;
             OnOrientation = null;
