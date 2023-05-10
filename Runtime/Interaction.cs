@@ -8,8 +8,10 @@ namespace Psix.Interaction
     public enum Gesture
     {
         NoGesture = 0,
-        Tap = 1,
+        PinchTap = 1,
         Clench = 2,
+        SurfaceTap = 3,
+        PinchHold = 4,
     };
 
     public enum TouchType
@@ -20,7 +22,8 @@ namespace Psix.Interaction
         Move = 3,
     };
 
-    public enum Direction{
+    public enum Direction
+    {
         Clockwise = 0,
         CounterClockwise = 1,
     };
