@@ -25,6 +25,10 @@ public class Watch : MonoBehaviour
         watch.CancelVibration();
     }
 
+    public void RequestGestureDetection(Gesture gesture) {
+        watch.RequestGestureDetection(gesture);
+    }
+
     public void Connect()
     {
         watch.Connect();

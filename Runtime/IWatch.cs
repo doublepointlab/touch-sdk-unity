@@ -38,6 +38,8 @@ namespace Psix
         public void Vibrate(int length, float amplitude);
         public void CancelVibration();
 
+        public void RequestGestureDetection(Gesture gesture);
+
         public void Connect();
         public void Disconnect();
 

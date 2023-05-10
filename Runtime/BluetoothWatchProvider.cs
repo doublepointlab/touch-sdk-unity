@@ -135,6 +135,19 @@ namespace Psix
             client?.SendBytes(update.ToByteArray(), GattServices.ProtobufServiceUUID, GattServices.ProtobufInputUUID);
         }
 
+        public void RequestGestureDetection(Gesture gesture) {
+            var update = new Proto.InputUpdate
+            {
+                ModelRequest = new Proto.Model
+                {
+                    Gestures = { (Proto.GestureType)(gesture) }
+                }
+            };
+
+            client?.SendBytes(update.ToByteArray(), GattServices.ProtobufServiceUUID, GattServices.ProtobufInputUUID);
+
+        }
+
         private void Awake()
         {
             Watch.Instance.RegisterProvider(this);
