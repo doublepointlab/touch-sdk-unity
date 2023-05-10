@@ -259,6 +259,8 @@ namespace Psix
                     Disconnect();
             }
 
+            infoCallback(update.Info);
+
         }
 
         private void readCallback(byte[] data)
