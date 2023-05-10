@@ -21,14 +21,7 @@ namespace Psix.Interaction
         Cancel = 4,
     };
 
-    public enum MotionType
-    {
-        Rotary = 0,
-        Button = 1,
-    };
-
-    public enum MotionInfo
-    {
+    public enum Direction{
         Clockwise = 0,
         CounterClockwise = 1,
     };
@@ -40,9 +33,9 @@ namespace Psix.Interaction
         Left = 2
     };
 
-    public struct TouchEventArgs
+    public struct TouchEvent
     {
-        public TouchEventArgs(TouchType t, Vector2 c)
+        public TouchEvent(TouchType t, Vector2 c)
         {
             type = t;
             coords = c;
@@ -50,17 +43,5 @@ namespace Psix.Interaction
 
         public TouchType type;
         public Vector2 coords;
-    };
-
-    public struct MotionEventArgs
-    {
-        public MotionEventArgs(MotionType t, MotionInfo i)
-        {
-            type = t;
-            info = i;
-        }
-
-        public MotionType type;
-        public MotionInfo info;
     };
 }

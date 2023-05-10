@@ -1,9 +1,16 @@
-using UnityEngine;
+// Copyright (c) 2022 Port 6 Oy <hello@port6.io>
+// Licensed under the MIT License. See LICENSE for details.
 
+using UnityEngine;
+using Psix;
+
+/* Calibrate watch direction with an in-game hand model */
 public class WatchTracker : MonoBehaviour
 {
     [SerializeField] GameObject hand;
-    [SerializeField] WatchManager manager;
+    // To be replaced with IWatch if Unity implements support
+    // https://forum.unity.com/threads/serialized-interface-fields.1238785/
+    [SerializeField] Watch watch;
 
     [SerializeField] Vector3 handToWristOffset;
     [SerializeField] Vector3 wristToWatchOffset;
@@ -21,23 +28,15 @@ public class WatchTracker : MonoBehaviour
     [SerializeField] bool deleteHelpers = true;
 
     private float maxHandDeviation = Mathf.Sin(Mathf.PI / 12);
-    private bool deactivated = false;
 
     // Start is called before the first frame update
     void Start()
     {
         Debug.Log("watchTracker start: " + hand.transform);
 
-        if (hand == null)
-        {
-            Debug.LogError("No hand object");
-            deactivated = true;
-        }
-        if (manager == null)
-        {
-            Debug.LogError("No watch manager");
-            deactivated = true;
-        }
+        if (hand != null && watch != null)
+            watch.OnOrientation += UpdateOrientation;
+
         wristHelper.transform.SetParent(transform);
         wristHelper.transform.SetPositionAndRotation(transform.position, transform.rotation);
         wristHelper.transform.Translate(-wristToWatchOffset);
@@ -61,12 +60,12 @@ public class WatchTracker : MonoBehaviour
         return q * Quaternion.Inverse(twist);
     }
 
-    void TryCalibrate()
+    void TryCalibrate(Quaternion orientation)
     {
-        if (Vector3.Distance(handHelper.transform.position, wristHelper.transform.position) < calibrationDistance && manager.IsConnected)
+        if (Vector3.Distance(handHelper.transform.position, wristHelper.transform.position) < calibrationDistance)
         {
             calibrated = true;
-            watchReference = Quaternion.Inverse(manager.Orientation);
+            watchReference = Quaternion.Inverse(orientation);
             // Hand reference is needed since the hand does not point forward in the calibration pose. Instead
             // the object is rotated by a lot, perhaps by some nice straight angles. This calibration does require
             // the user to keep their hand pointing forward so that the rotation axes align properly.
@@ -79,38 +78,33 @@ public class WatchTracker : MonoBehaviour
         }
     }
 
-    void Update()
+    void UpdateOrientation(Quaternion orientation)
     {
-        if (deactivated)
-            return;
         if (!calibrated)
         {
-            TryCalibrate();
+            TryCalibrate(orientation);
             return;
         }
-        if (manager.IsConnected)
+
+        Debug.Log("WatchTracker update: " + orientation);
+
+        if (!physiologicalConstraints)
         {
-            var wristOrientation = manager.Orientation;
-            Debug.Log("WatchTracker update: " + wristOrientation);
+            orientation = watchReference * orientation;
+            transform.SetPositionAndRotation(hand.transform.position, orientation);
+        }
+        else
+        {
+            // Remove twist around z (should correspond to wrist pronation)
+            // by finding twist along z and calculating swing.
+            // Pronation needs to be in local coordinates!
 
-            if (!physiologicalConstraints)
-            {
-                wristOrientation = watchReference * wristOrientation;
-                transform.SetPositionAndRotation(hand.transform.position, wristOrientation);
-            }
-            else
-            {
-                // Remove twist around z (should correspond to wrist pronation)
-                // by finding twist along z and calculating swing.
-                // Pronation needs to be in local coordinates!
-
-                var rotToHand = hand.transform.rotation * handReference; // Tracked hand does not point to I at calibration so we need this
-                var rotHandToWrist = Quaternion.Inverse(rotToHand) * watchReference * wristOrientation;
-                var swing = DecomposeSwing(rotHandToWrist, new Vector3(0, 0, 1));
-                swing.y = Mathf.Clamp(swing.y, -0.1f, 0.1f);
-                swing.Normalize();
-                transform.SetPositionAndRotation(hand.transform.position, rotToHand * swing);
-            }
+            var rotToHand = hand.transform.rotation * handReference; // Tracked hand does not point to I at calibration so we need this
+            var rotHandToWrist = Quaternion.Inverse(rotToHand) * watchReference * orientation;
+            var swing = DecomposeSwing(rotHandToWrist, new Vector3(0, 0, 1));
+            swing.y = Mathf.Clamp(swing.y, -0.1f, 0.1f);
+            swing.Normalize();
+            transform.SetPositionAndRotation(hand.transform.position, rotToHand * swing);
         }
 
         transform.Translate(handToWristOffset, hand.transform);

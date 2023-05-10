@@ -4,12 +4,9 @@
 #nullable enable
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using System.Threading;
-using System.Timers;
 
 using Timer = System.Timers.Timer;
 
@@ -29,21 +26,87 @@ namespace Psix
 
         private List<string> _advertisedServices = new List<string>();
 
-        public struct ScanResult
+        /* Scan results may have varying addresses for a single device
+        * and varying names and adStrings for a single device. It is painful.
+        */
+        public class ScanResult
         {
-            public string name;
             public string address;
+            public string name;
             public string adString; // Name can also be in advertisement package
-            public override int GetHashCode()
+            public string deducedName;
+
+            protected string DeduceName()
             {
-                return address.GetHashCode() + name.GetHashCode();
+                return adString != "" ? adString : name != "" && name != "No Name" ? name : "";
             }
-            public override bool Equals(object obj)
+
+            public ScanResult(string _address, string _name, string _adString)
             {
-                return address == ((ScanResult)obj).address || (name != "" && ((ScanResult)obj).name == name);
+                address = _address;
+                name = _name;
+                adString = _adString;
+                deducedName = DeduceName();
+            }
+
+            public void Update(ScanResult other)
+            {
+                if (other.name != name)
+                {
+                    if (name == "" || name == "No Name")
+                        name = other.name;
+                }
+                if (other.adString != adString)
+                {
+                    if (adString == "")
+                        adString = other.adString;
+                }
+                deducedName = DeduceName();
+            }
+
+            public bool HasSameName(ScanResult other)
+            {
+                return deducedName != "" ? other.deducedName == deducedName : false;
             }
         }
-        private HashSet<ScanResult> _scanResults = new HashSet<ScanResult>();
+
+        /* Due to the annoying nature of scan results we handle the set logic here. */ 
+        public class ScanResults
+        {
+            protected List<ScanResult> results = new List<ScanResult>();
+            public void Add(ScanResult scanResult)
+            {
+                foreach (var res in results)
+                {
+                    if (res.address == scanResult.address)
+                    {
+                        res.Update(scanResult);
+                        return;
+                    }
+                    else if (res.HasSameName(scanResult))
+                    {
+                        res.address = scanResult.address;
+                        return;
+                    }
+                }
+                results.Add(scanResult);
+            }
+            public List<ScanResult> Pop()
+            {
+                var res = results;
+                results = new List<ScanResult>();
+                return res;
+            }
+
+            public List<ScanResult> Peek()
+            {
+                return results.ToList();
+            }
+
+            public int Count {
+                get => results.Count;            }
+        }
+        private ScanResults _scanResults = new ScanResults();
 
         /* PUBLIC METHODS */
 
@@ -64,9 +127,8 @@ namespace Psix
         {
             lock (_scanResults)
             {
-                var results = _scanResults.ToList();
-                logger.Trace($"Popping {_scanResults.Count} devices");
-                _scanResults.Clear();
+                var results = _scanResults.Pop();
+                logger.Trace("Popping {0} devices", results.Count);
                 _previouslyFound = 0;
                 return results;
             }
@@ -79,7 +141,7 @@ namespace Psix
         {
             lock (_scanResults)
             {
-                return _scanResults.ToList();
+                return _scanResults.Peek();
             }
         }
 
@@ -91,7 +153,7 @@ namespace Psix
         */
         public void Scan(Action onFinish, string nameSubstring = "", double timeout = 0, int maxDevices = 0)
         {
-            logger.Trace($"Scan for device {nameSubstring}. Timeout: {timeout}, maxDevices {maxDevices}");
+            logger.Trace("Scan for device {0}. Timeout: {1}, maxDevices {2}", nameSubstring, timeout, maxDevices);
             _maxDevices = maxDevices;
             _nameSubstring = nameSubstring.ToLower();
             _previouslyFound = _scanResults.Count;
@@ -118,7 +180,7 @@ namespace Psix
         {
             StopScanning();
             BLE.DeInitialize(null);
-            _scanResults.Clear();
+            _scanResults.Pop();
         }
 
 
@@ -126,7 +188,7 @@ namespace Psix
 
         private void StartScanTimeout(double timeout, Action onTimeout)
         {
-            logger.Trace($"StartScanTimeout {timeout}");
+            logger.Trace("StartScanTimeout {0}", timeout);
             if (timeout > 0)
             {
                 _scanTimer?.Close();
@@ -141,7 +203,7 @@ namespace Psix
                         logger.Trace("ScanTimeout");
                         _scanTimer = null;
                         StopScanning();
-                        if (_previouslyFound < _scanResults.Count && _scanResults.All(it => { return it.name == "" && it.adString == "";}))
+                        if (_previouslyFound < _scanResults.Count && _scanResults.Peek().All(it => { return it.name == "" && it.adString == ""; }))
                         {
                             if (_nameSubstring != "")
                                 logger.Warning("None of the scanned devices supply a name or advertisement package. Connect by watch name will not work.");
@@ -186,12 +248,22 @@ namespace Psix
             ProcessScanResult(address, name, new byte[] { }, onMaxDevices);
         }
 
+        private string FilterAlphaNumeric(string inp)
+        {
+            char[] arr = inp.Where(c => (char.IsLetterOrDigit(c) ||
+                             char.IsWhiteSpace(c) ||
+                             c == '-')).ToArray();
+
+            return new string(arr);
+        }
+
         private void ProcessScanResult(string address, string name, byte[] advertisedData, Action onMaxDevices)
         {
             if (!_isAccepting)
                 return;
-            var nameString = System.Text.Encoding.UTF8.GetString(advertisedData.ToArray()).ToLower();
-            logger.Debug($"ProcessScanResult: name={name} address={address.Split('-').Last()} nameString=({nameString}) looking for ({_nameSubstring})");
+            var nameString = FilterAlphaNumeric(System.Text.Encoding.UTF8.GetString(advertisedData.ToArray())).ToLower();
+
+            logger.Debug("ProcessScanResult: name=\"{0}\" address={1} nameString=({2}) looking for \"{3}\"", name, address.Split("-").Last(), nameString, _nameSubstring);
             lock (_nameSubstring)
             {
                 if (_nameSubstring == ""
@@ -200,20 +272,19 @@ namespace Psix
                 {
                     if (_maxDevices <= 0 || _scanResults.Count - _previouslyFound < _maxDevices)
                     {
-                        logger.Trace($"_scanResults.Add {0})({1}", address, nameString);
+                        logger.Trace("_scanResults.Add ({0}) ({1})", address, nameString);
                         lock (_scanResults)
-                            _scanResults.Add(new ScanResult { name = name, address = address, adString = nameString });
+                            _scanResults.Add(new ScanResult(address, name, nameString ));
                     }
-                    else
-                    {
-                        logger.Trace($"Not adding {nameString}");
-                    }
-
                     if (_maxDevices > 0 && _scanResults.Count - _previouslyFound >= _maxDevices)
                     {
                         logger.Debug("Maximum devices reached");
                         onMaxDevices.Invoke();
                     }
+                }
+                else
+                {
+                    logger.Trace("Substring not matched");
                 }
             }
         }
