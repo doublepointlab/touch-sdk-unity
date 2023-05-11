@@ -1,9 +1,9 @@
 {
   "name": "io.port6.sdk",
-  "displayName": "Port 6 SDK",
-  "version": "0.6.2-beta",
+  "displayName": "Touch SDK",
+  "version": "0.6.3-beta",
   "unity": "2020.3",
-  "description": "C# scripts for bridging Unity applications with Port 6 enabled smart peripherals.",
+  "description": "Connect Touch SDK compatible wearable controllers to Unity applications over Bluetooth.",
   "keywords": [
     "Port 6",
     "Bluetooth",
@@ -15,11 +15,11 @@
   ],
   "license": "",
   "author": {
-    "name": "Port 6",
-    "email": "hello@port6.io",
-    "url": "https://www.port6.io"
+    "name": "Doublepoint",
+    "email": "hello@doublepoint.com",
+    "url": "https://doublepoint.com"
   },
-  "homepage": "https://www.port6.io",
+  "homepage": "https://doublepoint.com",
   "samples": [
     {
       "displayName": "Watch Visualizer Demo",
