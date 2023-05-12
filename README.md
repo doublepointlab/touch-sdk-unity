@@ -1,4 +1,4 @@
-# Touch SDK
+# Touch SDK Unity
 
 Connect Touch SDK compatible wearable controllers to Unity applications over Bluetooth.
 
