@@ -286,25 +286,30 @@ namespace Psix
         private void infoCallback(Proto.Info info) {
             var newHandedness = Hand.None;
 
-            if (info.Hand == Proto.Info.Types.Hand.Right)
-                newHandedness = Hand.Right;
-            if (info.Hand == Proto.Info.Types.Hand.Left)
-                newHandedness = Hand.Left;
+            try {
+                if (info.Hand == Proto.Info.Types.Hand.Right)
+                    newHandedness = Hand.Right;
+                else if (info.Hand == Proto.Info.Types.Hand.Left)
+                    newHandedness = Hand.Left;
 
-            if (newHandedness != Hand.None && newHandedness != Handedness) {
-                Handedness = newHandedness;
-                OnHandednessChange?.Invoke(newHandedness);
-            }
-
-            var newActiveGestures = new HashSet<Gesture>(info.ActiveModel.Gestures.Select(gesture =>
-                (Gesture)gesture
-            ));
-            if (newActiveGestures.Count > 0) {
-                if (newActiveGestures != ActiveGestures) {
-                    ActiveGestures = newActiveGestures;
-                    OnDetectedGesturesChange?.Invoke(newActiveGestures);
+                if (newHandedness != Hand.None && newHandedness != Handedness) {
+                    Handedness = newHandedness;
+                    OnHandednessChange?.Invoke(newHandedness);
                 }
-            }
+
+            } catch (NullReferenceException e) {}
+
+            try {
+                var newActiveGestures = new HashSet<Gesture>(info.ActiveModel.Gestures.Select(gesture =>
+                    (Gesture)gesture
+                ));
+                if (newActiveGestures.Count > 0) {
+                    if (newActiveGestures != ActiveGestures) {
+                        ActiveGestures = newActiveGestures;
+                        OnDetectedGesturesChange?.Invoke(newActiveGestures);
+                    }
+                }
+            } catch (NullReferenceException e) {}
         }
 
         // Internal connection lifecycle callbacks
