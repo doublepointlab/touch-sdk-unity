@@ -37,7 +37,8 @@ namespace Psix
         [SerializeField] public string watchName = "";
 
         // The bluetooth name of the watch */
-        public string ConnectedWatchName {
+        public string ConnectedWatchName
+        {
             get;
             private set;
         }
@@ -54,6 +55,9 @@ namespace Psix
         private GattConnector? connector;
 
         List<Subscription> subs = new List<Subscription>();
+
+        // Used for converting pinch hold to release events
+        private bool pinched = false;
 
         /**
          * Connect to the watch running Port 6 XR Controller app.
@@ -135,7 +139,8 @@ namespace Psix
             client?.SendBytes(update.ToByteArray(), GattServices.ProtobufServiceUUID, GattServices.ProtobufInputUUID);
         }
 
-        public void RequestGestureDetection(Gesture gesture) {
+        public void RequestGestureDetection(Gesture gesture)
+        {
             var update = new Proto.InputUpdate
             {
                 ModelRequest = new Proto.Model
@@ -210,7 +215,8 @@ namespace Psix
             return update.Signals.All(signal => (signal != Proto.Update.Types.Signal.Disconnect));
         }
 
-        private void RequestInfo() {
+        private void RequestInfo()
+        {
             client?.RequestBytes(
                 GattServices.ProtobufServiceUUID,
                 GattServices.ProtobufOutputUUID,
@@ -234,8 +240,21 @@ namespace Psix
                 OnOrientation?.Invoke(new Quaternion(-frame.Quat.Y, -frame.Quat.Z, frame.Quat.X, frame.Quat.W));
             }
 
-            foreach (var gesture in update.Gestures)
-                OnGesture?.Invoke((Interaction.Gesture)gesture.Type);
+            // Pinch hold updated on every update
+            var held = false;
+            foreach (var gestureInt in update.Gestures)
+            {
+                var gesture = (Interaction.Gesture)gestureInt.Type;
+                // Release is actually hold at this point
+                if (gesture != Gesture.PinchRelease)
+                    OnGesture?.Invoke(gesture);
+                else held = true;
+            }
+            // TODO: Verify this logic Arttu. Only hold, not pinch is used. Can we get Gesture.PinchTap immediately after hold?
+            if (!held && pinched)
+                OnGesture?.Invoke(Gesture.PinchRelease);
+            pinched = held;
+
             foreach (var touchEvent in update.TouchEvents)
             {
                 Interaction.TouchType type = TouchType.None;
@@ -283,33 +302,47 @@ namespace Psix
             infoCallback(info);
         }
 
-        private void infoCallback(Proto.Info info) {
+        private void infoCallback(Proto.Info info)
+        {
             var newHandedness = Hand.None;
 
-            try {
+            try
+            {
                 if (info.Hand == Proto.Info.Types.Hand.Right)
                     newHandedness = Hand.Right;
                 else if (info.Hand == Proto.Info.Types.Hand.Left)
                     newHandedness = Hand.Left;
 
-                if (newHandedness != Hand.None && newHandedness != Handedness) {
+                if (newHandedness != Hand.None && newHandedness != Handedness)
+                {
                     Handedness = newHandedness;
                     OnHandednessChange?.Invoke(newHandedness);
                 }
 
-            } catch (NullReferenceException e) {}
+            }
+            catch (NullReferenceException e)
+            {
+                logger.Debug(e.Message);
+            }
 
-            try {
+            try
+            {
                 var newActiveGestures = new HashSet<Gesture>(info.ActiveModel.Gestures.Select(gesture =>
                     (Gesture)gesture
                 ));
-                if (newActiveGestures.Count > 0) {
-                    if (newActiveGestures != ActiveGestures) {
+                if (newActiveGestures.Count > 0)
+                {
+                    if (newActiveGestures != ActiveGestures)
+                    {
                         ActiveGestures = newActiveGestures;
                         OnDetectedGesturesChange?.Invoke(newActiveGestures);
                     }
                 }
-            } catch (NullReferenceException e) {}
+            }
+            catch (NullReferenceException e)
+            {
+                logger.Debug(e.Message);
+            }
         }
 
         // Internal connection lifecycle callbacks

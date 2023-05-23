@@ -3,7 +3,7 @@ using TMPro;
 
 namespace Psix.Examples
 {
-    public class GyroscopeVisualizer : MonoBehaviour
+    public class GyroscopeVisualizer : VisualizerElement
     {
         [SerializeField] private Transform markerX;
         [SerializeField] private Transform markerY;
@@ -12,6 +12,11 @@ namespace Psix.Examples
         [SerializeField] private TextMeshPro textX;
         [SerializeField] private TextMeshPro textY;
         [SerializeField] private TextMeshPro textZ;
+
+        public override void RegisterWatch(Watch watch)
+        {
+            watch.OnAngularVelocity += UpdateGyroscope;
+        }
 
         public void UpdateGyroscope(Vector3 gyro)
         {

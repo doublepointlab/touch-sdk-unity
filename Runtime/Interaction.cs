@@ -11,7 +11,7 @@ namespace Psix.Interaction
         PinchTap = 1,
         Clench = 2,
         SurfaceTap = 3,
-        PinchHold = 4,
+        PinchRelease = 4,
     };
 
     public enum TouchType

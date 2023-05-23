@@ -5,12 +5,17 @@ using TMPro;
 namespace Psix.Examples
 {
     using Psix.Interaction;
-    public class DialVisualizer : MonoBehaviour
+    public class DialVisualizer : VisualizerElement
     {
         [SerializeField] private TextMeshPro dialText;
         [SerializeField] private Transform dialNorth;
 
         int position = 0;
+
+        public override void RegisterWatch(Watch watch)
+        {
+            watch.OnRotary += UpdateDialPosition;
+        }
 
         public void UpdateDialPosition(Direction dir)
         {

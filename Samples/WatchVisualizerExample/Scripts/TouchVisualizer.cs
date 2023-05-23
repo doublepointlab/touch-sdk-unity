@@ -5,7 +5,7 @@ namespace Psix.Examples
 {
     using Psix.Interaction;
 
-    public class TouchVisualizer : MonoBehaviour
+    public class TouchVisualizer : VisualizerElement
     {
 
         [SerializeField] private Transform touchPoint;
@@ -16,6 +16,11 @@ namespace Psix.Examples
         [SerializeField] private TextMeshPro textH;
 
         private float watchDiameter;
+
+        public override void RegisterWatch(Watch watch)
+        {
+            watch.OnTouch += UpdateTouchIndicator;
+        }
 
         void Start()
         {

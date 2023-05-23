@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
 namespace Psix.Examples
 {
-    public class QuaternionVisualizer : MonoBehaviour
+    public class QuaternionVisualizer : VisualizerElement
     {
 
         [SerializeField] private Transform visualizerObject;
@@ -14,6 +12,12 @@ namespace Psix.Examples
         [SerializeField] private TextMeshPro valueY;
         [SerializeField] private TextMeshPro valueZ;
         [SerializeField] private TextMeshPro valueW;
+
+
+        public override void RegisterWatch(Watch watch)
+        {
+            watch.OnOrientation += UpdateOrientation;
+        }
 
         public void UpdateOrientation(Quaternion currentQuaternion)
         {

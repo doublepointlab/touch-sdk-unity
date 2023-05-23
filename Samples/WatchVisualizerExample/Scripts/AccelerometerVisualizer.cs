@@ -3,7 +3,7 @@ using TMPro;
 
 namespace Psix.Examples
 {
-    public class AccelerometerVisualizer : MonoBehaviour
+    public class AccelerometerVisualizer : VisualizerElement
     {
 
         [SerializeField] private Transform thingX;
@@ -16,6 +16,11 @@ namespace Psix.Examples
         [SerializeField] private TextMeshPro textX;
         [SerializeField] private TextMeshPro textY;
         [SerializeField] private TextMeshPro textZ;
+
+        public override void RegisterWatch(Watch watch)
+        {
+            watch.OnAcceleration += UpdateVisualizer;
+        }
 
         public void UpdateVisualizer(Vector3 acceleration)
         {
