@@ -68,14 +68,14 @@ public class Watch : MonoBehaviour
         remove { watch.OnRotary -= value; }
     }
 
-    /// Acceleration of the watch in its own frame of reference, meters^2 per second
+    /// Acceleration of the watch in its own frame of reference, meters per second squared
     public event Action<Vector3> OnAcceleration
     {
         add { watch.OnAcceleration += value; }
         remove { watch.OnAcceleration -= value; }
     }
 
-    /// Angular velocity of the watch in its own frame of reference, radians per second.
+    /// Angular velocity of the watch in its own frame of reference, radians per second
     public event Action<Vector3> OnAngularVelocity
     {
         add { watch.OnAngularVelocity += value; }
@@ -96,7 +96,7 @@ public class Watch : MonoBehaviour
 
 
     /// Estimated direction of gravity in the coordinate system of the watch,
-    /// meters per second squared.
+    /// meters per second squared
     public event Action<Vector3> OnGravity
     {
         add { watch.OnGravity += value; }
@@ -128,7 +128,7 @@ public class Watch : MonoBehaviour
     }
 
     /**
-     * Cancel an ongoing haptic effect that was triggered earlier.
+     * Cancel an ongoing haptic effect that was triggered earlier
      */
     public event Action OnDisconnect
     {
