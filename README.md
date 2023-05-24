@@ -59,7 +59,7 @@ Touch SDK Unity has been tested with the following platform versions:
 
     - If you run the project on your Meta Quest for the first time, the app should ask **permission for location access** which is required for Bluetooth functionality to work. If the Oculus app doesn’t seem to be connecting to the watch after the permission has been granted, please restart the app.
 
-    [video-output-F9BA3BD7-154E-40FE-9B54-F179394613E3.MOV](Installing%20Touch%20SDK%20for%20Unity%209e636b44eaa84a39b2c21065a62c221e/video-output-F9BA3BD7-154E-40FE-9B54-F179394613E3.mov)
+    ![Connecting the Controller app to the headset](docs/video.gif)
 
 11. The Unity application will automatically attempt to connect to your watch. If everything goes as expected, you will see a connection request on the Controller app on your watch.
 12. After accepting the connection on the watch, you should see moving elements in the watch visualizer scene.
