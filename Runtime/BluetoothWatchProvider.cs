@@ -56,9 +56,6 @@ namespace Psix
 
         List<Subscription> subs = new List<Subscription>();
 
-        // Used for converting pinch hold to release events
-        private bool pinched = false;
-
         /**
          * Connect to the watch running Port 6 XR Controller app.
          */
@@ -240,24 +237,8 @@ namespace Psix
                 OnOrientation?.Invoke(new Quaternion(-frame.Quat.Y, -frame.Quat.Z, frame.Quat.X, frame.Quat.W));
             }
 
-            // Pinch hold updated on every update
-            var held = false;
-            foreach (var gestureInt in update.Gestures)
-            {
-                var gesture = (Interaction.Gesture)gestureInt.Type;
-                // Release is actually hold at this point
-                if (gesture != Gesture.PinchRelease)
-                {
-                    OnGesture?.Invoke(gesture);
-                    if (Gesture.PinchTap)
-                        held = true
-                }
-                else held = true;
-            }
-            // TODO: Verify this logic Arttu. Only hold, not pinch is used. Can we get Gesture.PinchTap immediately after hold?
-            if (!held && pinched && ActiveGestures.Contains(PinchRelease))
-                OnGesture?.Invoke(Gesture.PinchRelease);
-            pinched = held;
+            foreach (var gesture in update.Gestures)
+                OnGesture?.Invoke((Interaction.Gesture)gesture.Type);
 
             foreach (var touchEvent in update.TouchEvents)
             {
