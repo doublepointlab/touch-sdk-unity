@@ -1,6 +1,6 @@
 # Changelog
-## 0.0.0-beta
-Added support to different gesture models including release and surface taps.
+## 0.9.0-beta
+Added support to different gesture models including pinch and surface taps.
 ## 0.8.0-beta
 This update improves the versatility and performance of the TouchSDK Unity
 public interface.  WatchManager has been removed and the functionality moved to
