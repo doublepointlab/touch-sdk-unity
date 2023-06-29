@@ -221,6 +221,8 @@ namespace Psix
             );
         }
 
+	private Proto.GestureType lastGesture = Proto.GestureType.None;
+
         // Internal callbacks
         private void protobufCallback(byte[] data)
         {
@@ -237,8 +239,16 @@ namespace Psix
                 OnOrientation?.Invoke(new Quaternion(-frame.Quat.Y, -frame.Quat.Z, frame.Quat.X, frame.Quat.W));
             }
 
-            foreach (var gesture in update.Gestures)
-                OnGesture?.Invoke((Interaction.Gesture)gesture.Type);
+            foreach (var gesture in update.Gestures) {
+                if (gesture.Type != Proto.GestureType.PinchHold) {
+                    if (lastGesture == Proto.GestureType.PinchHold) {
+                        OnGesture?.Invoke(Interaction.Gesture.PinchRelease);
+                    } else if (gesture.Type != Proto.GestureType.None) {
+                        OnGesture?.Invoke((Interaction.Gesture)gesture.Type);
+                    }
+                }
+                lastGesture = gesture.Type;
+            }
 
             foreach (var touchEvent in update.TouchEvents)
             {

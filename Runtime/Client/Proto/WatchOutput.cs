@@ -32,31 +32,30 @@ namespace Psix.Proto {
             "Z3lybxgBIAEoCzIFLlZlYzMSEgoDYWNjGAIgASgLMgUuVmVjMxITCgRncmF2",
             "GAMgASgLMgUuVmVjMxITCgRxdWF0GAQgASgLMgUuUXVhdBISCgNtYWcYBiAB",
             "KAsyBS5WZWMzEhUKBm1hZ0NhbBgHIAEoCzIFLlZlYzMSEQoJZGVsdGFUaW1l",
-            "GAUgASgFIoUBCgdHZXN0dXJlEiIKBHR5cGUYASABKA4yFC5HZXN0dXJlLkdl",
-            "c3R1cmVUeXBlEhEKCWRlbHRhVGltZRgCIAEoBSJDCgtHZXN0dXJlVHlwZRII",
-            "CgROT05FEAASDQoJUElOQ0hfVEFQEAESCgoGQ0xFTkNIEAISDwoLU1VSRkFD",
-            "RV9UQVAQAyLUAQoKVG91Y2hFdmVudBItCglldmVudFR5cGUYASABKA4yGi5U",
-            "b3VjaEV2ZW50LlRvdWNoRXZlbnRUeXBlEhMKC2FjdGlvbkluZGV4GAIgASgF",
-            "EhIKCnBvaW50ZXJJZHMYAyADKAUSFQoGY29vcmRzGAQgAygLMgUuVmVjMhIR",
-            "CglkZWx0YVRpbWUYBSABKAUiRAoOVG91Y2hFdmVudFR5cGUSCAoETk9ORRAA",
-            "EgkKBUJFR0lOEAESBwoDRU5EEAISCAoETU9WRRADEgoKBkNBTkNFTBAEIi4K",
-            "C1JvdGFyeUV2ZW50EgwKBHN0ZXAYASABKAUSEQoJZGVsdGFUaW1lGAIgASgF",
-            "IiwKC0J1dHRvbkV2ZW50EgoKAmlkGAEgASgFEhEKCWRlbHRhVGltZRgCIAEo",
-            "BSLxAgoGVXBkYXRlEiIKDHNlbnNvckZyYW1lcxgBIAMoCzIMLlNlbnNvckZy",
-            "YW1lEhoKCGdlc3R1cmVzGAIgAygLMgguR2VzdHVyZRIgCgt0b3VjaEV2ZW50",
-            "cxgDIAMoCzILLlRvdWNoRXZlbnQSIgoMYnV0dG9uRXZlbnRzGAQgAygLMgwu",
-            "QnV0dG9uRXZlbnQSIgoMcm90YXJ5RXZlbnRzGAUgAygLMgwuUm90YXJ5RXZl",
-            "bnQSHwoHc2lnbmFscxgGIAMoDjIOLlVwZGF0ZS5TaWduYWwSEQoJZGVsdGFU",
-            "aW1lGAcgASgFEhAKCHVuaXhUaW1lGAggASgDEhMKBGluZm8YCSABKAsyBS5J",
-            "bmZvEhAKCHByZXNzdXJlGBAgASgCIlAKBlNpZ25hbBIICgROT05FEAASDgoK",
-            "RElTQ09OTkVDVBABEhQKEENPTk5FQ1RfQVBQUk9WRUQQAhIWChJERVNDUklQ",
-            "VElPTl9VUERBVEUQA0INqgIKUHNpeC5Qcm90b2IGcHJvdG8z"));
+            "GAUgASgFIjgKB0dlc3R1cmUSGgoEdHlwZRgBIAEoDjIMLkdlc3R1cmVUeXBl",
+            "EhEKCWRlbHRhVGltZRgCIAEoBSLUAQoKVG91Y2hFdmVudBItCglldmVudFR5",
+            "cGUYASABKA4yGi5Ub3VjaEV2ZW50LlRvdWNoRXZlbnRUeXBlEhMKC2FjdGlv",
+            "bkluZGV4GAIgASgFEhIKCnBvaW50ZXJJZHMYAyADKAUSFQoGY29vcmRzGAQg",
+            "AygLMgUuVmVjMhIRCglkZWx0YVRpbWUYBSABKAUiRAoOVG91Y2hFdmVudFR5",
+            "cGUSCAoETk9ORRAAEgkKBUJFR0lOEAESBwoDRU5EEAISCAoETU9WRRADEgoK",
+            "BkNBTkNFTBAEIi4KC1JvdGFyeUV2ZW50EgwKBHN0ZXAYASABKAUSEQoJZGVs",
+            "dGFUaW1lGAIgASgFIiwKC0J1dHRvbkV2ZW50EgoKAmlkGAEgASgFEhEKCWRl",
+            "bHRhVGltZRgCIAEoBSLxAgoGVXBkYXRlEiIKDHNlbnNvckZyYW1lcxgBIAMo",
+            "CzIMLlNlbnNvckZyYW1lEhoKCGdlc3R1cmVzGAIgAygLMgguR2VzdHVyZRIg",
+            "Cgt0b3VjaEV2ZW50cxgDIAMoCzILLlRvdWNoRXZlbnQSIgoMYnV0dG9uRXZl",
+            "bnRzGAQgAygLMgwuQnV0dG9uRXZlbnQSIgoMcm90YXJ5RXZlbnRzGAUgAygL",
+            "MgwuUm90YXJ5RXZlbnQSHwoHc2lnbmFscxgGIAMoDjIOLlVwZGF0ZS5TaWdu",
+            "YWwSEQoJZGVsdGFUaW1lGAcgASgFEhAKCHVuaXhUaW1lGAggASgDEhMKBGlu",
+            "Zm8YCSABKAsyBS5JbmZvEhAKCHByZXNzdXJlGBAgASgCIlAKBlNpZ25hbBII",
+            "CgROT05FEAASDgoKRElTQ09OTkVDVBABEhQKEENPTk5FQ1RfQVBQUk9WRUQQ",
+            "AhIWChJERVNDUklQVElPTl9VUERBVEUQA0INqgIKUHNpeC5Qcm90b2IGcHJv",
+            "dG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Psix.Proto.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.Info), global::Psix.Proto.Info.Parser, new[]{ "Hand", "AppId", "AppVersion", "AvailableModels", "ActiveModel" }, null, new[]{ typeof(global::Psix.Proto.Info.Types.Hand) }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.SensorFrame), global::Psix.Proto.SensorFrame.Parser, new[]{ "Gyro", "Acc", "Grav", "Quat", "Mag", "MagCal", "DeltaTime" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.Gesture), global::Psix.Proto.Gesture.Parser, new[]{ "Type", "DeltaTime" }, null, new[]{ typeof(global::Psix.Proto.Gesture.Types.GestureType) }, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.Gesture), global::Psix.Proto.Gesture.Parser, new[]{ "Type", "DeltaTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.TouchEvent), global::Psix.Proto.TouchEvent.Parser, new[]{ "EventType", "ActionIndex", "PointerIds", "Coords", "DeltaTime" }, null, new[]{ typeof(global::Psix.Proto.TouchEvent.Types.TouchEventType) }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.RotaryEvent), global::Psix.Proto.RotaryEvent.Parser, new[]{ "Step", "DeltaTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.ButtonEvent), global::Psix.Proto.ButtonEvent.Parser, new[]{ "Id", "DeltaTime" }, null, null, null, null),
@@ -928,10 +927,10 @@ namespace Psix.Proto {
 
     /// <summary>Field number for the "type" field.</summary>
     public const int TypeFieldNumber = 1;
-    private global::Psix.Proto.Gesture.Types.GestureType type_ = global::Psix.Proto.Gesture.Types.GestureType.None;
+    private global::Psix.Proto.GestureType type_ = global::Psix.Proto.GestureType.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Psix.Proto.Gesture.Types.GestureType Type {
+    public global::Psix.Proto.GestureType Type {
       get { return type_; }
       set {
         type_ = value;
@@ -974,7 +973,7 @@ namespace Psix.Proto {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (Type != global::Psix.Proto.Gesture.Types.GestureType.None) hash ^= Type.GetHashCode();
+      if (Type != global::Psix.Proto.GestureType.None) hash ^= Type.GetHashCode();
       if (DeltaTime != 0) hash ^= DeltaTime.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -994,7 +993,7 @@ namespace Psix.Proto {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (Type != global::Psix.Proto.Gesture.Types.GestureType.None) {
+      if (Type != global::Psix.Proto.GestureType.None) {
         output.WriteRawTag(8);
         output.WriteEnum((int) Type);
       }
@@ -1012,7 +1011,7 @@ namespace Psix.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Type != global::Psix.Proto.Gesture.Types.GestureType.None) {
+      if (Type != global::Psix.Proto.GestureType.None) {
         output.WriteRawTag(8);
         output.WriteEnum((int) Type);
       }
@@ -1030,7 +1029,7 @@ namespace Psix.Proto {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (Type != global::Psix.Proto.Gesture.Types.GestureType.None) {
+      if (Type != global::Psix.Proto.GestureType.None) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Type);
       }
       if (DeltaTime != 0) {
@@ -1048,7 +1047,7 @@ namespace Psix.Proto {
       if (other == null) {
         return;
       }
-      if (other.Type != global::Psix.Proto.Gesture.Types.GestureType.None) {
+      if (other.Type != global::Psix.Proto.GestureType.None) {
         Type = other.Type;
       }
       if (other.DeltaTime != 0) {
@@ -1070,7 +1069,7 @@ namespace Psix.Proto {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            Type = (global::Psix.Proto.Gesture.Types.GestureType) input.ReadEnum();
+            Type = (global::Psix.Proto.GestureType) input.ReadEnum();
             break;
           }
           case 16: {
@@ -1093,7 +1092,7 @@ namespace Psix.Proto {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
-            Type = (global::Psix.Proto.Gesture.Types.GestureType) input.ReadEnum();
+            Type = (global::Psix.Proto.GestureType) input.ReadEnum();
             break;
           }
           case 16: {
@@ -1104,21 +1103,6 @@ namespace Psix.Proto {
       }
     }
     #endif
-
-    #region Nested types
-    /// <summary>Container for nested types declared in the Gesture message type.</summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static partial class Types {
-      public enum GestureType {
-        [pbr::OriginalName("NONE")] None = 0,
-        [pbr::OriginalName("PINCH_TAP")] PinchTap = 1,
-        [pbr::OriginalName("CLENCH")] Clench = 2,
-        [pbr::OriginalName("SURFACE_TAP")] SurfaceTap = 3,
-      }
-
-    }
-    #endregion
 
   }
 
