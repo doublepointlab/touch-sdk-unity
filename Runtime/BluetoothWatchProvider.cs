@@ -205,6 +205,7 @@ namespace Psix
         /* Not part of generic interface */
         public event Action? OnScanTimeout = null;
 
+        private Proto.GestureType lastGesture = Proto.GestureType.None;
 
         private bool select(byte[] data)
         {
@@ -221,13 +222,10 @@ namespace Psix
             );
         }
 
-	private Proto.GestureType lastGesture = Proto.GestureType.None;
-
         // Internal callbacks
-        private void protobufCallback(byte[] data)
-        {
-            var update = Proto.Update.Parser.ParseFrom(data);
 
+        private void HandleSensorframes(Proto.Update update)
+        {
             if (update.SensorFrames.Count > 0)
             {
                 var frame = update.SensorFrames.Last();
@@ -238,7 +236,10 @@ namespace Psix
                 OnAngularVelocity?.Invoke(new Vector3(-frame.Gyro.Y, -frame.Gyro.Z, frame.Gyro.X));
                 OnOrientation?.Invoke(new Quaternion(-frame.Quat.Y, -frame.Quat.Z, frame.Quat.X, frame.Quat.W));
             }
+        }
 
+        private void HandleGestures(Proto.Update update)
+        {
             foreach (var gesture in update.Gestures) {
                 if (gesture.Type != Proto.GestureType.PinchHold) {
                     if (lastGesture == Proto.GestureType.PinchHold) {
@@ -249,7 +250,10 @@ namespace Psix
                 }
                 lastGesture = gesture.Type;
             }
+        }
 
+        private void HandleTouchEvents(Proto.Update update)
+        {
             foreach (var touchEvent in update.TouchEvents)
             {
                 Interaction.TouchType type = TouchType.None;
@@ -272,32 +276,50 @@ namespace Psix
                     new Vector2(coords.X, coords.Y)
                 ));
             }
+        }
 
+        private void HandleButtonEvents(Proto.Update update)
+        {
             foreach (var buttonEvent in update.ButtonEvents)
                 OnButton?.Invoke();
+        }
 
+        private void HandleRotaryEvents(Proto.Update update)
+        {
             // TODO: Is the direction correct??
             foreach (var rotaryEvent in update.RotaryEvents)
                 OnRotary?.Invoke((rotaryEvent.Step > 0) ? Direction.CounterClockwise : Direction.Clockwise);
+        }
 
+        private void HandleSignals(Proto.Update update)
+        {
             foreach (var signal in update.Signals)
             {
                 if (signal == Proto.Update.Types.Signal.Disconnect)
                     Disconnect();
             }
+        }
 
-            infoCallback(update.Info);
+        private void protobufCallback(byte[] data)
+        {
+            var update = Proto.Update.Parser.ParseFrom(data);
 
+            HandleSensorframes(update);
+            HandleGestures(update);
+            HandleTouchEvents(update);
+            HandleRotaryEvents(update);
+            HandleSignals(update);
+            HandleInfo(update.Info);
         }
 
         private void readCallback(byte[] data)
         {
             var update = Proto.Update.Parser.ParseFrom(data);
             var info = update.Info;
-            infoCallback(info);
+            HandleInfo(info);
         }
 
-        private void infoCallback(Proto.Info info)
+        private void HandleInfo(Proto.Info info)
         {
             var newHandedness = Hand.None;
 
