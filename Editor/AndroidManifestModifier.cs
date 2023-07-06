@@ -3,11 +3,14 @@
 
 using System.Xml;
 using UnityEditor;
-using UnityEngine;
 
 #if UNITY_ANDROID
 using UnityEditor.Android;
 
+/*
+ * Inserts elements into the AndroidManifest.xml of the app module, such
+ * as permission and activity declarations.
+ */
 internal class AndroidManifestModifier : IPostGenerateGradleAndroidProject
 {
     static readonly string k_AndroidURI = "http://schemas.android.com/apk/res/android";
@@ -53,7 +56,6 @@ internal class AndroidManifestModifier : IPostGenerateGradleAndroidProject
 
     void AppendActivity(XmlDocument doc, string parentPath, string name)
     {
-        Debug.Log("kek");
         var xmlNode = doc.SelectNodes(parentPath + "/application").Item(0);
         XmlElement childElement = doc.CreateElement("activity");
         childElement.SetAttribute("name", k_AndroidURI, name);
@@ -76,7 +78,6 @@ internal class AndroidManifestModifier : IPostGenerateGradleAndroidProject
         CreateNameValueElementsInTag(manifestDoc, nodePath, "uses-feature", "name", "android.hardware.top", "required", "false");
 
         AppendActivity(manifestDoc, nodePath, "io.port6.android.unitywrapper.HelperActivity");
-
 
         manifestDoc.Save(manifestPath);
     }
