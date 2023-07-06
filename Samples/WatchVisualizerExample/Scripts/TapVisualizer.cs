@@ -19,8 +19,6 @@ namespace Psix.Examples
         private int tapCount = 0;
         private int surfaceTapCount = 0;
 
-        private bool releaseEnabled = false;
-
         private float timeOfLastTap;
 
         public override void RegisterWatch(Watch watch)
@@ -36,16 +34,6 @@ namespace Psix.Examples
             if (!gestures.Contains(Gesture.PinchTap)){
                 tapCountText.SetText("--");
             }
-            releaseEnabled = gestures.Contains(Gesture.PinchRelease);
-        }
-
-        void Update()
-        {
-            if (!releaseEnabled)
-            {
-                if (Time.time - timeOfLastTap > 0.2)
-                    OnRelease();
-            }
         }
 
         private void OnTap()
@@ -53,7 +41,6 @@ namespace Psix.Examples
             tapCount++;
             tapCountText.text = tapCount.ToString();
             tapThingRenderer.material.color = Color.black;
-            timeOfLastTap = Time.time;
         }
 
         private void OnRelease()
