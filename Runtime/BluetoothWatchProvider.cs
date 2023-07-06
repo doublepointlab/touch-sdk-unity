@@ -242,7 +242,7 @@ namespace Psix
         {
             foreach (var gesture in update.Gestures) {
                 if (gesture.Type != Proto.GestureType.PinchHold) {
-                    if (lastGesture == Proto.GestureType.PinchHold) {
+                    if (lastGesture == Proto.GestureType.PinchHold || lastGesture == Proto.GestureType.PinchTap) {
                         OnGesture?.Invoke(Interaction.Gesture.PinchRelease);
                     } else if (gesture.Type != Proto.GestureType.None) {
                         OnGesture?.Invoke((Interaction.Gesture)gesture.Type);
