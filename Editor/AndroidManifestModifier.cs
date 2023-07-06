@@ -3,11 +3,12 @@
 
 using System.Xml;
 using UnityEditor;
+using UnityEngine;
 
 #if UNITY_ANDROID
 using UnityEditor.Android;
 
-internal class OculusManifestBTFixer : IPostGenerateGradleAndroidProject
+internal class AndroidManifestModifier : IPostGenerateGradleAndroidProject
 {
     static readonly string k_AndroidURI = "http://schemas.android.com/apk/res/android";
     static readonly string k_AndroidManifestPath = "/src/main/AndroidManifest.xml";
@@ -50,6 +51,16 @@ internal class OculusManifestBTFixer : IPostGenerateGradleAndroidProject
         }
     }
 
+    void AppendActivity(XmlDocument doc, string parentPath, string name)
+    {
+        Debug.Log("kek");
+        var xmlNode = doc.SelectNodes(parentPath + "/application").Item(0);
+        XmlElement childElement = doc.CreateElement("activity");
+        childElement.SetAttribute("name", k_AndroidURI, name);
+        childElement.SetAttribute("exported", k_AndroidURI, "true");
+        xmlNode.AppendChild(childElement);
+    }
+
     public void OnPostGenerateGradleAndroidProject(string path)
     {
 
@@ -62,6 +73,10 @@ internal class OculusManifestBTFixer : IPostGenerateGradleAndroidProject
         CreateNameValueElementsInTag(manifestDoc, nodePath, "uses-permission", "name", "android.permission.BLUETOOTH_ADMIN");
         CreateNameValueElementsInTag(manifestDoc, nodePath, "uses-permission", "name", "android.permission.ACCESS_FINE_LOCATION");
         CreateNameValueElementsInTag(manifestDoc, nodePath, "uses-feature", "name", "android.hardware.bluetooth_le", "required", "false");
+        CreateNameValueElementsInTag(manifestDoc, nodePath, "uses-feature", "name", "android.hardware.top", "required", "false");
+
+        AppendActivity(manifestDoc, nodePath, "io.port6.android.unitywrapper.HelperActivity");
+
 
         manifestDoc.Save(manifestPath);
     }
