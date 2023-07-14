@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Google.Protobuf;
+
 using UnityEngine;
 
 #if UNITY_EDITOR_WIN
@@ -100,18 +102,12 @@ namespace Psix
 
             GameObject receiverGameObject = new GameObject("TouchSdkGameObject");
             TouchSdkMessageReceiver receiver = receiverGameObject.AddComponent<TouchSdkMessageReceiver>();
-            receiver.OnMessage += OnMessage;
+            receiver.OnMessage += protobufCallback;
+            receiver.OnDisconnect += disconnectAction;
 
             kotlinObject = new AndroidJavaObject("io.port6.android.unitywrapper.AndroidUnityWrapper");
 
         }
-
-        private void OnMessage(string message) {
-            Debug.Log("GOT MESSAGE: " + message);
-        }
-
-        public void ClearSubscriptions() {}
-
 
         private void Start()
         {
@@ -154,5 +150,151 @@ namespace Psix
         /* Not part of generic interface */
         public event Action? OnScanTimeout = null;
 
+        // Internal callbacks
+        private void protobufCallback(byte[] data)
+        {
+            if (!Connected) {
+                connectAction();
+            }
+
+            Debug.Log($"proto got {data.Length}");
+
+            var update = Proto.Update.Parser.ParseFrom(data);
+
+            if (update.SensorFrames.Count > 0)
+            {
+                var frame = update.SensorFrames.Last();
+                // Update sensor stuff
+
+                OnAcceleration?.Invoke(new Vector3(frame.Acc.Y, frame.Acc.Z, -frame.Acc.X));
+                OnGravity?.Invoke(new Vector3(frame.Grav.Y, frame.Grav.Z, -frame.Grav.X));
+                OnAngularVelocity?.Invoke(new Vector3(-frame.Gyro.Y, -frame.Gyro.Z, frame.Gyro.X));
+                OnOrientation?.Invoke(new Quaternion(-frame.Quat.Y, -frame.Quat.Z, frame.Quat.X, frame.Quat.W));
+            }
+
+            foreach (var gesture in update.Gestures)
+                OnGesture?.Invoke((Interaction.Gesture)gesture.Type);
+
+            foreach (var touchEvent in update.TouchEvents)
+            {
+                Interaction.TouchType type = TouchType.None;
+                switch (touchEvent.EventType)
+                {
+                    case Proto.TouchEvent.Types.TouchEventType.Begin:
+                        type = TouchType.Press;
+                        break;
+                    case Proto.TouchEvent.Types.TouchEventType.End:
+                        type = TouchType.Release;
+                        break;
+                    case Proto.TouchEvent.Types.TouchEventType.Move:
+                        type = TouchType.Move;
+                        break;
+                    default: break;
+                }
+                var coords = touchEvent.Coords.First();
+                OnTouch?.Invoke(new TouchEvent(
+                            type,
+                    new Vector2(coords.X, coords.Y)
+                ));
+            }
+
+            foreach (var buttonEvent in update.ButtonEvents)
+                OnButton?.Invoke();
+
+            // TODO: Is the direction correct??
+            foreach (var rotaryEvent in update.RotaryEvents)
+                OnRotary?.Invoke((rotaryEvent.Step > 0) ? Direction.CounterClockwise : Direction.Clockwise);
+
+            foreach (var signal in update.Signals)
+            {
+                if (signal == Proto.Update.Types.Signal.Disconnect)
+                    Disconnect();
+            }
+
+            infoCallback(update.Info);
+
+        }
+
+        private void readCallback(byte[] data)
+        {
+            var update = Proto.Update.Parser.ParseFrom(data);
+            var info = update.Info;
+            infoCallback(info);
+        }
+
+        private void infoCallback(Proto.Info info)
+        {
+            var newHandedness = Hand.None;
+
+            try
+            {
+                if (info.Hand == Proto.Info.Types.Hand.Right)
+                    newHandedness = Hand.Right;
+                else if (info.Hand == Proto.Info.Types.Hand.Left)
+                    newHandedness = Hand.Left;
+
+                if (newHandedness != Hand.None && newHandedness != Handedness)
+                {
+                    Handedness = newHandedness;
+                    OnHandednessChange?.Invoke(newHandedness);
+                }
+
+            }
+            catch (NullReferenceException e)
+            {
+                logger.Debug(e.Message);
+            }
+
+            try
+            {
+                var newActiveGestures = new HashSet<Gesture>(info.ActiveModel.Gestures.Select(gesture =>
+                    (Gesture)gesture
+                ));
+                if (newActiveGestures.Count > 0)
+                {
+                    if (newActiveGestures != ActiveGestures)
+                    {
+                        ActiveGestures = newActiveGestures;
+                        OnDetectedGesturesChange?.Invoke(newActiveGestures);
+                    }
+                }
+            }
+            catch (NullReferenceException e)
+            {
+                logger.Debug(e.Message);
+            }
+        }
+
+        // Internal connection lifecycle callbacks
+
+        private void connectAction()
+        {
+             logger.Debug("connect action");
+             Connected = true;
+             OnConnect?.Invoke();
+        }
+
+         private void disconnectAction()
+        {
+             logger.Debug("disconnect action");
+             Connected = false;
+             OnDisconnect?.Invoke();
+         }
+
+        public void ClearSubscriptions()
+        {
+            OnGesture = null;
+            OnTouch = null;
+            OnButton = null;
+            OnRotary = null;
+            OnHandednessChange = null;
+            OnAcceleration = null;
+            OnAngularVelocity = null;
+            OnOrientation = null;
+            OnGravity = null;
+            OnConnect = null;
+            OnDisconnect = null;
+        }
     }
+
 }

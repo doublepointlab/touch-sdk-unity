@@ -1139,7 +1139,8 @@ PrefabInstance:
       propertyPath: watchName
       value: HQ7Y
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8653684722864412175, guid: b9934ecb904bb7940a886c90c8072bdb, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:

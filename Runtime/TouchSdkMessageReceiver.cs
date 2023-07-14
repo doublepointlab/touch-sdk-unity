@@ -16,13 +16,17 @@ namespace Psix
     public class TouchSdkMessageReceiver: MonoBehaviour
     {
 
-        public event Action<String>? OnMessage = null;
+        public event Action<byte[]>? OnMessage = null;
+        public event Action? OnDisconnect = null;
 
 
         public void OnTouchSdkMessage(string message)
         {
-            Debug.Log("receiver got " + message);
-            OnMessage?.Invoke(message);
+            OnMessage?.Invoke(System.Convert.FromBase64String(message));
+        }
+
+        public void OnTouchSdkDisconnect() {
+            OnDisconnect?.Invoke();
         }
 
     }

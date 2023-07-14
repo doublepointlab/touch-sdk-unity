@@ -8,6 +8,7 @@ import android.bluetooth.*
 import android.bluetooth.le.*
 import com.unity3d.player.UnityPlayer
 import io.port6.sdk.*
+import java.util.Base64
 
 
 object AndroidUnityWrapper {
@@ -17,18 +18,18 @@ object AndroidUnityWrapper {
     private val context: Context get() = UnityPlayer.currentActivity.applicationContext
     private val activity: Activity = UnityPlayer.currentActivity
 
+    private val encoder = Base64.getEncoder()
+
     private val watchCallback = object: Watch.WatchCallback() {
 
-        override fun onSensors(sensors: SensorFrame) {
-            Log.d(TAG, "on sensors")
-            UnityPlayer.UnitySendMessage("TouchSdkGameObject", "OnTouchSdkMessage", "sensors");
+        override fun onRawMessage(data: ByteArray) {
+            val encoded = encoder.encodeToString(data)
+            UnityPlayer.UnitySendMessage("TouchSdkGameObject", "OnTouchSdkMessage", encoded)
         }
 
-        override fun onGesture(gesture: Int) {}
-        override fun onTouch(type: Touch, coordinates: Vec2) {}
-        override fun onButton(type: Int) {}
-        override fun onRotary(step: Int) {}
-        override fun onDisconnect() {}
+        override fun onDisconnect() {
+            UnityPlayer.UnitySendMessage("TouchSdkGameObject", "OnTouchSdkDisconnect", null)
+        }
 
     }
 
