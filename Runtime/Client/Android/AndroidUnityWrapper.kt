@@ -19,7 +19,11 @@ object AndroidUnityWrapper {
 
     private val watchCallback = object: Watch.WatchCallback() {
 
-        override fun onSensors(sensors: SensorFrame) {}
+        override fun onSensors(sensors: SensorFrame) {
+            Log.d(TAG, "on sensors")
+            UnityPlayer.UnitySendMessage("TouchSdkGameObject", "OnTouchSdkMessage", "sensors");
+        }
+
         override fun onGesture(gesture: Int) {}
         override fun onTouch(type: Touch, coordinates: Vec2) {}
         override fun onButton(type: Int) {}
@@ -38,7 +42,8 @@ object AndroidUnityWrapper {
     private val watchConnector = WatchConnector(context, watchConnectorCallback)
 
     fun onDevice(device: BluetoothDevice) {
-        Log.d("HEHEHE", "got $device")
+        Log.d(TAG, "got $device")
+        watchConnector.connect(device)
     }
 
     fun vibrate(length: Int, amplitude: Float) {}
@@ -48,10 +53,16 @@ object AndroidUnityWrapper {
     fun requestGestureDetection(gesture: Int) {}
 
     fun connect() {
+
         val intent = Intent(activity, HelperActivity::class.java)
         activity.startActivity(intent)
     }
 
     fun disconnect() {}
+
+    fun startScan() {
+        watchConnector.startScan()
+
+    }
 
 }

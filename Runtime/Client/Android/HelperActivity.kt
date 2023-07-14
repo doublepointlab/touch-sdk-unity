@@ -19,7 +19,9 @@ class HelperActivity: ComponentActivity() {
         PermissionHelper.createLauncher(this) {
 
             // After permissions are granted, request device association
-            CompanionDeviceHelper.associate(this, deviceLauncher)
+            AndroidUnityWrapper.startScan()
+            finish()
+            //CompanionDeviceHelper.associate(this, deviceLauncher)
         }.also {
             PermissionHelper.requestPermissions(it)
         }
