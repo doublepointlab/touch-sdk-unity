@@ -27,6 +27,7 @@ internal class BuildGradleModifier : IPostGenerateGradleAndroidProject
             return;
 
         gradle = gradle.Insert(insertionIndex, "implementation 'androidx.activity:activity-ktx:1.3.0'\n    ");
+        gradle = gradle.Insert(insertionIndex, "implementation 'com.google.protobuf:protobuf-lite:3.0.0'\n    ");
         System.IO.File.WriteAllText(filepath, gradle);
 
     }
