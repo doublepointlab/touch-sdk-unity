@@ -62,9 +62,13 @@ object AndroidUnityWrapper {
         watchConnector.connect(device)
     }
 
-    fun vibrate(length: Int, amplitude: Float) {}
+    fun vibrate(length: Int, amplitude: Float) {
+        activeWatch?.triggerHaptics(length, amplitude)
+    }
 
-    fun cancelVibration() {}
+    fun cancelVibration() {
+        activeWatch?.triggerHaptics(0, 0f)
+    }
 
     fun requestGestureDetection(gesture: Int) {}
 

@@ -63,7 +63,7 @@ namespace Psix
          */
         public void Vibrate(int length, float amplitude)
         {
-            // TODO
+            androidInterface.Call("vibrate", length, amplitude);
         }
 
         /**
@@ -71,7 +71,7 @@ namespace Psix
          */
         public void CancelVibration()
         {
-            // TODO
+            androidInterface.Call("cancelVibration");
         }
 
         public void RequestGestureDetection(Gesture gesture)
