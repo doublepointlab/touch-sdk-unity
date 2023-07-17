@@ -20,6 +20,10 @@ object AndroidUnityWrapper {
 
     private val encoder = Base64.getEncoder()
 
+    private var activeWatch: Watch? = null
+
+    private var name: String = ""
+
     private val watchCallback = object: Watch.WatchCallback() {
 
         override fun onRawMessage(data: ByteArray) {
@@ -28,22 +32,33 @@ object AndroidUnityWrapper {
         }
 
         override fun onDisconnect() {
-            UnityPlayer.UnitySendMessage("TouchSdkGameObject", "OnTouchSdkDisconnect", null)
+            synchronized(this) {
+                activeWatch = null
+            }
+            watchConnector.startScan()
+            UnityPlayer.UnitySendMessage("TouchSdkGameObject", "OnTouchSdkDisconnect", "")
         }
-
     }
 
     private val watchConnectorCallback = object: WatchConnector.Callback() {
         override fun onWatchConnected(watch: Watch) {
-            Log.i(TAG, "Found watch")
-            watch.setListener(watchCallback)
+            synchronized(this) {
+                if (activeWatch == null) {
+                    Log.d(TAG, "connecting to ${watch.name}")
+                    watch.setListener(watchCallback)
+                    activeWatch = watch
+                    watchConnector.stopScan()
+                } else {
+                    Log.d(TAG, "already connected to ${activeWatch?.name}, disconnecting ${watch.name}")
+                    watch.disconnect() // make sure we are only connected to one watch
+                }
+            }
         }
     }
 
-    private val watchConnector = WatchConnector(context, watchConnectorCallback)
+    private val watchConnector: WatchConnector = WatchConnector(context, watchConnectorCallback)
 
     fun onDevice(device: BluetoothDevice) {
-        Log.d(TAG, "got $device")
         watchConnector.connect(device)
     }
 
@@ -53,17 +68,23 @@ object AndroidUnityWrapper {
 
     fun requestGestureDetection(gesture: Int) {}
 
-    fun connect() {
-
+    fun connect(nameFilter: String) {
+        name = nameFilter
+        // Start the helper activity, which will ensure that we have
+        // the necessary permissions before calling startScan of this object.
         val intent = Intent(activity, HelperActivity::class.java)
         activity.startActivity(intent)
     }
 
-    fun disconnect() {}
+    fun disconnect() {
+        watchConnector.stopScan()
+        synchronized(this) {
+            activeWatch?.disconnect()
+        }
+    }
 
     fun startScan() {
-        watchConnector.startScan()
-
+        watchConnector.startScan(name)
     }
 
 }

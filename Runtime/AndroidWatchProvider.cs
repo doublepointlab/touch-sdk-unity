@@ -11,14 +11,9 @@ using Google.Protobuf;
 
 using UnityEngine;
 
-#if UNITY_EDITOR_WIN
-#warning "kek"
+#if !UNITY_ANDROID
+#warning "AndroidWatchProvider is only supported on Android."
 #endif
-
-#if UNITY_ANDROID
-using UnityEngine.Android;
-#endif
-
 
 namespace Psix
 {
@@ -36,27 +31,18 @@ namespace Psix
     {
         [SerializeField] public string watchName = "";
 
-        // The bluetooth name of the watch */
-        public string ConnectedWatchName
-        {
-            get;
-            private set;
-        }
-
-        // Connecting to a gatt server might take minutes at worst on some
-        // machines.  Most devices will hopefully connect within 30 seconds.
-        // [HideInInspector] public int connectionTimeoutSeconds = 120;
-
         public bool ConnectOnStart = true;
 
         private static PsixLogger logger = new PsixLogger("AndroidWatchProvider");
+
+        private AndroidJavaObject androidInterface;
 
         /**
          * Connect to the watch running Doublepoint Controller app.
          */
         public void Connect()
         {
-            // TODO
+            androidInterface.Call("connect", watchName);
         }
 
         /**
@@ -64,7 +50,7 @@ namespace Psix
          */
         public void Disconnect()
         {
-            // TODO
+            androidInterface.Call("disconnect");
         }
 
         public bool Connected { get; private set; } = false;
@@ -93,39 +79,24 @@ namespace Psix
             // TODO
         }
 
-        AndroidJavaObject kotlinObject;
-
         private void Awake()
         {
-            // TODO?
             Watch.Instance.RegisterProvider(this);
 
+            // Create a game object which receives messages from the Touch SDK interface.
             GameObject receiverGameObject = new GameObject("TouchSdkGameObject");
             TouchSdkMessageReceiver receiver = receiverGameObject.AddComponent<TouchSdkMessageReceiver>();
+
             receiver.OnMessage += protobufCallback;
             receiver.OnDisconnect += disconnectAction;
 
-            kotlinObject = new AndroidJavaObject("io.port6.android.unitywrapper.AndroidUnityWrapper");
-
+            androidInterface = new AndroidJavaObject("io.port6.android.unitywrapper.AndroidUnityWrapper");
         }
 
         private void Start()
         {
             if (ConnectOnStart)
-                kotlinObject.Call("connect");
-            else
-                kotlinObject.Call("requestPermissions");
-        }
-
-#if UNITY_ANDROID
-        private void Update()
-        {
-        }
-#endif
-
-        public AndroidWatchProvider()
-        {
-            // TODO?
+                Connect();
         }
 
         /* Documented in WatchInterface */
@@ -156,8 +127,6 @@ namespace Psix
             if (!Connected) {
                 connectAction();
             }
-
-            Debug.Log($"proto got {data.Length}");
 
             var update = Proto.Update.Parser.ParseFrom(data);
 
