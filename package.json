@@ -1,11 +1,11 @@
 {
   "name": "io.port6.sdk",
-  "displayName": "Port 6 SDK",
-  "version": "0.9.0-beta",
-  "unity": "2020.3",
-  "description": "C# scripts for bridging Unity applications with Port 6 enabled smart peripherals.",
+  "displayName": "Touch SDK Unity",
+  "version": "0.10.0-beta",
+  "unity": "2022.3",
+  "description": "C# scripts for bridging Unity applications with Doublepoint enabled smart peripherals.",
   "keywords": [
-    "Port 6",
+    "Doublepoint",
     "Bluetooth",
     "Smartwatch",
     "Smartphone",
@@ -15,11 +15,11 @@
   ],
   "license": "",
   "author": {
-    "name": "Port 6",
-    "email": "hello@port6.io",
-    "url": "https://www.port6.io"
+    "name": "Doublepoint",
+    "email": "hello@doublepoint.com",
+    "url": "https://www.doublepoint.com"
   },
-  "homepage": "https://www.port6.io",
+  "homepage": "https://www.doublepoint.com",
   "samples": [
     {
       "displayName": "Watch Visualizer Demo",
