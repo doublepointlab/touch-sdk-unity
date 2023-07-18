@@ -11,9 +11,6 @@ using Google.Protobuf;
 
 using UnityEngine;
 
-#if !UNITY_ANDROID
-#warning "AndroidWatchProvider is only supported on Android."
-#endif
 
 namespace Psix
 {
@@ -27,15 +24,32 @@ namespace Psix
      * Check also IWatch.
      */
     [DefaultExecutionOrder(-50)]
-    public class AndroidWatchProvider : MonoBehaviour, IWatch
+    public class AndroidWatchImpl : IWatch
     {
-        [SerializeField] public string watchName = "";
 
-        public bool ConnectOnStart = true;
+        private string watchName = "";
 
-        private static PsixLogger logger = new PsixLogger("AndroidWatchProvider");
+        private static PsixLogger logger = new PsixLogger("AndroidWatchImpl");
 
         private AndroidJavaObject androidInterface;
+
+        public AndroidWatchImpl(string name = "") {
+
+#if !UNITY_ANDROID
+            Debug.LogWarning("AndroidWatchImpl is only supported on Android.");
+#endif
+
+            watchName = name;
+
+            // Create a game object which receives messages from the Touch SDK interface.
+            GameObject receiverGameObject = new GameObject("TouchSdkGameObject");
+            TouchSdkMessageReceiver receiver = receiverGameObject.AddComponent<TouchSdkMessageReceiver>();
+
+            receiver.OnMessage += protobufCallback;
+            receiver.OnDisconnect += disconnectAction;
+
+            androidInterface = new AndroidJavaObject("io.port6.android.unitywrapper.AndroidUnityWrapper");
+        }
 
         /**
          * Connect to the watch running Doublepoint Controller app.
@@ -79,26 +93,6 @@ namespace Psix
             // TODO
         }
 
-        private void Awake()
-        {
-            Watch.Instance.RegisterProvider(this);
-
-            // Create a game object which receives messages from the Touch SDK interface.
-            GameObject receiverGameObject = new GameObject("TouchSdkGameObject");
-            TouchSdkMessageReceiver receiver = receiverGameObject.AddComponent<TouchSdkMessageReceiver>();
-
-            receiver.OnMessage += protobufCallback;
-            receiver.OnDisconnect += disconnectAction;
-
-            androidInterface = new AndroidJavaObject("io.port6.android.unitywrapper.AndroidUnityWrapper");
-        }
-
-        private void Start()
-        {
-            if (ConnectOnStart)
-                Connect();
-        }
-
         /* Documented in WatchInterface */
         public event Action<Vector3>? OnAngularVelocity = null;
         public event Action<Vector3>? OnAcceleration = null;
@@ -117,9 +111,6 @@ namespace Psix
 
         public event Action? OnConnect = null;
         public event Action? OnDisconnect = null;
-
-        /* Not part of generic interface */
-        public event Action? OnScanTimeout = null;
 
         // Internal callbacks
         private void protobufCallback(byte[] data)

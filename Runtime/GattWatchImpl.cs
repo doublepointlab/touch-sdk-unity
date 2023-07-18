@@ -1,3 +1,4 @@
+
 // Copyright (c) 2022 Port 6 Oy <hello@port6.io>
 // Licensed under the MIT License. See LICENSE for details.
 
@@ -32,9 +33,8 @@ namespace Psix
      * Check also IWatch.
      */
     [DefaultExecutionOrder(-50)]
-    public class BluetoothWatchProvider : MonoBehaviour, IWatch
+    public class GattWatchImpl : IWatch
     {
-        [SerializeField] public string watchName = "";
 
         // The bluetooth name of the watch */
         public string ConnectedWatchName
@@ -45,14 +45,14 @@ namespace Psix
 
         // Connecting to a gatt server might take minutes at worst on some
         // machines.  Most devices will hopefully connect within 30 seconds.
-        [HideInInspector] public int connectionTimeoutSeconds = 120;
+        public int connectionTimeoutSeconds = 120;
 
-        public bool ConnectOnStart = true;
-
-        private static PsixLogger logger = new PsixLogger("BluetoothWatchProvider");
+        private static PsixLogger logger = new PsixLogger("GattWatchImpl");
 
         private GattConnection? client;
         private GattConnector? connector;
+
+        private string watchName = "";
 
         List<Subscription> subs = new List<Subscription>();
 
@@ -61,6 +61,9 @@ namespace Psix
          */
         public void Connect()
         {
+            if (connector != null || client != null)
+                return;
+
             connector = new GattConnector(onAccepted: (conn, _watchName) =>
             {
                 logger.Info("Connected to \"{0}\"", _watchName);
@@ -150,35 +153,11 @@ namespace Psix
 
         }
 
-        private void Awake()
+        public GattWatchImpl(string name = "")
         {
-            Watch.Instance.RegisterProvider(this);
-        }
 
-        private void Start()
-        {
-#if UNITY_ANDROID
-            if (!Permission.HasUserAuthorizedPermission(Permission.FineLocation))
-            {
-                Debug.Log("No location permission.");
-                Permission.RequestUserPermission(Permission.FineLocation);
-            }
-#else
-            if (ConnectOnStart)
-                Connect();
-#endif
-        }
+            watchName = name;
 
-#if UNITY_ANDROID
-        private void Update()
-        {
-            if (Permission.HasUserAuthorizedPermission(Permission.FineLocation) && client == null && connector == null)
-                Connect();
-        }
-#endif
-
-        public BluetoothWatchProvider()
-        {
             ConnectedWatchName = "";
             subs.Add(new Subscription(GattServices.ProtobufServiceUUID, GattServices.ProtobufOutputUUID, protobufCallback));
         }

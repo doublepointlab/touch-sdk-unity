@@ -11,17 +11,12 @@ class HelperActivity: ComponentActivity() {
 
     override fun onCreate(state: Bundle?) {
         super.onCreate(state)
-        val deviceLauncher = CompanionDeviceHelper.createLauncher(this) {
-            AndroidUnityWrapper.onDevice(it)
-            finish()
-        }
 
         PermissionHelper.createLauncher(this) {
 
             // After permissions are granted, request device association
             AndroidUnityWrapper.startScan()
             finish()
-            //CompanionDeviceHelper.associate(this, deviceLauncher)
         }.also {
             PermissionHelper.requestPermissions(it)
         }
