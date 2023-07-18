@@ -31,7 +31,7 @@ namespace Psix
 
         private bool UseAndroidImplementation = true;
 
-        private IWatch watch;
+        private IWatch? watch = null;
 
         private void Awake()
         {
@@ -40,7 +40,7 @@ namespace Psix
             else
                 watch = new GattWatchImpl(watchName);
 
-            Watch.Instance.RegisterProvider(watch);
+            Watch.Instance.RegisterProvider(watch!);
 
         }
 
@@ -48,7 +48,7 @@ namespace Psix
         {
 #if UNITY_ANDROID
             if (UseAndroidImplementation && ConnectOnStart)
-                watch.Connect();
+                watch!.Connect();
             else if (!UseAndroidImplementation && !Permission.HasUserAuthorizedPermission(Permission.FineLocation))
             {
                 Debug.Log("No location permission.");
@@ -56,7 +56,7 @@ namespace Psix
             }
 #else
             if (ConnectOnStart)
-                watch.Connect();
+                watch!.Connect();
 #endif
         }
 
@@ -65,7 +65,7 @@ namespace Psix
         {
             if (!UseAndroidImplementation && ConnectOnStart
                     && Permission.HasUserAuthorizedPermission(Permission.FineLocation))
-                watch.Connect();
+                watch!.Connect();
         }
 #endif
 
