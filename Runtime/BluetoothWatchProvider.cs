@@ -153,12 +153,7 @@ namespace Psix
         private void Awake()
         {
             Watch.Instance.RegisterProvider(this);
-
-            var kotlinObject = new AndroidJavaObject("io.port6.android.unitywrapper.AndroidUnityWrapper");
-
-            kotlinObject.Call("connect");
         }
-
 
         private void Start()
         {
@@ -177,8 +172,8 @@ namespace Psix
 #if UNITY_ANDROID
         private void Update()
         {
-            //if (Permission.HasUserAuthorizedPermission(Permission.FineLocation) && client == null && connector == null)
-            //    Connect();
+            if (Permission.HasUserAuthorizedPermission(Permission.FineLocation) && client == null && connector == null)
+                Connect();
         }
 #endif
 
