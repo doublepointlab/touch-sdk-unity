@@ -29,7 +29,7 @@ namespace Psix
 
         public bool ConnectOnStart = true;
 
-        private bool UseAndroidImplementation = true;
+        public bool UseAndroidImplementation = true;
 
         private IWatch? watch = null;
 
