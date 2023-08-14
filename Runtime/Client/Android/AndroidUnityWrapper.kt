@@ -70,7 +70,9 @@ object AndroidUnityWrapper {
         activeWatch?.triggerHaptics(0, 0f)
     }
 
-    fun requestGestureDetection(gesture: Int) {}
+    fun requestGestureDetection(gesture: Int) {
+        activeWatch?.requestGestureDetection(gesture)
+    }
 
     fun connect(nameFilter: String) {
         name = nameFilter

@@ -45,10 +45,18 @@ namespace Psix
             GameObject receiverGameObject = new GameObject("TouchSdkGameObject");
             TouchSdkMessageReceiver receiver = receiverGameObject.AddComponent<TouchSdkMessageReceiver>();
 
-            receiver.OnMessage += OnProtobufData;
+            receiver.OnMessage += onData;
             receiver.OnDisconnect += disconnectAction;
 
             androidInterface = new AndroidJavaObject("io.port6.android.unitywrapper.AndroidUnityWrapper");
+        }
+
+        private void onData(byte[] data) {
+            if (!Connected) {
+                connectAction();
+            }
+
+            OnProtobufData(data);
         }
 
         override public void Connect()
@@ -73,7 +81,7 @@ namespace Psix
 
         override public void RequestGestureDetection(Gesture gesture)
         {
-            // TODO
+            androidInterface.Call("requestGestureDetection", (int)gesture);
         }
     }
 }
