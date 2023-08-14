@@ -35,11 +35,14 @@ namespace Psix
 
         private void Awake()
         {
+#if UNITY_ANDROID
             if (UseAndroidImplementation)
                 watch = new AndroidWatchImpl(watchName);
             else
                 watch = new GattWatchImpl(watchName);
-
+#else
+            watch = new GattWatchImpl(watchName);
+#endif
             Watch.Instance.RegisterProvider(watch!);
 
         }
