@@ -33,6 +33,9 @@ namespace Psix
 
         private IWatch? watch = null;
 
+        private string scanPermission = "android.permission.BLUETOOTH_SCAN";
+        private string connectPermission = "android.permission.BLUETOOTH_CONNECT";
+
         private void Awake()
         {
 #if UNITY_ANDROID
@@ -44,7 +47,26 @@ namespace Psix
             watch = new GattWatchImpl(watchName);
 #endif
             Watch.Instance.RegisterProvider(watch!);
+        }
 
+        private bool CheckPermissions()
+        {
+            return (
+            Permission.HasUserAuthorizedPermission(Permission.CoarseLocation)
+            && Permission.HasUserAuthorizedPermission(Permission.FineLocation)
+            && Permission.HasUserAuthorizedPermission(scanPermission)
+            && Permission.HasUserAuthorizedPermission(connectPermission)
+            );
+        }
+
+        private bool RequestPermissions()
+        {
+            Permission.RequestUserPermissions(new string[] {
+                Permission.CoarseLocation,
+                Permission.FineLocation,
+                scanPermission,
+                connectPermission
+            });
         }
 
         private void Start()
@@ -52,10 +74,10 @@ namespace Psix
 #if UNITY_ANDROID
             if (UseAndroidImplementation && ConnectOnStart)
                 watch!.Connect();
-            else if (!UseAndroidImplementation && !Permission.HasUserAuthorizedPermission(Permission.FineLocation))
+            else if (!UseAndroidImplementation && !CheckPermissions())
             {
-                Debug.Log("No location permission.");
-                Permission.RequestUserPermission(Permission.FineLocation);
+                Debug.Log("No permissions.");
+                RequestPermissions();
             }
 #else
             if (ConnectOnStart)
@@ -66,8 +88,7 @@ namespace Psix
 #if UNITY_ANDROID
         private void Update()
         {
-            if (!UseAndroidImplementation && ConnectOnStart
-                    && Permission.HasUserAuthorizedPermission(Permission.FineLocation))
+            if (!UseAndroidImplementation && ConnectOnStart && CheckPermissions())
                 watch!.Connect();
         }
 #endif
