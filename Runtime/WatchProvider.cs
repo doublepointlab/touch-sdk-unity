@@ -51,22 +51,37 @@ namespace Psix
 
         private bool CheckPermissions()
         {
-            return (
-            Permission.HasUserAuthorizedPermission(Permission.CoarseLocation)
-            && Permission.HasUserAuthorizedPermission(Permission.FineLocation)
-            && Permission.HasUserAuthorizedPermission(scanPermission)
-            && Permission.HasUserAuthorizedPermission(connectPermission)
+#if UNITY_ANDROID
+
+            var jniClass = AndroidJNI.FindClass("android/os/Build$VERSION");
+            var fieldID = AndroidJNI.GetStaticFieldID(jniClass, "SDK_INT", "I");
+            var sdkLevel = AndroidJNI.GetStaticIntField(jniClass, fieldID);
+
+            var androidTwelvePermissionsOk = (sdkLevel < 31) ||
+                (Permission.HasUserAuthorizedPermission(scanPermission)
+                && Permission.HasUserAuthorizedPermission(connectPermission)
             );
+
+            return (
+                Permission.HasUserAuthorizedPermission(Permission.CoarseLocation)
+                && Permission.HasUserAuthorizedPermission(Permission.FineLocation)
+                && androidTwelvePermissionsOk
+            );
+#else
+            return true;
+#endif
         }
 
-        private bool RequestPermissions()
+        private void RequestPermissions()
         {
+#if UNITY_ANDROID
             Permission.RequestUserPermissions(new string[] {
                 Permission.CoarseLocation,
                 Permission.FineLocation,
                 scanPermission,
                 connectPermission
             });
+#endif
         }
 
         private void Start()
