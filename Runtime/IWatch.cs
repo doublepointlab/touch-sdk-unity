@@ -38,15 +38,32 @@ namespace Psix
         event Action OnDisconnect;
         public bool Connected { get; }
 
+        /**
+         * Trigger a one-shot haptic feedback effect on the watch.
+         *
+         * @param length The duration of the effect in milliseconds.
+         * @param amplitude The strength of the effect, between 0.0 and 1.0.
+         */
         public void Vibrate(int length, float amplitude);
+
+        /**
+         * Cancel an ongoing haptic effect that was triggered earlier.
+         */
         public void CancelVibration();
 
         public void RequestGestureDetection(Gesture gesture);
 
+        /**
+         * Connect to the watch running Doublepoint Controller app.
+         */
         public void Connect();
+
+        /**
+         * Disconnect a connected watch.
+         */
         public void Disconnect();
 
-        // Needs to clear all Action subscriptions
+        // Clears all Action subscriptions
         public void ClearSubscriptions();
     }
 }

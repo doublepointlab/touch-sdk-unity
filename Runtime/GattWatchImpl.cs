@@ -33,7 +33,7 @@ namespace Psix
      * Check also IWatch.
      */
     [DefaultExecutionOrder(-50)]
-    public class GattWatchImpl : IWatch
+    public class GattWatchImpl : WatchImpl
     {
 
         // The bluetooth name of the watch */
@@ -56,10 +56,7 @@ namespace Psix
 
         List<Subscription> subs = new List<Subscription>();
 
-        /**
-         * Connect to the watch running Port 6 XR Controller app.
-         */
-        public void Connect()
+        override public void Connect()
         {
             if (connector != null || client != null)
                 return;
@@ -78,34 +75,22 @@ namespace Psix
                     if (c.Address == conn.Address)
                     {
                         disconnectAction();
-                        OnDisconnect?.Invoke();
                     }
                 };
                 connectAction();
-                OnConnect?.Invoke();
+                connector = null;
             }, watchName, subs,
             new List<string>() { GattServices.InteractionServiceUUID }, connectionTimeoutSeconds * 1000, select, OnScanTimeout);
         }
 
-        /**
-         * Disconnect a connected watch.
-         */
-        public void Disconnect()
+        override public void Disconnect()
         {
             logger.Trace("Disconnect");
             connector?.StopAndDisconnect();
             client?.Disconnect();
         }
 
-        public bool Connected { get; private set; } = false;
-
-        /**
-         * Trigger a one-shot haptic feedback effect on the watch.
-         *
-         * @param length The duration of the effect in milliseconds.
-         * @param amplitude The strength of the effect, between 0.0 and 1.0.
-         */
-        public void Vibrate(int length, float amplitude)
+        override public void Vibrate(int length, float amplitude)
         {
             int clampedLength = Mathf.Clamp(length, 0, 5000);
             float clampedAmplitude = Mathf.Clamp(amplitude, 0.0f, 1.0f);
@@ -123,10 +108,7 @@ namespace Psix
 
         }
 
-        /**
-         * Cancel an ongoing haptic effect that was triggered earlier.
-         */
-        public void CancelVibration()
+        override public void CancelVibration()
         {
             var update = new Proto.InputUpdate
             {
@@ -139,7 +121,7 @@ namespace Psix
             client?.SendBytes(update.ToByteArray(), GattServices.ProtobufServiceUUID, GattServices.ProtobufInputUUID);
         }
 
-        public void RequestGestureDetection(Gesture gesture)
+        override public void RequestGestureDetection(Gesture gesture)
         {
             var update = new Proto.InputUpdate
             {
@@ -155,36 +137,13 @@ namespace Psix
 
         public GattWatchImpl(string name = "")
         {
-
             watchName = name;
 
             ConnectedWatchName = "";
-            subs.Add(new Subscription(GattServices.ProtobufServiceUUID, GattServices.ProtobufOutputUUID, protobufCallback));
+            subs.Add(new Subscription(GattServices.ProtobufServiceUUID, GattServices.ProtobufOutputUUID, OnProtobufData));
         }
 
-        /* Documented in WatchInterface */
-        public event Action<Vector3>? OnAngularVelocity = null;
-        public event Action<Vector3>? OnAcceleration = null;
-        public event Action<Vector3>? OnGravity = null;
-        public event Action<Quaternion>? OnOrientation = null;
-        public event Action<Gesture>? OnGesture = null;
-        public event Action<TouchEvent>? OnTouch = null;
-        public event Action? OnButton = null;
-        public event Action<Direction>? OnRotary = null;
-
-        private Hand Handedness = Hand.None;
-        public event Action<Hand>? OnHandednessChange = null;
-
-        private HashSet<Gesture> ActiveGestures = new HashSet<Gesture>();
-        public event Action<HashSet<Gesture>>? OnDetectedGesturesChange = null;
-
-        public event Action? OnConnect = null;
-        public event Action? OnDisconnect = null;
-
-        /* Not part of generic interface */
         public event Action? OnScanTimeout = null;
-
-        private Proto.GestureType lastGesture = Proto.GestureType.None;
 
         private bool select(byte[] data)
         {
@@ -197,179 +156,9 @@ namespace Psix
             client?.RequestBytes(
                 GattServices.ProtobufServiceUUID,
                 GattServices.ProtobufOutputUUID,
-                readCallback
+                ReadCallback
             );
         }
 
-        // Internal callbacks
-
-        private void HandleSensorframes(Proto.Update update)
-        {
-            if (update.SensorFrames.Count > 0)
-            {
-                var frame = update.SensorFrames.Last();
-                // Update sensor stuff
-
-                OnAcceleration?.Invoke(new Vector3(frame.Acc.Y, frame.Acc.Z, -frame.Acc.X));
-                OnGravity?.Invoke(new Vector3(frame.Grav.Y, frame.Grav.Z, -frame.Grav.X));
-                OnAngularVelocity?.Invoke(new Vector3(-frame.Gyro.Y, -frame.Gyro.Z, frame.Gyro.X));
-                OnOrientation?.Invoke(new Quaternion(-frame.Quat.Y, -frame.Quat.Z, frame.Quat.X, frame.Quat.W));
-            }
-        }
-
-        private void HandleGestures(Proto.Update update)
-        {
-            foreach (var gesture in update.Gestures) {
-                if (gesture.Type != Proto.GestureType.PinchHold) {
-                    if (lastGesture == Proto.GestureType.PinchHold || lastGesture == Proto.GestureType.PinchTap) {
-                        OnGesture?.Invoke(Interaction.Gesture.PinchRelease);
-                    } else if (gesture.Type != Proto.GestureType.None) {
-                        OnGesture?.Invoke((Interaction.Gesture)gesture.Type);
-                    }
-                }
-                lastGesture = gesture.Type;
-            }
-        }
-
-        private void HandleTouchEvents(Proto.Update update)
-        {
-            foreach (var touchEvent in update.TouchEvents)
-            {
-                Interaction.TouchType type = TouchType.None;
-                switch (touchEvent.EventType)
-                {
-                    case Proto.TouchEvent.Types.TouchEventType.Begin:
-                        type = TouchType.Press;
-                        break;
-                    case Proto.TouchEvent.Types.TouchEventType.End:
-                        type = TouchType.Release;
-                        break;
-                    case Proto.TouchEvent.Types.TouchEventType.Move:
-                        type = TouchType.Move;
-                        break;
-                    default: break;
-                }
-                var coords = touchEvent.Coords.First();
-                OnTouch?.Invoke(new TouchEvent(
-                            type,
-                    new Vector2(coords.X, coords.Y)
-                ));
-            }
-        }
-
-        private void HandleButtonEvents(Proto.Update update)
-        {
-            foreach (var buttonEvent in update.ButtonEvents)
-                OnButton?.Invoke();
-        }
-
-        private void HandleRotaryEvents(Proto.Update update)
-        {
-            // TODO: Is the direction correct??
-            foreach (var rotaryEvent in update.RotaryEvents)
-                OnRotary?.Invoke((rotaryEvent.Step > 0) ? Direction.CounterClockwise : Direction.Clockwise);
-        }
-
-        private void HandleSignals(Proto.Update update)
-        {
-            foreach (var signal in update.Signals)
-            {
-                if (signal == Proto.Update.Types.Signal.Disconnect)
-                    Disconnect();
-            }
-        }
-
-        private void protobufCallback(byte[] data)
-        {
-            var update = Proto.Update.Parser.ParseFrom(data);
-
-            HandleSensorframes(update);
-            HandleGestures(update);
-            HandleTouchEvents(update);
-            HandleRotaryEvents(update);
-            HandleSignals(update);
-            HandleInfo(update.Info);
-        }
-
-        private void readCallback(byte[] data)
-        {
-            var update = Proto.Update.Parser.ParseFrom(data);
-            var info = update.Info;
-            HandleInfo(info);
-        }
-
-        private void HandleInfo(Proto.Info info)
-        {
-            var newHandedness = Hand.None;
-
-            try
-            {
-                if (info.Hand == Proto.Info.Types.Hand.Right)
-                    newHandedness = Hand.Right;
-                else if (info.Hand == Proto.Info.Types.Hand.Left)
-                    newHandedness = Hand.Left;
-
-                if (newHandedness != Hand.None && newHandedness != Handedness)
-                {
-                    Handedness = newHandedness;
-                    OnHandednessChange?.Invoke(newHandedness);
-                }
-
-            }
-            catch (NullReferenceException e)
-            {
-                logger.Debug(e.Message);
-            }
-
-            try
-            {
-                var newActiveGestures = new HashSet<Gesture>(info.ActiveModel.Gestures.Select(gesture =>
-                    (Gesture)gesture
-                ));
-                if (newActiveGestures.Count > 0)
-                {
-                    if (newActiveGestures != ActiveGestures)
-                    {
-                        ActiveGestures = newActiveGestures;
-                        OnDetectedGesturesChange?.Invoke(newActiveGestures);
-                    }
-                }
-            }
-            catch (NullReferenceException e)
-            {
-                logger.Debug(e.Message);
-            }
-        }
-
-        // Internal connection lifecycle callbacks
-
-        private void connectAction()
-        {
-            RequestInfo();
-            connector = null;
-            logger.Debug("connect action");
-            Connected = true;
-        }
-
-        private void disconnectAction()
-        {
-            logger.Debug("disconnect action");
-            Connected = false;
-        }
-
-        public void ClearSubscriptions()
-        {
-            OnGesture = null;
-            OnTouch = null;
-            OnButton = null;
-            OnRotary = null;
-            OnHandednessChange = null;
-            OnAcceleration = null;
-            OnAngularVelocity = null;
-            OnOrientation = null;
-            OnGravity = null;
-            OnConnect = null;
-            OnDisconnect = null;
-        }
     }
 }
