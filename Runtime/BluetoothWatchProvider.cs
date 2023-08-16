@@ -31,28 +31,32 @@ namespace Psix
 
         public bool UseAndroidImplementation = true;
 
+        private bool androidImplActive {
+            get {
+                return UseAndroidImplementation && Application.platform == RuntimePlatform.Android;
+            }
+        }
+
         private IWatch? watch = null;
 
+#if UNITY_ANDROID
         private string scanPermission = "android.permission.BLUETOOTH_SCAN";
         private string connectPermission = "android.permission.BLUETOOTH_CONNECT";
+#endif
 
         private void Awake()
         {
-#if UNITY_ANDROID
-            if (UseAndroidImplementation)
+            if (androidImplActive)
                 watch = new AndroidWatchImpl(watchName);
             else
                 watch = new GattWatchImpl(watchName);
-#else
-            watch = new GattWatchImpl(watchName);
-#endif
+
             Watch.Instance.RegisterProvider(watch!);
         }
 
         private bool CheckPermissions()
         {
 #if UNITY_ANDROID
-
             var jniClass = AndroidJNI.FindClass("android/os/Build$VERSION");
             var fieldID = AndroidJNI.GetStaticFieldID(jniClass, "SDK_INT", "I");
             var sdkLevel = AndroidJNI.GetStaticIntField(jniClass, fieldID);
@@ -87,7 +91,7 @@ namespace Psix
         private void Start()
         {
 #if UNITY_ANDROID
-            if (UseAndroidImplementation && ConnectOnStart)
+            if (androidImplActive && ConnectOnStart)
                 watch!.Connect();
             else if (!UseAndroidImplementation && !CheckPermissions())
             {
