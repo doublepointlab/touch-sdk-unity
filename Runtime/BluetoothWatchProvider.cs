@@ -100,19 +100,11 @@ namespace Psix
 #endif
         }
 
-        private bool kek = true;
-
 #if UNITY_ANDROID
         private void Update()
         {
             if (!UseAndroidImplementation && ConnectOnStart && CheckPermissions())
                 watch!.Connect();
-
-            if (watch!.Connected && kek) {
-                Debug.Log("surface tap request wp");
-                kek = false;
-                watch!.RequestGestureDetection(Gesture.SurfaceTap);
-            }
         }
 #endif
 
