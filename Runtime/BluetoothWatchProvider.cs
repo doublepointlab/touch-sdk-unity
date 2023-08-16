@@ -23,7 +23,7 @@ namespace Psix
      * MonoBehaviour that instantiates and register the appropriate IWatch implementation.
      */
     [DefaultExecutionOrder(-50)]
-    public class WatchProvider : MonoBehaviour
+    public class BluetoothWatchProvider : MonoBehaviour
     {
         [SerializeField] public string watchName = "";
 
@@ -100,11 +100,19 @@ namespace Psix
 #endif
         }
 
+        private bool kek = true;
+
 #if UNITY_ANDROID
         private void Update()
         {
             if (!UseAndroidImplementation && ConnectOnStart && CheckPermissions())
                 watch!.Connect();
+
+            if (watch!.Connected && kek) {
+                Debug.Log("surface tap request wp");
+                kek = false;
+                watch!.RequestGestureDetection(Gesture.SurfaceTap);
+            }
         }
 #endif
 
