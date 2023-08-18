@@ -13,7 +13,7 @@ using UnityEngine;
 namespace Psix
 {
 
-    public class TouchSdkMessageReceiver: MonoBehaviour
+    class TouchSdkMessageReceiver: MonoBehaviour
     {
 
         public event Action<byte[]>? OnMessage = null;

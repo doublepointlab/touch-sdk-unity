@@ -30,7 +30,7 @@ namespace Psix
      * Abstract base class for watch implementations, useful for parsing
      * protobuf messages.
      */
-    public abstract class WatchImpl : IWatch
+    abstract class WatchImpl : IWatch
     {
 
         private static PsixLogger logger = new PsixLogger("WatchImpl");

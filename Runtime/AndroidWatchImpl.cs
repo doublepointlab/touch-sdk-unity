@@ -24,7 +24,7 @@ namespace Psix
      * Check also IWatch.
      */
     [DefaultExecutionOrder(-50)]
-    public class AndroidWatchImpl : WatchImpl
+    class AndroidWatchImpl : WatchImpl
     {
 
         private string watchName = "";

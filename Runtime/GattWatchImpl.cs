@@ -33,7 +33,7 @@ namespace Psix
      * Check also IWatch.
      */
     [DefaultExecutionOrder(-50)]
-    public class GattWatchImpl : WatchImpl
+    class GattWatchImpl : WatchImpl
     {
 
         // The bluetooth name of the watch */
