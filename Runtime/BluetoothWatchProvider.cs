@@ -47,7 +47,7 @@ namespace Psix
         private void Awake()
         {
             if (androidImplActive)
-                watch = new AndroidWatchImpl(watchName);
+                watch = new AndroidWatchImpl(watchName, true);
             else
                 watch = new GattWatchImpl(watchName);
 
