@@ -49,7 +49,7 @@ namespace Psix
         private void Awake()
         {
             if (androidImplActive)
-                watch = new AndroidWatchImpl(watchName, true);
+                watch = new AndroidWatchImpl(watchName, DeviceMenu);
             else
                 watch = new GattWatchImpl(watchName);
 
@@ -93,9 +93,7 @@ namespace Psix
         private void Start()
         {
 #if UNITY_ANDROID
-            if (androidImplActive && ConnectOnStart)
-                watch!.Connect();
-            else if (!UseAndroidImplementation && !CheckPermissions())
+            if (!CheckPermissions())
             {
                 Debug.Log("No permissions.");
                 RequestPermissions();
@@ -109,7 +107,7 @@ namespace Psix
 #if UNITY_ANDROID
         private void Update()
         {
-            if (!UseAndroidImplementation && ConnectOnStart && CheckPermissions())
+            if (ConnectOnStart && CheckPermissions())
                 watch!.Connect();
         }
 #endif
