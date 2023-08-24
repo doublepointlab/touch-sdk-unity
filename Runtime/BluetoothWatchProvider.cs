@@ -29,7 +29,9 @@ namespace Psix
 
         public bool ConnectOnStart = true;
 
-        public bool UseAndroidImplementation = true;
+        public bool DeviceMenu = true;
+
+        private bool UseAndroidImplementation = true;
 
         private bool androidImplActive {
             get {
