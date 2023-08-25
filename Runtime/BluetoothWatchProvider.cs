@@ -29,6 +29,8 @@ namespace Psix
 
         public bool ConnectOnStart = true;
 
+        private bool connectCalledOnStart = false;
+
         public bool DeviceMenu = true;
 
         private bool UseAndroidImplementation = true;
@@ -93,7 +95,11 @@ namespace Psix
         private void Start()
         {
 #if UNITY_ANDROID
-            if (!CheckPermissions())
+            if (androidImplActive && ConnectOnStart) {
+                watch!.Connect();
+                connectCalledOnStart = true;
+            }
+            else if (!UseAndroidImplementation && !CheckPermissions())
             {
                 Debug.Log("No permissions.");
                 RequestPermissions();
@@ -107,8 +113,10 @@ namespace Psix
 #if UNITY_ANDROID
         private void Update()
         {
-            if (ConnectOnStart && CheckPermissions())
+            if (!UseAndroidImplementation && ConnectOnStart && !connectCalledOnStart && CheckPermissions()) {
+                connectCalledOnStart = true;
                 watch!.Connect();
+            }
         }
 #endif
 
