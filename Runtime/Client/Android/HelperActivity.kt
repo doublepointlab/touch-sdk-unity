@@ -2,8 +2,8 @@ package io.port6.android.unitywrapper
 
 import androidx.activity.ComponentActivity
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 
 import io.port6.sdk.*
 import io.port6.android.unitywrapper.AndroidUnityWrapper
@@ -15,22 +15,20 @@ class HelperActivity: ComponentActivity() {
 
         val useCompanionDeviceMode = intent.getBooleanExtra(EXTRA_USE_COMPANION_DEVICE, false)
 
+        val deviceLauncher = CompanionDeviceHelper.createLauncher(this) {
+            AndroidUnityWrapper.onDevice(it)
+            finish()
+        }
+
         PermissionHelper.createLauncher(this) {
 
             // After permissions are granted, request device association
             if (useCompanionDeviceMode) {
-
-            val deviceLauncher = CompanionDeviceHelper.createLauncher(this) {
-                AndroidUnityWrapper.onDevice(it)
-            }
-
-            CompanionDeviceHelper.associate(this, deviceLauncher)
-
-
+                CompanionDeviceHelper.associate(this, deviceLauncher)
             } else {
                 AndroidUnityWrapper.startScan()
+                finish()
             }
-            finish()
         }.also {
             PermissionHelper.requestPermissions(it)
         }
