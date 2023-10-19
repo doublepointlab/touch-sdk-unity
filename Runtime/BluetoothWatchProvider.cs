@@ -31,7 +31,7 @@ namespace Psix
 
         private bool connectCalledOnStart = false;
 
-        public bool DeviceMenu = true;
+        private bool DeviceMenu = true;
 
         private bool UseAndroidImplementation = true;
 
