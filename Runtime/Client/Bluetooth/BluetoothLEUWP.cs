@@ -4,12 +4,12 @@
 // use this to allow the editor to see WINMD code for syntax checking
 //#define ENABLE_WINMD_SUPPORT
 
+#if ENABLE_WINMD_SUPPORT
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-#if ENABLE_WINMD_SUPPORT
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Devices.Bluetooth.Advertisement;
@@ -20,7 +20,6 @@ using Windows.Storage.Streams;
 using Windows.Security.Cryptography;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-#endif
 
 public class BluetoothLEUWP
 {
@@ -43,37 +42,28 @@ public class BluetoothLEUWP
         Debug.Log(message);
     }
 
-#if ENABLE_WINMD_SUPPORT
     //private BluetoothLEPreferredConnectionParameters _connectionPriorityParameter = BluetoothLEPreferredConnectionParameters.Balanced;
-#endif
 
     public void ConnectionPriority(Gatt.ConnectionPriority connectionPriority)
     {
         switch (connectionPriority)
         {
             case Gatt.ConnectionPriority.Balanced:
-#if ENABLE_WINMD_SUPPORT
                 //_connectionPriorityParameter = BluetoothLEPreferredConnectionParameters.Balanced;
-#endif
                 break;
 
             case Gatt.ConnectionPriority.High:
-#if ENABLE_WINMD_SUPPORT
                 //_connectionPriorityParameter = BluetoothLEPreferredConnectionParameters.ThroughPutOptimized;
-#endif
                 break;
 
             case Gatt.ConnectionPriority.LowPower:
-#if ENABLE_WINMD_SUPPORT
                 //_connectionPriorityParameter = BluetoothLEPreferredConnectionParameters.PowerOptimized;
-#endif
                 break;
         }
     }
 
     public void Initialize(BluetoothDeviceScript bluetoothDeviceScript, bool asCentral, bool asPeripheral)
     {
-#if ENABLE_WINMD_SUPPORT
         _bluetoothDeviceScript = bluetoothDeviceScript;
         if (_bluetoothDeviceScript != null && _bluetoothDeviceScript.MessagesToProcess == null)
         {
@@ -83,16 +73,12 @@ public class BluetoothLEUWP
                 _bluetoothDeviceScript.MessagesToProcess.Enqueue("Initialized");
             }
         }
-#endif
     }
 
-#if ENABLE_WINMD_SUPPORT
     private BluetoothLEAdvertisementWatcher _deviceWatcher = null;
-#endif
 
     public void ScanForPeripheralsWithServices(string[] serviceUUIDs, bool rssiOnly = false, bool clearPeripheralList = true, int recordType = 0xFF)
     {
-#if ENABLE_WINMD_SUPPORT
         _deviceWatcher = new BluetoothLEAdvertisementWatcher();
         _deviceWatcher.AllowExtendedAdvertisements = true;
         _deviceWatcher.ScanningMode = BluetoothLEScanningMode.Active;
@@ -104,10 +90,8 @@ public class BluetoothLEUWP
 
         _deviceWatcher.Received += On_Received;
         _deviceWatcher.Start();
-#endif
     }
 
-#if ENABLE_WINMD_SUPPORT
         private async void On_Received(BluetoothLEAdvertisementWatcher watcher, BluetoothLEAdvertisementReceivedEventArgs args)
         {
             var dev = await BluetoothLEDevice.FromBluetoothAddressAsync(args.BluetoothAddress);
@@ -132,9 +116,7 @@ public class BluetoothLEUWP
                 }
             }
         }
-#endif
 
-#if ENABLE_WINMD_SUPPORT
     private Dictionary<string, BluetoothLEDevice> _bluetoothDeviceDictionary;
 
     private BluetoothLEDevice GetAddDevice(string id, BluetoothLEDevice device = null)
@@ -155,11 +137,9 @@ public class BluetoothLEUWP
 
         return null;
     }
-#endif
 
     public void StopScan()
     {
-#if ENABLE_WINMD_SUPPORT
         if (_deviceWatcher != null && _deviceWatcher.Status == BluetoothLEAdvertisementWatcherStatus.Started)
         {
             _deviceWatcher.Stop();
@@ -168,13 +148,11 @@ public class BluetoothLEUWP
         }
         else
             Log("DeviceWatcher null or not started when trying to stop it");
-#endif
     }
 
     // Async removed: No awaits
-    public void ConnectToPeripheral(string id)
+    async public void ConnectToPeripheral(string id)
     {
-#if ENABLE_WINMD_SUPPORT
         // Check permission of this device.
         DeviceAccessStatus access = DeviceAccessInformation.CreateFromId(id).CurrentStatus;
         if (access == DeviceAccessStatus.DeniedBySystem || access == DeviceAccessStatus.DeniedByUser)
@@ -218,10 +196,8 @@ public class BluetoothLEUWP
                 }
             }
         }
-#endif
     }
 
-#if ENABLE_WINMD_SUPPORT
     private void OnConnectionStatusChanged(BluetoothLEDevice sender, object args)
     {
         if (_bluetoothDeviceScript != null)
@@ -234,11 +210,9 @@ public class BluetoothLEUWP
             }
         }
     }
-#endif
 
     public void DisconnectPeripheral(string id)
     {
-#if ENABLE_WINMD_SUPPORT
         var bluetoothLeDevice = GetAddDevice(id);
         if (bluetoothLeDevice != null)
         {
@@ -249,13 +223,11 @@ public class BluetoothLEUWP
                 _bluetoothDeviceScript.MessagesToProcess.Enqueue($"DisconnectedPeripheral~{id}");
             }
         }
-#endif
     }
 
     // Async removed: no awaits
-    public void RequestMTU(string id)
+    async public void RequestMTU(string id)
     {
-#if ENABLE_WINMD_SUPPORT
         var bluetoothLeDevice = GetAddDevice(id);
         if (bluetoothLeDevice != null)
         {
@@ -268,17 +240,13 @@ public class BluetoothLEUWP
                 }
             }
         }
-#endif
     }
 
-#if ENABLE_WINMD_SUPPORT
     private List<GattCharacteristic> _dontAllowGCCharacteristicList;
-#endif
 
     // Async removed: No awaits
-    public void SubscribeCharacteristicWithDeviceAddress(string id, string serviceUuid, string characteristicUuid)
+    async public void SubscribeCharacteristicWithDeviceAddress(string id, string serviceUuid, string characteristicUuid)
     {
-#if ENABLE_WINMD_SUPPORT
         var bluetoothLeDevice = GetAddDevice(id);
         if (bluetoothLeDevice != null)
         {
@@ -319,10 +287,8 @@ public class BluetoothLEUWP
                 }
             }
         }
-#endif
     }
 
-#if ENABLE_WINMD_SUPPORT
     void Characteristic_ValueChanged(GattCharacteristic characteristic, GattValueChangedEventArgs args)
     {
         var base64String = CryptographicBuffer.EncodeToBase64String(args.CharacteristicValue);
@@ -343,12 +309,10 @@ public class BluetoothLEUWP
             }
         }
     }
-#endif
 
     // Async removed: no awaits
-    public void UnSubscribeCharacteristic(string id, string serviceUuid, string characteristicUuid)
+    async public void UnSubscribeCharacteristic(string id, string serviceUuid, string characteristicUuid)
     {
-#if ENABLE_WINMD_SUPPORT
         var bluetoothLeDevice = GetAddDevice(id);
         if (bluetoothLeDevice != null)
         {
@@ -407,13 +371,11 @@ public class BluetoothLEUWP
                 }
             }
         }
-#endif
     }
 
     // Async removed: no awaits
-    public void WriteCharacteristic(string id, string serviceUuid, string characteristicUuid, byte[] data, int length, bool withResponse)
+    async public void WriteCharacteristic(string id, string serviceUuid, string characteristicUuid, byte[] data, int length, bool withResponse)
     {
-#if ENABLE_WINMD_SUPPORT
         var bluetoothLeDevice = GetAddDevice(id);
         if (bluetoothLeDevice != null)
         {
@@ -448,6 +410,6 @@ public class BluetoothLEUWP
                 }
             }
         }
-#endif
     }
 }
+#endif

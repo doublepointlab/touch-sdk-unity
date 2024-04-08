@@ -12,10 +12,6 @@ using Google.Protobuf;
 
 using UnityEngine;
 
-#if UNITY_EDITOR_WIN
-#warning "Bluetooth support in Play Mode is experimental and unstable."
-#endif
-
 #if UNITY_ANDROID
 using UnityEngine.Android;
 #endif
@@ -43,10 +39,11 @@ namespace Psix
 
         public bool Connected { get; protected set; } = false;
 
-        public WatchImpl(string name = "") {}
+        public WatchImpl(string name = "") { }
 
         /* Documented in WatchInterface */
         public event Action<Vector3>? OnAngularVelocity = null;
+        public event Action<float>? OnGestureProbability = null;
         public event Action<Vector3>? OnAcceleration = null;
         public event Action<Vector3>? OnGravity = null;
         public event Action<Quaternion>? OnOrientation = null;
@@ -82,15 +79,31 @@ namespace Psix
 
         private void HandleGestures(Proto.Update update)
         {
-            foreach (var gesture in update.Gestures) {
-                if (gesture.Type != Proto.GestureType.PinchHold) {
-                    if (lastGesture == Proto.GestureType.PinchHold || lastGesture == Proto.GestureType.PinchTap) {
+            foreach (var gesture in update.Gestures)
+            {
+                if (gesture.Type != Proto.GestureType.PinchHold)
+                {
+                    if (lastGesture == Proto.GestureType.PinchHold || lastGesture == Proto.GestureType.PinchTap)
+                    {
                         OnGesture?.Invoke(Interaction.Gesture.PinchRelease);
-                    } else if (gesture.Type != Proto.GestureType.None) {
+                    }
+                    else if (gesture.Type != Proto.GestureType.None)
+                    {
                         OnGesture?.Invoke((Interaction.Gesture)gesture.Type);
                     }
                 }
                 lastGesture = gesture.Type;
+            }
+        }
+
+        private void HandlePredictionOutput(Proto.Update update) {
+            foreach (var entry in update.Probabilities) {
+                if (entry.Label == Proto.GestureType.PinchHold
+                    || entry.Label == Proto.GestureType.PinchTap) {
+                    OnGestureProbability?.Invoke(entry.Probability);
+                } else if (entry.Label == Proto.GestureType.None) {
+                    OnGestureProbability?.Invoke(1 - entry.Probability);
+                }
             }
         }
 
@@ -145,14 +158,55 @@ namespace Psix
         {
             var update = Proto.Update.Parser.ParseFrom(data);
 
+
             HandleSensorframes(update);
             HandleGestures(update);
+            HandlePredictionOutput(update);
             HandleTouchEvents(update);
             HandleRotaryEvents(update);
             HandleSignals(update);
             HandleInfo(update.Info);
         }
 
+        protected byte[] GetHapticsMessage(int length, float amplitude) {
+
+            int clampedLength = Mathf.Clamp(length, 0, 5000);
+            float clampedAmplitude = Mathf.Clamp(amplitude, 0.0f, 1.0f);
+            var update = new Proto.InputUpdate
+            {
+                HapticEvent = new Proto.HapticEvent
+                {
+                    Type = Proto.HapticEvent.Types.HapticType.Oneshot,
+                    Length = clampedLength,
+                    Intensity = clampedAmplitude
+                }
+            };
+            return update.ToByteArray();
+        }
+
+        protected byte[] GetHapticsCancellation() {
+
+            var update = new Proto.InputUpdate
+            {
+                HapticEvent = new Proto.HapticEvent
+                {
+                    Type = Proto.HapticEvent.Types.HapticType.Cancel
+                }
+            };
+            return update.ToByteArray();
+        }
+
+        protected byte[] GetGestureDetectionRequest(Gesture gesture) {
+            var update = new Proto.InputUpdate
+            {
+                ModelRequest = new Proto.Model
+                {
+                    Gestures = { (Proto.GestureType)(gesture) }
+                }
+            };
+
+            return update.ToByteArray();
+        }
 
         protected void ReadCallback(byte[] data)
         {
@@ -183,7 +237,7 @@ namespace Psix
             }
             catch (NullReferenceException e)
             {
-                logger.Debug(e.Message);
+                logger.Debug("Info:{0}", e.Message);
             }
 
             try
@@ -202,7 +256,7 @@ namespace Psix
             }
             catch (NullReferenceException e)
             {
-                logger.Debug(e.Message);
+                logger.Debug("Gestures:{0}", e.Message);
             }
         }
 

@@ -27,33 +27,48 @@ namespace Psix
     {
         [SerializeField] public string watchName = "";
 
+        [Tooltip("Python path is relevant if you use python touch sdk implementation. Leave empty to not use it.")]
+        [SerializeField] private string pythonPath = "";
+
         public bool ConnectOnStart = true;
-
-        private bool connectCalledOnStart = false;
-
-        private bool DeviceMenu = true;
 
         private bool UseAndroidImplementation = true;
 
-        private bool androidImplActive {
-            get {
-                return UseAndroidImplementation && Application.platform == RuntimePlatform.Android;
+        private bool pythonImplActive
+        {
+            get
+            {
+                return !String.IsNullOrEmpty(pythonPath) && Application.isEditor;
+            }
+        }
+        private bool androidImplActive
+        {
+            get
+            {
+                return !pythonImplActive && UseAndroidImplementation && Application.platform == RuntimePlatform.Android;
             }
         }
 
         private IWatch? watch = null;
 
 #if UNITY_ANDROID
+        private bool connectCalledOnStart = false;
         private string scanPermission = "android.permission.BLUETOOTH_SCAN";
         private string connectPermission = "android.permission.BLUETOOTH_CONNECT";
 #endif
 
         private void Awake()
         {
-            if (androidImplActive)
-                watch = new AndroidWatchImpl(watchName, DeviceMenu);
+#if ENABLE_WINMD_SUPPORT
+            watch = new UwpWatchImpl(watchName);
+#else
+            if (pythonImplActive)
+                watch = new PythonWatchImpl(pythonPath, watchName);
+            else if (androidImplActive)
+                watch = new AndroidWatchImpl(watchName, false);
             else
                 watch = new GattWatchImpl(watchName);
+#endif
 
             Watch.Instance.RegisterProvider(watch!);
         }
@@ -95,7 +110,14 @@ namespace Psix
         private void Start()
         {
 #if UNITY_ANDROID
-            RequestPermissions();
+            if (pythonImplActive)
+            {
+                if (ConnectOnStart)
+                {
+                    watch!.Connect();
+                }
+            }
+            else RequestPermissions();
 #else
             if (ConnectOnStart)
                 watch!.Connect();
@@ -105,12 +127,17 @@ namespace Psix
 #if UNITY_ANDROID
         private void Update()
         {
-            if (ConnectOnStart && !connectCalledOnStart && CheckPermissions()) {
+            if (!pythonImplActive && (ConnectOnStart && !connectCalledOnStart && CheckPermissions()))
+            {
                 connectCalledOnStart = true;
                 watch!.Connect();
             }
         }
 #endif
+        private void OnApplicationQuit()
+        {
+            watch?.Disconnect();
+        }
 
     }
 

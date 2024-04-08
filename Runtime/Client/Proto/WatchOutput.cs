@@ -40,16 +40,18 @@ namespace Psix.Proto {
             "cGUSCAoETk9ORRAAEgkKBUJFR0lOEAESBwoDRU5EEAISCAoETU9WRRADEgoK",
             "BkNBTkNFTBAEIi4KC1JvdGFyeUV2ZW50EgwKBHN0ZXAYASABKAUSEQoJZGVs",
             "dGFUaW1lGAIgASgFIiwKC0J1dHRvbkV2ZW50EgoKAmlkGAEgASgFEhEKCWRl",
-            "bHRhVGltZRgCIAEoBSLxAgoGVXBkYXRlEiIKDHNlbnNvckZyYW1lcxgBIAMo",
-            "CzIMLlNlbnNvckZyYW1lEhoKCGdlc3R1cmVzGAIgAygLMgguR2VzdHVyZRIg",
-            "Cgt0b3VjaEV2ZW50cxgDIAMoCzILLlRvdWNoRXZlbnQSIgoMYnV0dG9uRXZl",
-            "bnRzGAQgAygLMgwuQnV0dG9uRXZlbnQSIgoMcm90YXJ5RXZlbnRzGAUgAygL",
-            "MgwuUm90YXJ5RXZlbnQSHwoHc2lnbmFscxgGIAMoDjIOLlVwZGF0ZS5TaWdu",
-            "YWwSEQoJZGVsdGFUaW1lGAcgASgFEhAKCHVuaXhUaW1lGAggASgDEhMKBGlu",
-            "Zm8YCSABKAsyBS5JbmZvEhAKCHByZXNzdXJlGBAgASgCIlAKBlNpZ25hbBII",
-            "CgROT05FEAASDgoKRElTQ09OTkVDVBABEhQKEENPTk5FQ1RfQVBQUk9WRUQQ",
-            "AhIWChJERVNDUklQVElPTl9VUERBVEUQA0INqgIKUHNpeC5Qcm90b2IGcHJv",
-            "dG8z"));
+            "bHRhVGltZRgCIAEoBSJEChBQcm9iYWJpbGl0eUVudHJ5EhsKBWxhYmVsGAEg",
+            "ASgOMgwuR2VzdHVyZVR5cGUSEwoLcHJvYmFiaWxpdHkYAiABKAIimwMKBlVw",
+            "ZGF0ZRIiCgxzZW5zb3JGcmFtZXMYASADKAsyDC5TZW5zb3JGcmFtZRIaCghn",
+            "ZXN0dXJlcxgCIAMoCzIILkdlc3R1cmUSIAoLdG91Y2hFdmVudHMYAyADKAsy",
+            "Cy5Ub3VjaEV2ZW50EiIKDGJ1dHRvbkV2ZW50cxgEIAMoCzIMLkJ1dHRvbkV2",
+            "ZW50EiIKDHJvdGFyeUV2ZW50cxgFIAMoCzIMLlJvdGFyeUV2ZW50Eh8KB3Np",
+            "Z25hbHMYBiADKA4yDi5VcGRhdGUuU2lnbmFsEhEKCWRlbHRhVGltZRgHIAEo",
+            "BRIQCgh1bml4VGltZRgIIAEoAxITCgRpbmZvGAkgASgLMgUuSW5mbxIoCg1w",
+            "cm9iYWJpbGl0aWVzGAogAygLMhEuUHJvYmFiaWxpdHlFbnRyeRIQCghwcmVz",
+            "c3VyZRgQIAEoAiJQCgZTaWduYWwSCAoETk9ORRAAEg4KCkRJU0NPTk5FQ1QQ",
+            "ARIUChBDT05ORUNUX0FQUFJPVkVEEAISFgoSREVTQ1JJUFRJT05fVVBEQVRF",
+            "EANCDaoCClBzaXguUHJvdG9iBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Psix.Proto.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -59,13 +61,15 @@ namespace Psix.Proto {
             new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.TouchEvent), global::Psix.Proto.TouchEvent.Parser, new[]{ "EventType", "ActionIndex", "PointerIds", "Coords", "DeltaTime" }, null, new[]{ typeof(global::Psix.Proto.TouchEvent.Types.TouchEventType) }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.RotaryEvent), global::Psix.Proto.RotaryEvent.Parser, new[]{ "Step", "DeltaTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.ButtonEvent), global::Psix.Proto.ButtonEvent.Parser, new[]{ "Id", "DeltaTime" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.Update), global::Psix.Proto.Update.Parser, new[]{ "SensorFrames", "Gestures", "TouchEvents", "ButtonEvents", "RotaryEvents", "Signals", "DeltaTime", "UnixTime", "Info", "Pressure" }, null, new[]{ typeof(global::Psix.Proto.Update.Types.Signal) }, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.ProbabilityEntry), global::Psix.Proto.ProbabilityEntry.Parser, new[]{ "Label", "Probability" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.Update), global::Psix.Proto.Update.Parser, new[]{ "SensorFrames", "Gestures", "TouchEvents", "ButtonEvents", "RotaryEvents", "Signals", "DeltaTime", "UnixTime", "Info", "Probabilities", "Pressure" }, null, new[]{ typeof(global::Psix.Proto.Update.Types.Signal) }, null, null)
           }));
     }
     #endregion
 
   }
   #region Messages
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Info : pb::IMessage<Info>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -415,6 +419,7 @@ namespace Psix.Proto {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class SensorFrame : pb::IMessage<SensorFrame>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -880,6 +885,7 @@ namespace Psix.Proto {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Gesture : pb::IMessage<Gesture>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1106,6 +1112,7 @@ namespace Psix.Proto {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class TouchEvent : pb::IMessage<TouchEvent>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1439,6 +1446,7 @@ namespace Psix.Proto {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class RotaryEvent : pb::IMessage<RotaryEvent>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1668,6 +1676,7 @@ namespace Psix.Proto {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class ButtonEvent : pb::IMessage<ButtonEvent>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1897,6 +1906,234 @@ namespace Psix.Proto {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class ProbabilityEntry : pb::IMessage<ProbabilityEntry>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ProbabilityEntry> _parser = new pb::MessageParser<ProbabilityEntry>(() => new ProbabilityEntry());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ProbabilityEntry> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Psix.Proto.WatchOutputReflection.Descriptor.MessageTypes[6]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ProbabilityEntry() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ProbabilityEntry(ProbabilityEntry other) : this() {
+      label_ = other.label_;
+      probability_ = other.probability_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ProbabilityEntry Clone() {
+      return new ProbabilityEntry(this);
+    }
+
+    /// <summary>Field number for the "label" field.</summary>
+    public const int LabelFieldNumber = 1;
+    private global::Psix.Proto.GestureType label_ = global::Psix.Proto.GestureType.None;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Psix.Proto.GestureType Label {
+      get { return label_; }
+      set {
+        label_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "probability" field.</summary>
+    public const int ProbabilityFieldNumber = 2;
+    private float probability_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public float Probability {
+      get { return probability_; }
+      set {
+        probability_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ProbabilityEntry);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ProbabilityEntry other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Label != other.Label) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Probability, other.Probability)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Label != global::Psix.Proto.GestureType.None) hash ^= Label.GetHashCode();
+      if (Probability != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Probability);
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Label != global::Psix.Proto.GestureType.None) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Label);
+      }
+      if (Probability != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(Probability);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Label != global::Psix.Proto.GestureType.None) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Label);
+      }
+      if (Probability != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(Probability);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Label != global::Psix.Proto.GestureType.None) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Label);
+      }
+      if (Probability != 0F) {
+        size += 1 + 4;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ProbabilityEntry other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Label != global::Psix.Proto.GestureType.None) {
+        Label = other.Label;
+      }
+      if (other.Probability != 0F) {
+        Probability = other.Probability;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Label = (global::Psix.Proto.GestureType) input.ReadEnum();
+            break;
+          }
+          case 21: {
+            Probability = input.ReadFloat();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Label = (global::Psix.Proto.GestureType) input.ReadEnum();
+            break;
+          }
+          case 21: {
+            Probability = input.ReadFloat();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Update : pb::IMessage<Update>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1911,7 +2148,7 @@ namespace Psix.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Psix.Proto.WatchOutputReflection.Descriptor.MessageTypes[6]; }
+      get { return global::Psix.Proto.WatchOutputReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1940,6 +2177,7 @@ namespace Psix.Proto {
       deltaTime_ = other.deltaTime_;
       unixTime_ = other.unixTime_;
       info_ = other.info_ != null ? other.info_.Clone() : null;
+      probabilities_ = other.probabilities_.Clone();
       pressure_ = other.pressure_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -2052,6 +2290,17 @@ namespace Psix.Proto {
       }
     }
 
+    /// <summary>Field number for the "probabilities" field.</summary>
+    public const int ProbabilitiesFieldNumber = 10;
+    private static readonly pb::FieldCodec<global::Psix.Proto.ProbabilityEntry> _repeated_probabilities_codec
+        = pb::FieldCodec.ForMessage(82, global::Psix.Proto.ProbabilityEntry.Parser);
+    private readonly pbc::RepeatedField<global::Psix.Proto.ProbabilityEntry> probabilities_ = new pbc::RepeatedField<global::Psix.Proto.ProbabilityEntry>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Psix.Proto.ProbabilityEntry> Probabilities {
+      get { return probabilities_; }
+    }
+
     /// <summary>Field number for the "pressure" field.</summary>
     public const int PressureFieldNumber = 16;
     private float pressure_;
@@ -2088,6 +2337,7 @@ namespace Psix.Proto {
       if (DeltaTime != other.DeltaTime) return false;
       if (UnixTime != other.UnixTime) return false;
       if (!object.Equals(Info, other.Info)) return false;
+      if(!probabilities_.Equals(other.probabilities_)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Pressure, other.Pressure)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -2105,6 +2355,7 @@ namespace Psix.Proto {
       if (DeltaTime != 0) hash ^= DeltaTime.GetHashCode();
       if (UnixTime != 0L) hash ^= UnixTime.GetHashCode();
       if (info_ != null) hash ^= Info.GetHashCode();
+      hash ^= probabilities_.GetHashCode();
       if (Pressure != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Pressure);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -2142,6 +2393,7 @@ namespace Psix.Proto {
         output.WriteRawTag(74);
         output.WriteMessage(Info);
       }
+      probabilities_.WriteTo(output, _repeated_probabilities_codec);
       if (Pressure != 0F) {
         output.WriteRawTag(133, 1);
         output.WriteFloat(Pressure);
@@ -2174,6 +2426,7 @@ namespace Psix.Proto {
         output.WriteRawTag(74);
         output.WriteMessage(Info);
       }
+      probabilities_.WriteTo(ref output, _repeated_probabilities_codec);
       if (Pressure != 0F) {
         output.WriteRawTag(133, 1);
         output.WriteFloat(Pressure);
@@ -2203,6 +2456,7 @@ namespace Psix.Proto {
       if (info_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Info);
       }
+      size += probabilities_.CalculateSize(_repeated_probabilities_codec);
       if (Pressure != 0F) {
         size += 2 + 4;
       }
@@ -2236,6 +2490,7 @@ namespace Psix.Proto {
         }
         Info.MergeFrom(other.Info);
       }
+      probabilities_.Add(other.probabilities_);
       if (other.Pressure != 0F) {
         Pressure = other.Pressure;
       }
@@ -2292,6 +2547,10 @@ namespace Psix.Proto {
               Info = new global::Psix.Proto.Info();
             }
             input.ReadMessage(Info);
+            break;
+          }
+          case 82: {
+            probabilities_.AddEntriesFrom(input, _repeated_probabilities_codec);
             break;
           }
           case 133: {
@@ -2351,6 +2610,10 @@ namespace Psix.Proto {
               Info = new global::Psix.Proto.Info();
             }
             input.ReadMessage(Info);
+            break;
+          }
+          case 82: {
+            probabilities_.AddEntriesFrom(ref input, _repeated_probabilities_codec);
             break;
           }
           case 133: {

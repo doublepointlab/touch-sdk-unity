@@ -16,6 +16,8 @@ namespace Psix
     {
         event Action<Gesture> OnGesture;
 
+        event Action<float> OnGestureProbability;
+
         event Action<TouchEvent> OnTouch;
 
         event Action OnButton;

@@ -12,14 +12,9 @@ using Google.Protobuf;
 
 using UnityEngine;
 
-#if UNITY_EDITOR_WIN
-#warning "Bluetooth support in Play Mode is experimental and unstable."
-#endif
-
 #if UNITY_ANDROID
 using UnityEngine.Android;
 #endif
-
 
 namespace Psix
 {

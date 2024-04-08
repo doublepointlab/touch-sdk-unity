@@ -1,6 +1,7 @@
 //#if ENABLE_WINMD_SUPPORT
 // Copyright (c) 2022 Port 6 Oy <hello@port6.io>
 // Licensed under the MIT License. See LICENSE for details.
+#if ENABLE_WINMD_SUPPORT
 using UnityEngine;
 using System;
 using System.Runtime.InteropServices;
@@ -166,4 +167,4 @@ public class UwpGatt : Gatt
     }
 }
 
-//#endif
+#endif

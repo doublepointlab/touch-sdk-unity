@@ -47,6 +47,12 @@ public class Watch : MonoBehaviour
         remove { watch.OnGesture -= value; }
     }
 
+    public event Action<float> OnGestureProbability
+    {
+        add { watch.OnGestureProbability += value; }
+        remove { watch.OnGestureProbability -= value; }
+    }
+
     // Receive touch screen events
     public event Action<TouchEvent> OnTouch
     {
