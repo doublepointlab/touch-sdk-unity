@@ -30,9 +30,9 @@ public class Watch : MonoBehaviour
         watch.RequestGestureDetection(gesture);
     }
 
-    public void Connect()
+    public void Connect(string name = "")
     {
-        watch.Connect();
+        watch.Connect(name);
     }
 
     public void Disconnect()

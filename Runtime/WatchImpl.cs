@@ -31,7 +31,7 @@ namespace Psix
 
         private static PsixLogger logger = new PsixLogger("WatchImpl");
 
-        public abstract void Connect();
+        public abstract void Connect(string name = "");
         public abstract void Disconnect();
         public abstract void Vibrate(int length, float amplitude);
         public abstract void CancelVibration();

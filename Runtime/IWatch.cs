@@ -58,7 +58,7 @@ namespace Psix
         /**
          * Connect to the watch running Doublepoint Controller app.
          */
-        public void Connect();
+        public void Connect(string name = "");
 
         /**
          * Disconnect a connected watch.

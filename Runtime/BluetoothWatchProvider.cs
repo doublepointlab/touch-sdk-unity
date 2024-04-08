@@ -60,14 +60,14 @@ namespace Psix
         private void Awake()
         {
 #if ENABLE_WINMD_SUPPORT
-            watch = new UwpWatchImpl(watchName);
+            watch = new UwpWatchImpl();
 #else
             if (pythonImplActive)
-                watch = new PythonWatchImpl(pythonPath, watchName);
+                watch = new PythonWatchImpl(pythonPath);
             else if (androidImplActive)
-                watch = new AndroidWatchImpl(watchName, false);
+                watch = new AndroidWatchImpl(false);
             else
-                watch = new GattWatchImpl(watchName);
+                watch = new GattWatchImpl();
 #endif
 
             Watch.Instance.RegisterProvider(watch!);
@@ -114,13 +114,13 @@ namespace Psix
             {
                 if (ConnectOnStart)
                 {
-                    watch!.Connect();
+                    watch!.Connect(watchName);
                 }
             }
             else RequestPermissions();
 #else
             if (ConnectOnStart)
-                watch!.Connect();
+                watch!.Connect(watchName);
 #endif
         }
 
@@ -130,7 +130,7 @@ namespace Psix
             if (!pythonImplActive && (ConnectOnStart && !connectCalledOnStart && CheckPermissions()))
             {
                 connectCalledOnStart = true;
-                watch!.Connect();
+                watch!.Connect(watchName);
             }
         }
 #endif

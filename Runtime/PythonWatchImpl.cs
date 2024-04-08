@@ -27,18 +27,17 @@ namespace Psix
     class PythonWatchImpl : WatchImpl
     {
 
-        private string watchName;
+        private string watchName = "";
         private string pythonPath;
         GameObject? receiverObject;
         StreamWriter? processInput;
 
         private static PsixLogger logger = new PsixLogger("PythonWatchImpl");
 
-        public PythonWatchImpl(string pythonPath, string name)
+        public PythonWatchImpl(string pythonPath)
         {
             logger.Debug("PythonWatchImpl");
             this.pythonPath = pythonPath;
-            this.watchName = name;
             receiverObject = null;
         }
 
@@ -74,7 +73,11 @@ namespace Psix
                 // Create process start info
                 ProcessStartInfo startInfo = new ProcessStartInfo();
                 startInfo.FileName = parent!.pythonPath;
-                startInfo.Arguments = $"-m touch_sdk.stream_watch --name-filter {parent!.watchName}";
+
+                var nameArgument = parent!.watchName == "" ? "" : $"--name-filter {parent!.watchName}";
+
+                startInfo.Arguments = $"-m touch_sdk.stream_watch {nameArgument}";
+
                 startInfo.UseShellExecute = false;
                 startInfo.CreateNoWindow = true;
                 startInfo.RedirectStandardInput = true;
@@ -194,8 +197,10 @@ namespace Psix
 
         }
 
-        override public void Connect()
+        override public void Connect(string name = "")
         {
+            this.watchName = name;
+
             if (receiverObject == null)
             {
                 logger.Debug("Connecting via gameobject");

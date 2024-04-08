@@ -27,21 +27,18 @@ namespace Psix
     class AndroidWatchImpl : WatchImpl
     {
 
-        private string watchName = "";
-
         private static PsixLogger logger = new PsixLogger("AndroidWatchImpl");
 
         private AndroidJavaObject androidInterface;
 
         private bool companionDeviceMode = false;
 
-        public AndroidWatchImpl(string name = "", bool useCompanionDevice = false) {
+        public AndroidWatchImpl(bool useCompanionDevice = false) {
 
 #if !UNITY_ANDROID
             Debug.LogWarning("AndroidWatchImpl is only supported on Android.");
 #endif
 
-            watchName = name;
             companionDeviceMode = useCompanionDevice;
 
             // Create a game object which receives messages from the Touch SDK interface.
@@ -62,9 +59,9 @@ namespace Psix
             OnProtobufData(data);
         }
 
-        override public void Connect()
+        override public void Connect(string name = "")
         {
-            androidInterface.Call("connect", watchName, companionDeviceMode);
+            androidInterface.Call("connect", name, companionDeviceMode);
         }
 
         override public void Disconnect()

@@ -35,8 +35,9 @@ object AndroidUnityWrapper {
             synchronized(this) {
                 activeWatch = null
             }
-            watchConnector.startScan()
+
             UnityPlayer.UnitySendMessage("TouchSdkGameObject", "OnTouchSdkDisconnect", "")
+
         }
     }
 
@@ -88,15 +89,12 @@ object AndroidUnityWrapper {
             // Start the helper activity, which will ensure that we have
             // the necessary permissions before calling startScan of this object.
             activity.startActivity(intent)
-
         }
     }
 
     fun disconnect() {
         watchConnector.stopScan()
-        synchronized(this) {
-            activeWatch?.disconnect()
-        }
+        watchConnector.disconnectAndWait()
     }
 
     fun startScan() {

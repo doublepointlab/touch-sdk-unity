@@ -62,8 +62,7 @@ namespace Psix
 
         private List<GattCharacteristic> availableCharacteristics = new List<GattCharacteristic>();
 
-        public UwpWatchImpl(string name = "") {
-            watchName = name;
+        public UwpWatchImpl() {
 
             deviceWatcher = new BluetoothLEAdvertisementWatcher();
             deviceWatcher.AllowExtendedAdvertisements = true;
@@ -90,8 +89,9 @@ namespace Psix
             OnProtobufData(data);
         }
 
-        override public void Connect()
+        override public void Connect(string name = "")
         {
+            watchName = name;
             deviceWatcher.Received += OnReceived;
             deviceWatcher.Start();
         }

@@ -47,11 +47,9 @@ namespace Psix
         private GattConnection? client;
         private GattConnector? connector;
 
-        private string watchName = "";
-
         List<Subscription> subs = new List<Subscription>();
 
-        override public void Connect()
+        override public void Connect(string name = "")
         {
             if (connector != null || client != null)
                 return;
@@ -74,7 +72,7 @@ namespace Psix
                 };
                 connectAction();
                 connector = null;
-            }, watchName, subs,
+            }, name, subs,
             new List<string>() { GattServices.InteractionServiceUUID }, connectionTimeoutSeconds * 1000, select, OnScanTimeout);
         }
 
@@ -130,10 +128,8 @@ namespace Psix
 
         }
 
-        public GattWatchImpl(string name = "")
+        public GattWatchImpl()
         {
-            watchName = name;
-
             ConnectedWatchName = "";
             subs.Add(new Subscription(GattServices.ProtobufServiceUUID, GattServices.ProtobufOutputUUID, OnProtobufData));
         }
