@@ -47,6 +47,7 @@ public class Watch : MonoBehaviour
         remove { watch.OnGesture -= value; }
     }
 
+    // Receive gesture probabilities
     public event Action<float> OnGestureProbability
     {
         add { watch.OnGestureProbability += value; }
@@ -121,21 +122,12 @@ public class Watch : MonoBehaviour
         remove { watch.OnDetectedGesturesChange -= value; }
     }
 
-    /**
-     * Trigger a one-shot haptic feedback effect on the watch.
-     *
-     * @param length The duration of the effect in milliseconds.
-     * @param amplitude The strength of the effect, between 0.0 and 1.0.
-     */
     public event Action OnConnect
     {
         add { watch.OnConnect += value; }
         remove { watch.OnConnect -= value; }
     }
 
-    /**
-     * Cancel an ongoing haptic effect that was triggered earlier
-     */
     public event Action OnDisconnect
     {
         add { watch.OnDisconnect += value; }
@@ -162,6 +154,17 @@ public class Watch : MonoBehaviour
 
     // Which hand the watch is worn on?
     [HideInInspector] public Hand Handedness = Hand.None;
+
+    [HideInInspector] public int BatteryPercentage = -1;
+
+    // Miscellaneous information about the device
+    [HideInInspector] public string AppId = "";
+    [HideInInspector] public string AppVersion = "";
+    [HideInInspector] public string DeviceName = "";
+    [HideInInspector] public string Manufacturer = "";
+    [HideInInspector] public string ModelInfo = "";
+    [HideInInspector] public bool HapticsAvailable = false;
+    [HideInInspector] public Vector2 TouchScreenResolution = Vector2.zero;
 
     // Set of gestures that the watch is trying to detect
     [HideInInspector] public HashSet<Gesture> DetectedGestures = new HashSet<Gesture>();

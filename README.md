@@ -1,8 +1,36 @@
-# Port 6 SDK
+# Touch SDK
 
-C# scripts for bridging Unity applications with Port 6 enabled smart peripherals.
+C# scripts for bridging Unity applications with Doublepoint enabled smart peripherals.
 
-For more information, refer to [the documentation on Notion.](https://www.notion.so/port6/Setting-up-your-Unity-AR-VR-Development-Environment-Oculus-a972be12183d4848875c6f093c24a9eb)
+## Installation
 
-Copyright (c) 2022 Port 6 Oy <hello@port6.io>
+[With OpenUPM](https://openupm.com/packages/io.port6.sdk/)
+
+## Example usage
+
+Add the `BluetoothWatchProvider` script (`Runtime/BluetoothWatchProvider.cs`) to an active game object in your Unity project. Then, add the following script:
+
+```csharp
+
+using UnityEngine;
+
+using Psix;
+
+public class WatchExample : MonoBehaviour
+{
+
+    public void Start()
+    {
+        Watch.Instance.OnGesture += OnGesture;
+
+        Watch.Instance.OnAcceleration += OnAcceleration;
+        Watch.Instance.OnAngularVelocity += OnAngularVelocity;
+        Watch.Instance.OnGravity += OnGravity;
+        Watch.Instance.OnOrientation += OnOrientation;
+    }
+}
+
+```
+
+Copyright (c) 2024 Doublepoint Oy <hello@doublepoint.com>
 Licensed under the MIT License. See LICENSE for details.

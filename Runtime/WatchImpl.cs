@@ -52,8 +52,20 @@ namespace Psix
         public event Action? OnButton = null;
         public event Action<Direction>? OnRotary = null;
 
-        private Hand Handedness = Hand.None;
+        public Hand Handedness { get; protected set; } = Hand.None;
         public event Action<Hand>? OnHandednessChange = null;
+
+        public int BatteryPercentage { get; protected set; } = -1;
+
+        public string AppId { get; protected set; } = "";
+        public string AppVersion { get; protected set; } = "";
+
+        public string DeviceName { get; protected set; } = "";
+        public string Manufacturer { get; protected set; } = "";
+        public string ModelInfo { get; protected set; } = "";
+
+        public Vector2 TouchScreenResolution { get; protected set; } = Vector2.zero;
+        public bool HapticsAvailable { get; protected set; } = false;
 
         private HashSet<Gesture> ActiveGestures = new HashSet<Gesture>();
         public event Action<HashSet<Gesture>>? OnDetectedGesturesChange = null;
@@ -158,7 +170,6 @@ namespace Psix
         {
             var update = Proto.Update.Parser.ParseFrom(data);
 
-
             HandleSensorframes(update);
             HandleGestures(update);
             HandlePredictionOutput(update);
@@ -240,6 +251,7 @@ namespace Psix
                 logger.Debug("Info:{0}", e.Message);
             }
 
+
             try
             {
                 var newActiveGestures = new HashSet<Gesture>(info.ActiveModel.Gestures.Select(gesture =>
@@ -258,8 +270,33 @@ namespace Psix
             {
                 logger.Debug("Gestures:{0}", e.Message);
             }
-        }
 
+            try
+            {
+                var touchScreenResolution = info.TouchScreenResolution;
+                TouchScreenResolution = new Vector2(touchScreenResolution.X, touchScreenResolution.Y);
+
+                HapticsAvailable = info.HapticsAvailable;
+                AppId = info.AppId;
+                AppVersion = info.AppVersion;
+                DeviceName = info.DeviceName;
+                Manufacturer = info.Manufacturer;
+                ModelInfo = info.ModelInfo;
+            }
+            catch (NullReferenceException e)
+            {
+                logger.Debug("Info:{0}", e.Message);
+            }
+
+            try
+            {
+                BatteryPercentage = info.BatteryPercentage;
+            }
+            catch (NullReferenceException e)
+            {
+                logger.Debug("Battery:{0}", e.Message);
+            }
+        }
 
         // Internal connection lifecycle callbacks
 
@@ -274,7 +311,17 @@ namespace Psix
         {
             logger.Debug("disconnect action");
             Connected = false;
+
             OnDisconnect?.Invoke();
+
+            AppId = "";
+            AppVersion = "";
+            DeviceName = "";
+            Manufacturer = "";
+            ModelInfo = "";
+            BatteryPercentage = -1;
+            TouchScreenResolution = Vector2.zero;
+            HapticsAvailable = false;
         }
 
         public void ClearSubscriptions()

@@ -24,38 +24,41 @@ namespace Psix.Proto {
     static WatchOutputReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChJ3YXRjaF9vdXRwdXQucHJvdG8aDGNvbW1vbi5wcm90byKoAQoESW5mbxIY",
+            "ChJ3YXRjaF9vdXRwdXQucHJvdG8aDGNvbW1vbi5wcm90byLAAgoESW5mbxIY",
             "CgRoYW5kGAEgASgOMgouSW5mby5IYW5kEg0KBWFwcElkGAIgASgJEhIKCmFw",
             "cFZlcnNpb24YAyABKAkSHwoPYXZhaWxhYmxlTW9kZWxzGAQgAygLMgYuTW9k",
-            "ZWwSGwoLYWN0aXZlTW9kZWwYBSABKAsyBi5Nb2RlbCIlCgRIYW5kEggKBE5P",
-            "TkUQABIJCgVSSUdIVBABEggKBExFRlQQAiKeAQoLU2Vuc29yRnJhbWUSEwoE",
-            "Z3lybxgBIAEoCzIFLlZlYzMSEgoDYWNjGAIgASgLMgUuVmVjMxITCgRncmF2",
-            "GAMgASgLMgUuVmVjMxITCgRxdWF0GAQgASgLMgUuUXVhdBISCgNtYWcYBiAB",
-            "KAsyBS5WZWMzEhUKBm1hZ0NhbBgHIAEoCzIFLlZlYzMSEQoJZGVsdGFUaW1l",
-            "GAUgASgFIjgKB0dlc3R1cmUSGgoEdHlwZRgBIAEoDjIMLkdlc3R1cmVUeXBl",
-            "EhEKCWRlbHRhVGltZRgCIAEoBSLUAQoKVG91Y2hFdmVudBItCglldmVudFR5",
-            "cGUYASABKA4yGi5Ub3VjaEV2ZW50LlRvdWNoRXZlbnRUeXBlEhMKC2FjdGlv",
-            "bkluZGV4GAIgASgFEhIKCnBvaW50ZXJJZHMYAyADKAUSFQoGY29vcmRzGAQg",
-            "AygLMgUuVmVjMhIRCglkZWx0YVRpbWUYBSABKAUiRAoOVG91Y2hFdmVudFR5",
-            "cGUSCAoETk9ORRAAEgkKBUJFR0lOEAESBwoDRU5EEAISCAoETU9WRRADEgoK",
-            "BkNBTkNFTBAEIi4KC1JvdGFyeUV2ZW50EgwKBHN0ZXAYASABKAUSEQoJZGVs",
-            "dGFUaW1lGAIgASgFIiwKC0J1dHRvbkV2ZW50EgoKAmlkGAEgASgFEhEKCWRl",
-            "bHRhVGltZRgCIAEoBSJEChBQcm9iYWJpbGl0eUVudHJ5EhsKBWxhYmVsGAEg",
-            "ASgOMgwuR2VzdHVyZVR5cGUSEwoLcHJvYmFiaWxpdHkYAiABKAIimwMKBlVw",
-            "ZGF0ZRIiCgxzZW5zb3JGcmFtZXMYASADKAsyDC5TZW5zb3JGcmFtZRIaCghn",
-            "ZXN0dXJlcxgCIAMoCzIILkdlc3R1cmUSIAoLdG91Y2hFdmVudHMYAyADKAsy",
-            "Cy5Ub3VjaEV2ZW50EiIKDGJ1dHRvbkV2ZW50cxgEIAMoCzIMLkJ1dHRvbkV2",
-            "ZW50EiIKDHJvdGFyeUV2ZW50cxgFIAMoCzIMLlJvdGFyeUV2ZW50Eh8KB3Np",
-            "Z25hbHMYBiADKA4yDi5VcGRhdGUuU2lnbmFsEhEKCWRlbHRhVGltZRgHIAEo",
-            "BRIQCgh1bml4VGltZRgIIAEoAxITCgRpbmZvGAkgASgLMgUuSW5mbxIoCg1w",
-            "cm9iYWJpbGl0aWVzGAogAygLMhEuUHJvYmFiaWxpdHlFbnRyeRIQCghwcmVz",
-            "c3VyZRgQIAEoAiJQCgZTaWduYWwSCAoETk9ORRAAEg4KCkRJU0NPTk5FQ1QQ",
-            "ARIUChBDT05ORUNUX0FQUFJPVkVEEAISFgoSREVTQ1JJUFRJT05fVVBEQVRF",
-            "EANCDaoCClBzaXguUHJvdG9iBnByb3RvMw=="));
+            "ZWwSGwoLYWN0aXZlTW9kZWwYBSABKAsyBi5Nb2RlbBIRCgltb2RlbEluZm8Y",
+            "BiABKAkSFAoMbWFudWZhY3R1cmVyGAcgASgJEhIKCmRldmljZU5hbWUYCCAB",
+            "KAkSGQoRYmF0dGVyeVBlcmNlbnRhZ2UYCSABKAUSGAoQaGFwdGljc0F2YWls",
+            "YWJsZRgKIAEoCBIkChV0b3VjaFNjcmVlblJlc29sdXRpb24YCyABKAsyBS5W",
+            "ZWMyIiUKBEhhbmQSCAoETk9ORRAAEgkKBVJJR0hUEAESCAoETEVGVBACIp4B",
+            "CgtTZW5zb3JGcmFtZRITCgRneXJvGAEgASgLMgUuVmVjMxISCgNhY2MYAiAB",
+            "KAsyBS5WZWMzEhMKBGdyYXYYAyABKAsyBS5WZWMzEhMKBHF1YXQYBCABKAsy",
+            "BS5RdWF0EhIKA21hZxgGIAEoCzIFLlZlYzMSFQoGbWFnQ2FsGAcgASgLMgUu",
+            "VmVjMxIRCglkZWx0YVRpbWUYBSABKAUiOAoHR2VzdHVyZRIaCgR0eXBlGAEg",
+            "ASgOMgwuR2VzdHVyZVR5cGUSEQoJZGVsdGFUaW1lGAIgASgFItQBCgpUb3Vj",
+            "aEV2ZW50Ei0KCWV2ZW50VHlwZRgBIAEoDjIaLlRvdWNoRXZlbnQuVG91Y2hF",
+            "dmVudFR5cGUSEwoLYWN0aW9uSW5kZXgYAiABKAUSEgoKcG9pbnRlcklkcxgD",
+            "IAMoBRIVCgZjb29yZHMYBCADKAsyBS5WZWMyEhEKCWRlbHRhVGltZRgFIAEo",
+            "BSJECg5Ub3VjaEV2ZW50VHlwZRIICgROT05FEAASCQoFQkVHSU4QARIHCgNF",
+            "TkQQAhIICgRNT1ZFEAMSCgoGQ0FOQ0VMEAQiLgoLUm90YXJ5RXZlbnQSDAoE",
+            "c3RlcBgBIAEoBRIRCglkZWx0YVRpbWUYAiABKAUiLAoLQnV0dG9uRXZlbnQS",
+            "CgoCaWQYASABKAUSEQoJZGVsdGFUaW1lGAIgASgFIkQKEFByb2JhYmlsaXR5",
+            "RW50cnkSGwoFbGFiZWwYASABKA4yDC5HZXN0dXJlVHlwZRITCgtwcm9iYWJp",
+            "bGl0eRgCIAEoAiKbAwoGVXBkYXRlEiIKDHNlbnNvckZyYW1lcxgBIAMoCzIM",
+            "LlNlbnNvckZyYW1lEhoKCGdlc3R1cmVzGAIgAygLMgguR2VzdHVyZRIgCgt0",
+            "b3VjaEV2ZW50cxgDIAMoCzILLlRvdWNoRXZlbnQSIgoMYnV0dG9uRXZlbnRz",
+            "GAQgAygLMgwuQnV0dG9uRXZlbnQSIgoMcm90YXJ5RXZlbnRzGAUgAygLMgwu",
+            "Um90YXJ5RXZlbnQSHwoHc2lnbmFscxgGIAMoDjIOLlVwZGF0ZS5TaWduYWwS",
+            "EQoJZGVsdGFUaW1lGAcgASgFEhAKCHVuaXhUaW1lGAggASgDEhMKBGluZm8Y",
+            "CSABKAsyBS5JbmZvEigKDXByb2JhYmlsaXRpZXMYCiADKAsyES5Qcm9iYWJp",
+            "bGl0eUVudHJ5EhAKCHByZXNzdXJlGBAgASgCIlAKBlNpZ25hbBIICgROT05F",
+            "EAASDgoKRElTQ09OTkVDVBABEhQKEENPTk5FQ1RfQVBQUk9WRUQQAhIWChJE",
+            "RVNDUklQVElPTl9VUERBVEUQA0INqgIKUHNpeC5Qcm90b2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Psix.Proto.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.Info), global::Psix.Proto.Info.Parser, new[]{ "Hand", "AppId", "AppVersion", "AvailableModels", "ActiveModel" }, null, new[]{ typeof(global::Psix.Proto.Info.Types.Hand) }, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.Info), global::Psix.Proto.Info.Parser, new[]{ "Hand", "AppId", "AppVersion", "AvailableModels", "ActiveModel", "ModelInfo", "Manufacturer", "DeviceName", "BatteryPercentage", "HapticsAvailable", "TouchScreenResolution" }, null, new[]{ typeof(global::Psix.Proto.Info.Types.Hand) }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.SensorFrame), global::Psix.Proto.SensorFrame.Parser, new[]{ "Gyro", "Acc", "Grav", "Quat", "Mag", "MagCal", "DeltaTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.Gesture), global::Psix.Proto.Gesture.Parser, new[]{ "Type", "DeltaTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Psix.Proto.TouchEvent), global::Psix.Proto.TouchEvent.Parser, new[]{ "EventType", "ActionIndex", "PointerIds", "Coords", "DeltaTime" }, null, new[]{ typeof(global::Psix.Proto.TouchEvent.Types.TouchEventType) }, null, null),
@@ -69,6 +72,9 @@ namespace Psix.Proto {
 
   }
   #region Messages
+  /// <summary>
+  /// Information about the peripheral device and its gesture detection capabilities.
+  /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Info : pb::IMessage<Info>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -109,6 +115,12 @@ namespace Psix.Proto {
       appVersion_ = other.appVersion_;
       availableModels_ = other.availableModels_.Clone();
       activeModel_ = other.activeModel_ != null ? other.activeModel_.Clone() : null;
+      modelInfo_ = other.modelInfo_;
+      manufacturer_ = other.manufacturer_;
+      deviceName_ = other.deviceName_;
+      batteryPercentage_ = other.batteryPercentage_;
+      hapticsAvailable_ = other.hapticsAvailable_;
+      touchScreenResolution_ = other.touchScreenResolution_ != null ? other.touchScreenResolution_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -133,6 +145,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "appId" field.</summary>
     public const int AppIdFieldNumber = 2;
     private string appId_ = "";
+    /// <summary>
+    /// ID and version of the application running on the peripheral.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string AppId {
@@ -159,6 +174,9 @@ namespace Psix.Proto {
     private static readonly pb::FieldCodec<global::Psix.Proto.Model> _repeated_availableModels_codec
         = pb::FieldCodec.ForMessage(34, global::Psix.Proto.Model.Parser);
     private readonly pbc::RepeatedField<global::Psix.Proto.Model> availableModels_ = new pbc::RepeatedField<global::Psix.Proto.Model>();
+    /// <summary>
+    /// Available and active gesture detection models.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<global::Psix.Proto.Model> AvailableModels {
@@ -174,6 +192,96 @@ namespace Psix.Proto {
       get { return activeModel_; }
       set {
         activeModel_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "modelInfo" field.</summary>
+    public const int ModelInfoFieldNumber = 6;
+    private string modelInfo_ = "";
+    /// <summary>
+    /// Information about the active model
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ModelInfo {
+      get { return modelInfo_; }
+      set {
+        modelInfo_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "manufacturer" field.</summary>
+    public const int ManufacturerFieldNumber = 7;
+    private string manufacturer_ = "";
+    /// <summary>
+    /// Device manufacturer
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Manufacturer {
+      get { return manufacturer_; }
+      set {
+        manufacturer_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "deviceName" field.</summary>
+    public const int DeviceNameFieldNumber = 8;
+    private string deviceName_ = "";
+    /// <summary>
+    /// Name of the peripheral device
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string DeviceName {
+      get { return deviceName_; }
+      set {
+        deviceName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "batteryPercentage" field.</summary>
+    public const int BatteryPercentageFieldNumber = 9;
+    private int batteryPercentage_;
+    /// <summary>
+    /// Battery level in percent, 0-100
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int BatteryPercentage {
+      get { return batteryPercentage_; }
+      set {
+        batteryPercentage_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "hapticsAvailable" field.</summary>
+    public const int HapticsAvailableFieldNumber = 10;
+    private bool hapticsAvailable_;
+    /// <summary>
+    /// Whether the peripheral supports haptic feedback
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HapticsAvailable {
+      get { return hapticsAvailable_; }
+      set {
+        hapticsAvailable_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "touchScreenResolution" field.</summary>
+    public const int TouchScreenResolutionFieldNumber = 11;
+    private global::Psix.Proto.Vec2 touchScreenResolution_;
+    /// <summary>
+    /// Whether the peripheral has a touch screen
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Psix.Proto.Vec2 TouchScreenResolution {
+      get { return touchScreenResolution_; }
+      set {
+        touchScreenResolution_ = value;
       }
     }
 
@@ -197,6 +305,12 @@ namespace Psix.Proto {
       if (AppVersion != other.AppVersion) return false;
       if(!availableModels_.Equals(other.availableModels_)) return false;
       if (!object.Equals(ActiveModel, other.ActiveModel)) return false;
+      if (ModelInfo != other.ModelInfo) return false;
+      if (Manufacturer != other.Manufacturer) return false;
+      if (DeviceName != other.DeviceName) return false;
+      if (BatteryPercentage != other.BatteryPercentage) return false;
+      if (HapticsAvailable != other.HapticsAvailable) return false;
+      if (!object.Equals(TouchScreenResolution, other.TouchScreenResolution)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -209,6 +323,12 @@ namespace Psix.Proto {
       if (AppVersion.Length != 0) hash ^= AppVersion.GetHashCode();
       hash ^= availableModels_.GetHashCode();
       if (activeModel_ != null) hash ^= ActiveModel.GetHashCode();
+      if (ModelInfo.Length != 0) hash ^= ModelInfo.GetHashCode();
+      if (Manufacturer.Length != 0) hash ^= Manufacturer.GetHashCode();
+      if (DeviceName.Length != 0) hash ^= DeviceName.GetHashCode();
+      if (BatteryPercentage != 0) hash ^= BatteryPercentage.GetHashCode();
+      if (HapticsAvailable != false) hash ^= HapticsAvailable.GetHashCode();
+      if (touchScreenResolution_ != null) hash ^= TouchScreenResolution.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -244,6 +364,30 @@ namespace Psix.Proto {
         output.WriteRawTag(42);
         output.WriteMessage(ActiveModel);
       }
+      if (ModelInfo.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(ModelInfo);
+      }
+      if (Manufacturer.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(Manufacturer);
+      }
+      if (DeviceName.Length != 0) {
+        output.WriteRawTag(66);
+        output.WriteString(DeviceName);
+      }
+      if (BatteryPercentage != 0) {
+        output.WriteRawTag(72);
+        output.WriteInt32(BatteryPercentage);
+      }
+      if (HapticsAvailable != false) {
+        output.WriteRawTag(80);
+        output.WriteBool(HapticsAvailable);
+      }
+      if (touchScreenResolution_ != null) {
+        output.WriteRawTag(90);
+        output.WriteMessage(TouchScreenResolution);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -271,6 +415,30 @@ namespace Psix.Proto {
         output.WriteRawTag(42);
         output.WriteMessage(ActiveModel);
       }
+      if (ModelInfo.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(ModelInfo);
+      }
+      if (Manufacturer.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(Manufacturer);
+      }
+      if (DeviceName.Length != 0) {
+        output.WriteRawTag(66);
+        output.WriteString(DeviceName);
+      }
+      if (BatteryPercentage != 0) {
+        output.WriteRawTag(72);
+        output.WriteInt32(BatteryPercentage);
+      }
+      if (HapticsAvailable != false) {
+        output.WriteRawTag(80);
+        output.WriteBool(HapticsAvailable);
+      }
+      if (touchScreenResolution_ != null) {
+        output.WriteRawTag(90);
+        output.WriteMessage(TouchScreenResolution);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -293,6 +461,24 @@ namespace Psix.Proto {
       size += availableModels_.CalculateSize(_repeated_availableModels_codec);
       if (activeModel_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(ActiveModel);
+      }
+      if (ModelInfo.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ModelInfo);
+      }
+      if (Manufacturer.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Manufacturer);
+      }
+      if (DeviceName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DeviceName);
+      }
+      if (BatteryPercentage != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(BatteryPercentage);
+      }
+      if (HapticsAvailable != false) {
+        size += 1 + 1;
+      }
+      if (touchScreenResolution_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(TouchScreenResolution);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -321,6 +507,27 @@ namespace Psix.Proto {
           ActiveModel = new global::Psix.Proto.Model();
         }
         ActiveModel.MergeFrom(other.ActiveModel);
+      }
+      if (other.ModelInfo.Length != 0) {
+        ModelInfo = other.ModelInfo;
+      }
+      if (other.Manufacturer.Length != 0) {
+        Manufacturer = other.Manufacturer;
+      }
+      if (other.DeviceName.Length != 0) {
+        DeviceName = other.DeviceName;
+      }
+      if (other.BatteryPercentage != 0) {
+        BatteryPercentage = other.BatteryPercentage;
+      }
+      if (other.HapticsAvailable != false) {
+        HapticsAvailable = other.HapticsAvailable;
+      }
+      if (other.touchScreenResolution_ != null) {
+        if (touchScreenResolution_ == null) {
+          TouchScreenResolution = new global::Psix.Proto.Vec2();
+        }
+        TouchScreenResolution.MergeFrom(other.TouchScreenResolution);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -358,6 +565,33 @@ namespace Psix.Proto {
               ActiveModel = new global::Psix.Proto.Model();
             }
             input.ReadMessage(ActiveModel);
+            break;
+          }
+          case 50: {
+            ModelInfo = input.ReadString();
+            break;
+          }
+          case 58: {
+            Manufacturer = input.ReadString();
+            break;
+          }
+          case 66: {
+            DeviceName = input.ReadString();
+            break;
+          }
+          case 72: {
+            BatteryPercentage = input.ReadInt32();
+            break;
+          }
+          case 80: {
+            HapticsAvailable = input.ReadBool();
+            break;
+          }
+          case 90: {
+            if (touchScreenResolution_ == null) {
+              TouchScreenResolution = new global::Psix.Proto.Vec2();
+            }
+            input.ReadMessage(TouchScreenResolution);
             break;
           }
         }
@@ -398,6 +632,33 @@ namespace Psix.Proto {
             input.ReadMessage(ActiveModel);
             break;
           }
+          case 50: {
+            ModelInfo = input.ReadString();
+            break;
+          }
+          case 58: {
+            Manufacturer = input.ReadString();
+            break;
+          }
+          case 66: {
+            DeviceName = input.ReadString();
+            break;
+          }
+          case 72: {
+            BatteryPercentage = input.ReadInt32();
+            break;
+          }
+          case 80: {
+            HapticsAvailable = input.ReadBool();
+            break;
+          }
+          case 90: {
+            if (touchScreenResolution_ == null) {
+              TouchScreenResolution = new global::Psix.Proto.Vec2();
+            }
+            input.ReadMessage(TouchScreenResolution);
+            break;
+          }
         }
       }
     }
@@ -408,6 +669,9 @@ namespace Psix.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static partial class Types {
+      /// <summary>
+      /// Which hand the device is worn on?
+      /// </summary>
       public enum Hand {
         [pbr::OriginalName("NONE")] None = 0,
         [pbr::OriginalName("RIGHT")] Right = 1,
@@ -419,6 +683,10 @@ namespace Psix.Proto {
 
   }
 
+  /// <summary>
+  /// Sensor frame, containing data from the IMU and magnetometer
+  /// at a specific point in time.
+  /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class SensorFrame : pb::IMessage<SensorFrame>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -473,6 +741,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "gyro" field.</summary>
     public const int GyroFieldNumber = 1;
     private global::Psix.Proto.Vec3 gyro_;
+    /// <summary>
+    /// Angular velocity in rad/s
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Psix.Proto.Vec3 Gyro {
@@ -485,6 +756,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "acc" field.</summary>
     public const int AccFieldNumber = 2;
     private global::Psix.Proto.Vec3 acc_;
+    /// <summary>
+    /// Acceleration in m/s^2
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Psix.Proto.Vec3 Acc {
@@ -497,6 +771,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "grav" field.</summary>
     public const int GravFieldNumber = 3;
     private global::Psix.Proto.Vec3 grav_;
+    /// <summary>
+    /// Gravity in m/s^2
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Psix.Proto.Vec3 Grav {
@@ -509,6 +786,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "quat" field.</summary>
     public const int QuatFieldNumber = 4;
     private global::Psix.Proto.Quat quat_;
+    /// <summary>
+    /// Orientation quaternion
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Psix.Proto.Quat Quat {
@@ -521,6 +801,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "mag" field.</summary>
     public const int MagFieldNumber = 6;
     private global::Psix.Proto.Vec3 mag_;
+    /// <summary>
+    /// Magnetic field in uT
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Psix.Proto.Vec3 Mag {
@@ -533,6 +816,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "magCal" field.</summary>
     public const int MagCalFieldNumber = 7;
     private global::Psix.Proto.Vec3 magCal_;
+    /// <summary>
+    /// Magnetic field calibration value in uT
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Psix.Proto.Vec3 MagCal {
@@ -545,6 +831,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "deltaTime" field.</summary>
     public const int DeltaTimeFieldNumber = 5;
     private int deltaTime_;
+    /// <summary>
+    /// Milliseconds since the last sensor frame
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int DeltaTime {
@@ -885,6 +1174,9 @@ namespace Psix.Proto {
 
   }
 
+  /// <summary>
+  /// Gesture event, containing information about a detected gesture.
+  /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Gesture : pb::IMessage<Gesture>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -946,6 +1238,10 @@ namespace Psix.Proto {
     /// <summary>Field number for the "deltaTime" field.</summary>
     public const int DeltaTimeFieldNumber = 2;
     private int deltaTime_;
+    /// <summary>
+    /// The time at which the gesture was detected,
+    /// in milliseconds since the last Update message.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int DeltaTime {
@@ -1112,6 +1408,9 @@ namespace Psix.Proto {
 
   }
 
+  /// <summary>
+  /// Touch screen event.
+  /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class TouchEvent : pb::IMessage<TouchEvent>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -1176,6 +1475,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "actionIndex" field.</summary>
     public const int ActionIndexFieldNumber = 2;
     private int actionIndex_;
+    /// <summary>
+    /// Which pointer ID caused this event?
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int ActionIndex {
@@ -1190,6 +1492,9 @@ namespace Psix.Proto {
     private static readonly pb::FieldCodec<int> _repeated_pointerIds_codec
         = pb::FieldCodec.ForInt32(26);
     private readonly pbc::RepeatedField<int> pointerIds_ = new pbc::RepeatedField<int>();
+    /// <summary>
+    /// List of pointer IDs that are currently active.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<int> PointerIds {
@@ -1201,6 +1506,9 @@ namespace Psix.Proto {
     private static readonly pb::FieldCodec<global::Psix.Proto.Vec2> _repeated_coords_codec
         = pb::FieldCodec.ForMessage(34, global::Psix.Proto.Vec2.Parser);
     private readonly pbc::RepeatedField<global::Psix.Proto.Vec2> coords_ = new pbc::RepeatedField<global::Psix.Proto.Vec2>();
+    /// <summary>
+    /// List of touch screen coordinates (in pixels) for each active pointer.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<global::Psix.Proto.Vec2> Coords {
@@ -1210,6 +1518,10 @@ namespace Psix.Proto {
     /// <summary>Field number for the "deltaTime" field.</summary>
     public const int DeltaTimeFieldNumber = 5;
     private int deltaTime_;
+    /// <summary>
+    /// Time at which the touch event was detected,
+    /// in milliseconds since the last Update message.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int DeltaTime {
@@ -1433,6 +1745,9 @@ namespace Psix.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static partial class Types {
+      /// <summary>
+      /// What type of touch event was detected?
+      /// </summary>
       public enum TouchEventType {
         [pbr::OriginalName("NONE")] None = 0,
         [pbr::OriginalName("BEGIN")] Begin = 1,
@@ -1446,6 +1761,9 @@ namespace Psix.Proto {
 
   }
 
+  /// <summary>
+  /// Rotary input event.
+  /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class RotaryEvent : pb::IMessage<RotaryEvent>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -1496,7 +1814,7 @@ namespace Psix.Proto {
     public const int StepFieldNumber = 1;
     private int step_;
     /// <summary>
-    /// 0 is used for None
+    /// Positive for clockwise, negative for counter-clockwise. 0 is reserved for None.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1510,6 +1828,10 @@ namespace Psix.Proto {
     /// <summary>Field number for the "deltaTime" field.</summary>
     public const int DeltaTimeFieldNumber = 2;
     private int deltaTime_;
+    /// <summary>
+    /// Time at which the rotary event was detected,
+    /// in milliseconds since the last Update message.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int DeltaTime {
@@ -1676,6 +1998,9 @@ namespace Psix.Proto {
 
   }
 
+  /// <summary>
+  /// Button input event.
+  /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class ButtonEvent : pb::IMessage<ButtonEvent>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -1726,7 +2051,7 @@ namespace Psix.Proto {
     public const int IdFieldNumber = 1;
     private int id_;
     /// <summary>
-    /// Must be non-negative for valid button. -1 is reserved for None
+    /// Must be non-negative for valid button. -1 is reserved for None.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1740,6 +2065,10 @@ namespace Psix.Proto {
     /// <summary>Field number for the "deltaTime" field.</summary>
     public const int DeltaTimeFieldNumber = 2;
     private int deltaTime_;
+    /// <summary>
+    /// Time at which the button event was detected,
+    /// in milliseconds since the last Update message.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int DeltaTime {
@@ -1906,6 +2235,9 @@ namespace Psix.Proto {
 
   }
 
+  /// <summary>
+  /// Output of the gesture detection model.
+  /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class ProbabilityEntry : pb::IMessage<ProbabilityEntry>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -1955,6 +2287,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "label" field.</summary>
     public const int LabelFieldNumber = 1;
     private global::Psix.Proto.GestureType label_ = global::Psix.Proto.GestureType.None;
+    /// <summary>
+    /// Which gesture does this probability correspond to?
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Psix.Proto.GestureType Label {
@@ -1967,6 +2302,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "probability" field.</summary>
     public const int ProbabilityFieldNumber = 2;
     private float probability_;
+    /// <summary>
+    /// Probability of the gesture being detected, between 0 and 1.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public float Probability {
@@ -2133,6 +2471,10 @@ namespace Psix.Proto {
 
   }
 
+  /// <summary>
+  /// Message type sent by the server (peripheral device) to the client (application)
+  /// over the "output" GATT characteristic. Used for both notifications and read responses.
+  /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Update : pb::IMessage<Update>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -2193,6 +2535,11 @@ namespace Psix.Proto {
     private static readonly pb::FieldCodec<global::Psix.Proto.SensorFrame> _repeated_sensorFrames_codec
         = pb::FieldCodec.ForMessage(10, global::Psix.Proto.SensorFrame.Parser);
     private readonly pbc::RepeatedField<global::Psix.Proto.SensorFrame> sensorFrames_ = new pbc::RepeatedField<global::Psix.Proto.SensorFrame>();
+    /// <summary>
+    /// One or more sensor frames. Read response should contain exactly one sensor frame,
+    /// corresponding to the most recent available sensor data. Notifications should contain
+    /// at least one sensor frame; handling of multiple frames is client-specific.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<global::Psix.Proto.SensorFrame> SensorFrames {
@@ -2204,6 +2551,10 @@ namespace Psix.Proto {
     private static readonly pb::FieldCodec<global::Psix.Proto.Gesture> _repeated_gestures_codec
         = pb::FieldCodec.ForMessage(18, global::Psix.Proto.Gesture.Parser);
     private readonly pbc::RepeatedField<global::Psix.Proto.Gesture> gestures_ = new pbc::RepeatedField<global::Psix.Proto.Gesture>();
+    /// <summary>
+    /// Zero or more gesture events that have been detected since the last notification update.
+    /// Read response should contain no gestures.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<global::Psix.Proto.Gesture> Gestures {
@@ -2215,6 +2566,9 @@ namespace Psix.Proto {
     private static readonly pb::FieldCodec<global::Psix.Proto.TouchEvent> _repeated_touchEvents_codec
         = pb::FieldCodec.ForMessage(26, global::Psix.Proto.TouchEvent.Parser);
     private readonly pbc::RepeatedField<global::Psix.Proto.TouchEvent> touchEvents_ = new pbc::RepeatedField<global::Psix.Proto.TouchEvent>();
+    /// <summary>
+    /// Zero or more touch events that have been detected since the last notification update.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<global::Psix.Proto.TouchEvent> TouchEvents {
@@ -2257,6 +2611,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "deltaTime" field.</summary>
     public const int DeltaTimeFieldNumber = 7;
     private int deltaTime_;
+    /// <summary>
+    /// Milliseconds since the last update. 0 (= default int value) if not available.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int DeltaTime {
@@ -2269,6 +2626,10 @@ namespace Psix.Proto {
     /// <summary>Field number for the "unixTime" field.</summary>
     public const int UnixTimeFieldNumber = 8;
     private long unixTime_;
+    /// <summary>
+    /// Unix time in milliseconds, measured by server when update is built.
+    /// 0 (= default int value) if not available.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public long UnixTime {
@@ -2281,6 +2642,10 @@ namespace Psix.Proto {
     /// <summary>Field number for the "info" field.</summary>
     public const int InfoFieldNumber = 9;
     private global::Psix.Proto.Info info_;
+    /// <summary>
+    /// Always present in a read response. Only present in a notification
+    /// if the information has changed.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Psix.Proto.Info Info {
@@ -2295,6 +2660,9 @@ namespace Psix.Proto {
     private static readonly pb::FieldCodec<global::Psix.Proto.ProbabilityEntry> _repeated_probabilities_codec
         = pb::FieldCodec.ForMessage(82, global::Psix.Proto.ProbabilityEntry.Parser);
     private readonly pbc::RepeatedField<global::Psix.Proto.ProbabilityEntry> probabilities_ = new pbc::RepeatedField<global::Psix.Proto.ProbabilityEntry>();
+    /// <summary>
+    /// Gesture probabilities. Only present in a notification update.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<global::Psix.Proto.ProbabilityEntry> Probabilities {
@@ -2304,6 +2672,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "pressure" field.</summary>
     public const int PressureFieldNumber = 16;
     private float pressure_;
+    /// <summary>
+    /// Barometric pressure in hPa. 0.0 (= default float value) if not available.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public float Pressure {
@@ -2630,10 +3001,22 @@ namespace Psix.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static partial class Types {
+      /// <summary>
+      /// Zero or more signals, with which the server notifies the client of a specific event.
+      /// </summary>
       public enum Signal {
         [pbr::OriginalName("NONE")] None = 0,
+        /// <summary>
+        /// Client should disconnect from this server as soon as possible.
+        /// </summary>
         [pbr::OriginalName("DISCONNECT")] Disconnect = 1,
+        /// <summary>
+        /// Not used.
+        /// </summary>
         [pbr::OriginalName("CONNECT_APPROVED")] ConnectApproved = 2,
+        /// <summary>
+        /// Not used.
+        /// </summary>
         [pbr::OriginalName("DESCRIPTION_UPDATE")] DescriptionUpdate = 3,
       }
 

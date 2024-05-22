@@ -45,6 +45,9 @@ namespace Psix.Proto {
 
   }
   #region Messages
+  /// <summary>
+  /// Haptic event to be triggered on the peripheral device.
+  /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class HapticEvent : pb::IMessage<HapticEvent>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -107,6 +110,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "intensity" field.</summary>
     public const int IntensityFieldNumber = 2;
     private float intensity_;
+    /// <summary>
+    /// Intensity of effect, between 0 and 1.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public float Intensity {
@@ -119,6 +125,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "length" field.</summary>
     public const int LengthFieldNumber = 3;
     private int length_;
+    /// <summary>
+    /// Duration of effect in milliseconds. Peripheral may impose a maximum duration.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int Length {
@@ -312,8 +321,17 @@ namespace Psix.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static partial class Types {
+      /// <summary>
+      /// Type of the haptic event.
+      /// </summary>
       public enum HapticType {
+        /// <summary>
+        /// Cancel any ongoing haptic feedback.
+        /// </summary>
         [pbr::OriginalName("CANCEL")] Cancel = 0,
+        /// <summary>
+        /// Trigger a one-shot haptic feedback.
+        /// </summary>
         [pbr::OriginalName("ONESHOT")] Oneshot = 1,
       }
 
@@ -322,6 +340,9 @@ namespace Psix.Proto {
 
   }
 
+  /// <summary>
+  /// Information about the client application.
+  /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class ClientInfo : pb::IMessage<ClientInfo>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -373,6 +394,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "appName" field.</summary>
     public const int AppNameFieldNumber = 1;
     private string appName_ = "";
+    /// <summary>
+    /// User-readable name of the application.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string AppName {
@@ -385,6 +409,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "deviceName" field.</summary>
     public const int DeviceNameFieldNumber = 2;
     private string deviceName_ = "";
+    /// <summary>
+    /// User-readable name of the device running the application.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string DeviceName {
@@ -397,6 +424,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "title" field.</summary>
     public const int TitleFieldNumber = 3;
     private string title_ = "";
+    /// <summary>
+    /// Not used.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string Title {
@@ -409,6 +439,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "os" field.</summary>
     public const int OsFieldNumber = 4;
     private string os_ = "";
+    /// <summary>
+    /// Operating system of the device running the application.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string Os {
@@ -623,6 +656,10 @@ namespace Psix.Proto {
 
   }
 
+  /// <summary>
+  /// Message type sent by the client (application) to the server (peripheral device)
+  /// over the "input" GATT characteristic by a GATT write operation.
+  /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class InputUpdate : pb::IMessage<InputUpdate>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -673,6 +710,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "hapticEvent" field.</summary>
     public const int HapticEventFieldNumber = 1;
     private global::Psix.Proto.HapticEvent hapticEvent_;
+    /// <summary>
+    /// Application wants to trigger haptic feedback on the peripheral device.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Psix.Proto.HapticEvent HapticEvent {
@@ -685,6 +725,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "clientInfo" field.</summary>
     public const int ClientInfoFieldNumber = 2;
     private global::Psix.Proto.ClientInfo clientInfo_;
+    /// <summary>
+    /// Information about the client application.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Psix.Proto.ClientInfo ClientInfo {
@@ -697,6 +740,9 @@ namespace Psix.Proto {
     /// <summary>Field number for the "modelRequest" field.</summary>
     public const int ModelRequestFieldNumber = 3;
     private global::Psix.Proto.Model modelRequest_;
+    /// <summary>
+    /// Application requests a gesture detection model to be activated on the peripheral device.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Psix.Proto.Model ModelRequest {

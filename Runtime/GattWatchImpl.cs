@@ -70,6 +70,7 @@ namespace Psix
                         disconnectAction();
                     }
                 };
+                RequestInfo();
                 connectAction();
                 connector = null;
             }, name, subs,
