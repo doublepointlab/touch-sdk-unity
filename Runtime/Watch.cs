@@ -155,16 +155,16 @@ public class Watch : MonoBehaviour
     // Which hand the watch is worn on?
     [HideInInspector] public Hand Handedness = Hand.None;
 
-    [HideInInspector] public int BatteryPercentage = -1;
+    [HideInInspector] public int BatteryPercentage { get { return watch.BatteryPercentage; } }
 
     // Miscellaneous information about the device
-    [HideInInspector] public string AppId = "";
-    [HideInInspector] public string AppVersion = "";
-    [HideInInspector] public string DeviceName = "";
-    [HideInInspector] public string Manufacturer = "";
-    [HideInInspector] public string ModelInfo = "";
-    [HideInInspector] public bool HapticsAvailable = false;
-    [HideInInspector] public Vector2 TouchScreenResolution = Vector2.zero;
+    [HideInInspector] public string AppId { get { return watch.AppId; } }
+    [HideInInspector] public string AppVersion { get { return watch.AppVersion; } }
+    [HideInInspector] public string DeviceName { get { return watch.DeviceName; } }
+    [HideInInspector] public string Manufacturer { get { return watch.Manufacturer; } }
+    [HideInInspector] public string ModelInfo { get { return watch.ModelInfo; } }
+    [HideInInspector] public bool HapticsAvailable { get { return watch.HapticsAvailable; } }
+    [HideInInspector] public Vector2 TouchScreenResolution { get { return watch.TouchScreenResolution; } }
 
     // Set of gestures that the watch is trying to detect
     [HideInInspector] public HashSet<Gesture> DetectedGestures = new HashSet<Gesture>();

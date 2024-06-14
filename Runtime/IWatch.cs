@@ -38,6 +38,19 @@ namespace Psix
 
         event Action OnConnect;
         event Action OnDisconnect;
+
+        public int BatteryPercentage { get; }
+
+        public string AppId { get; }
+        public string AppVersion { get; }
+
+        public string DeviceName { get; }
+        public string Manufacturer { get; }
+        public string ModelInfo { get; }
+
+        public Vector2 TouchScreenResolution { get; }
+        public bool HapticsAvailable { get; }
+
         public bool Connected { get; }
 
         /**
