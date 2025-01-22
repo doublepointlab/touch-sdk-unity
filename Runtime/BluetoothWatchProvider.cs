@@ -1,5 +1,5 @@
-// Copyright (c) 2022 Port 6 Oy <hello@port6.io>
-// Licensed under the MIT License. See LICENSE for details.
+/// Copyright (c) 2024 Doublepoint Technologies Oy <hello@doublepoint.com>
+/// Licensed under the MIT License. See LICENSE for details.
 
 #nullable enable
 
@@ -13,7 +13,6 @@ using UnityEngine;
 using UnityEngine.Android;
 #endif
 
-
 namespace Psix
 {
 
@@ -25,10 +24,12 @@ namespace Psix
     [DefaultExecutionOrder(-50)]
     public class BluetoothWatchProvider : MonoBehaviour
     {
-        [SerializeField] public string watchName = "";
+        [SerializeField]
+        public string watchName = "";
 
-        [Tooltip("Python path is relevant if you use python touch sdk implementation. Leave empty to not use it.")]
-        [SerializeField] private string pythonPath = "";
+        [Tooltip("Use python sdk backend in editor mode.")]
+        [SerializeField]
+        private bool enable_python_backend = true;
 
         public bool ConnectOnStart = true;
 
@@ -36,15 +37,13 @@ namespace Psix
 
         private bool pythonImplActive
         {
-            get
-            {
-                return !String.IsNullOrEmpty(pythonPath) && Application.isEditor;
+            get {
+                return enable_python_backend && Application.isEditor;
             }
         }
         private bool androidImplActive
         {
-            get
-            {
+            get {
                 return !pythonImplActive && UseAndroidImplementation && Application.platform == RuntimePlatform.Android;
             }
         }
@@ -63,7 +62,7 @@ namespace Psix
             watch = new UwpWatchImpl();
 #else
             if (pythonImplActive)
-                watch = new PythonWatchImpl(pythonPath);
+                watch = new PythonWatchImpl();
             else if (androidImplActive)
                 watch = new AndroidWatchImpl(false);
             else
@@ -80,16 +79,12 @@ namespace Psix
             var fieldID = AndroidJNI.GetStaticFieldID(jniClass, "SDK_INT", "I");
             var sdkLevel = AndroidJNI.GetStaticIntField(jniClass, fieldID);
 
-            var androidTwelvePermissionsOk = (sdkLevel < 31) ||
-                (Permission.HasUserAuthorizedPermission(scanPermission)
-                && Permission.HasUserAuthorizedPermission(connectPermission)
-            );
+            var androidTwelvePermissionsOk =
+                (sdkLevel < 31) || (Permission.HasUserAuthorizedPermission(scanPermission) &&
+                                    Permission.HasUserAuthorizedPermission(connectPermission));
 
-            return (
-                Permission.HasUserAuthorizedPermission(Permission.CoarseLocation)
-                && Permission.HasUserAuthorizedPermission(Permission.FineLocation)
-                && androidTwelvePermissionsOk
-            );
+            return (Permission.HasUserAuthorizedPermission(Permission.CoarseLocation) &&
+                    Permission.HasUserAuthorizedPermission(Permission.FineLocation) && androidTwelvePermissionsOk);
 #else
             return true;
 #endif
@@ -98,12 +93,8 @@ namespace Psix
         private void RequestPermissions()
         {
 #if UNITY_ANDROID
-            Permission.RequestUserPermissions(new string[] {
-                Permission.CoarseLocation,
-                Permission.FineLocation,
-                scanPermission,
-                connectPermission
-            });
+            Permission.RequestUserPermissions(
+                new string[] { Permission.CoarseLocation, Permission.FineLocation, scanPermission, connectPermission });
 #endif
         }
 
@@ -117,7 +108,8 @@ namespace Psix
                     watch!.Connect(watchName);
                 }
             }
-            else RequestPermissions();
+            else
+                RequestPermissions();
 #else
             if (ConnectOnStart)
                 watch!.Connect(watchName);
@@ -138,7 +130,6 @@ namespace Psix
         {
             watch?.Disconnect();
         }
-
     }
 
 }

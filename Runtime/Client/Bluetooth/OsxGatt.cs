@@ -1,8 +1,8 @@
+/// Copyright (c) 2024 Doublepoint Technologies Oy <hello@doublepoint.com>
+/// Licensed under the MIT License. See LICENSE for details.
 // #if UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX
 // #define EXPERIMENTAL_MACOS_EDITOR
 
-// Copyright (c) 2022 Port 6 Oy <hello@port6.io>
-// Licensed under the MIT License. See LICENSE for details.
 using UnityEngine;
 using System;
 using System.Runtime.InteropServices;

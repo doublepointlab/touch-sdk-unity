@@ -1,5 +1,5 @@
-// Copyright (c) 2022 Port 6 Oy <hello@port6.io>
-// Licensed under the MIT License. See LICENSE for details.
+/// Copyright (c) 2024 Doublepoint Technologies Oy <hello@doublepoint.com>
+/// Licensed under the MIT License. See LICENSE for details.
 
 #nullable enable
 
@@ -36,7 +36,7 @@ namespace Psix
         public AndroidWatchImpl(bool useCompanionDevice = false) {
 
 #if !UNITY_ANDROID
-            Debug.LogWarning("AndroidWatchImpl is only supported on Android.");
+            logger.Warn("AndroidWatchImpl is only supported on Android.");
 #endif
 
             companionDeviceMode = useCompanionDevice;

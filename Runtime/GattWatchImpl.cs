@@ -1,6 +1,5 @@
-
-// Copyright (c) 2022 Port 6 Oy <hello@port6.io>
-// Licensed under the MIT License. See LICENSE for details.
+/// Copyright (c) 2024 Doublepoint Technologies Oy <hello@doublepoint.com>
+/// Licensed under the MIT License. See LICENSE for details.
 
 #nullable enable
 
@@ -23,7 +22,7 @@ namespace Psix
 
     /**
      * Implementation of smartwatch interface for bluetooth devices.
-     * Provides methods and callbacks related to connecting to Port 6 XR Controller
+     * Provides methods and callbacks related to connecting to WowMouse
      * smartwatch app.
      * Check also IWatch.
      */
