@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1883223731171504083}
   - component: {fileID: 8489297237439207975}
-  - component: {fileID: 8653684722864412175}
+  - component: {fileID: 2758165506722589392}
   m_Layer: 0
   m_Name: InputManager
   m_TagString: Untagged
@@ -25,13 +25,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6411585231834034575}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.0239912, y: 0.62807393, z: 1.2063577}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8489297237439207975
 MonoBehaviour:
@@ -55,7 +55,8 @@ MonoBehaviour:
   AngularVelocity: {x: 0, y: 0, z: 0}
   Orientation: {x: 0, y: 0, z: 0, w: 1}
   Gravity: {x: 0, y: 0, z: 0}
---- !u!114 &8653684722864412175
+  Handedness: 0
+--- !u!114 &2758165506722589392
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -64,8 +65,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6411585231834034575}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db62c45dca027bd41ae4e994023c694e, type: 3}
+  m_Script: {fileID: 11500000, guid: 1df301ec778228ea6a4a43338c718dea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   watchName: 
-  connectionTimeoutSeconds: 120
+  enable_python_backend: 1
+  ConnectOnStart: 1
