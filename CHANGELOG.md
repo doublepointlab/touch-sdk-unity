@@ -1,14 +1,26 @@
 # Changelog
+
+## 0.13.0-beta
+
+Added touch-sdk-python backend for editor mode bluetooth.
+
+Fixed gestures for Doublepoint Kit.
+
 ## 0.10.0-beta
+
 Added support for receiving stateful pinch gestures. The start and end of a pinch
 are designated by a `PinchTap` and `PinchRelease` gestures, respectively. For the
 sake of consistency with stateful pinch and pinch events, pinch events are now
 emitted as `PinchTap`, followed immediately by `PinchRelease`.
+
 ## 0.9.0-beta
+
 Added support to different gesture models including pinch and surface taps.
+
 ## 0.8.0-beta
+
 This update improves the versatility and performance of the TouchSDK Unity
-public interface.  WatchManager has been removed and the functionality moved to
+public interface. WatchManager has been removed and the functionality moved to
 a new MonoBehaviour, Watch, which can be accessed with the static property
 Watch.Instance. This enables alternative sources for the watch data.
 
