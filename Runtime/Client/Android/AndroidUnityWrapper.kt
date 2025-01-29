@@ -77,19 +77,10 @@ object AndroidUnityWrapper {
 
     fun connect(nameFilter: String, useCompanionDeviceMode: Boolean) {
         val intent = Intent(activity, HelperActivity::class.java)
-        if (useCompanionDeviceMode) {
-            if (activity is CompanionDeviceActivity) {
-                (activity as CompanionDeviceActivity).connect()
-            } else {
-                intent.putExtra(HelperActivity.EXTRA_USE_COMPANION_DEVICE, true)
-                activity.startActivity(intent)
-            }
-        } else {
             name = nameFilter
             // Start the helper activity, which will ensure that we have
             // the necessary permissions before calling startScan of this object.
             activity.startActivity(intent)
-        }
     }
 
     fun disconnect() {

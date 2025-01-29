@@ -90,7 +90,13 @@ namespace Psix
 
         private void HandleGestures(Proto.Update update)
         {
-            foreach (var gesture in update.Gestures)
+            var gestures = update.Gestures;
+            if (gestures.Count == 0) {
+                gestures.Add(new Proto.Gesture { Type = Proto.GestureType.None });
+
+            }
+
+            foreach (var gesture in gestures)
             {
                 if (gesture.Type != Proto.GestureType.PinchHold)
                 {
