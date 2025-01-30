@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.13.1
+
+Improve sample scene.
+Fix gesture detection issue.
+
 ## 0.13.0-beta
 
 Added touch-sdk-python backend for editor mode bluetooth.

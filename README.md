@@ -39,11 +39,5 @@ public class WatchExample : MonoBehaviour
 ```
 
 
-## Changelog (0.13.1)
-
-- Improve sample scene
-- Add Python-based editor mode support
-- Fix gesture detection issue
-
 Copyright (c) 2025 Doublepoint Oy <hello@doublepoint.com>
 Licensed under the MIT License. See LICENSE for details.
