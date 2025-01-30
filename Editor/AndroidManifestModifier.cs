@@ -1,5 +1,5 @@
-// Copyright (c) 2022 Port 6 Oy <hello@port6.io>
-// Licensed under the MIT License. See LICENSE for details.
+/// Copyright (c) 2024 Doublepoint Technologies Oy <hello@doublepoint.com>
+/// Licensed under the MIT License. See LICENSE for details.
 
 using System.Xml;
 using UnityEditor;
@@ -7,7 +7,11 @@ using UnityEditor;
 #if UNITY_ANDROID
 using UnityEditor.Android;
 
-internal class OculusManifestBTFixer : IPostGenerateGradleAndroidProject
+/*
+ * Inserts elements into the AndroidManifest.xml of the app module, such
+ * as permission and activity declarations.
+ */
+internal class AndroidManifestModifier : IPostGenerateGradleAndroidProject
 {
     static readonly string k_AndroidURI = "http://schemas.android.com/apk/res/android";
     static readonly string k_AndroidManifestPath = "/src/main/AndroidManifest.xml";
@@ -50,6 +54,15 @@ internal class OculusManifestBTFixer : IPostGenerateGradleAndroidProject
         }
     }
 
+    void AppendActivity(XmlDocument doc, string parentPath, string name)
+    {
+        var xmlNode = doc.SelectNodes(parentPath + "/application").Item(0);
+        XmlElement childElement = doc.CreateElement("activity");
+        childElement.SetAttribute("name", k_AndroidURI, name);
+        childElement.SetAttribute("exported", k_AndroidURI, "true");
+        xmlNode.AppendChild(childElement);
+    }
+
     public void OnPostGenerateGradleAndroidProject(string path)
     {
 
@@ -62,6 +75,9 @@ internal class OculusManifestBTFixer : IPostGenerateGradleAndroidProject
         CreateNameValueElementsInTag(manifestDoc, nodePath, "uses-permission", "name", "android.permission.BLUETOOTH_ADMIN");
         CreateNameValueElementsInTag(manifestDoc, nodePath, "uses-permission", "name", "android.permission.ACCESS_FINE_LOCATION");
         CreateNameValueElementsInTag(manifestDoc, nodePath, "uses-feature", "name", "android.hardware.bluetooth_le", "required", "false");
+        CreateNameValueElementsInTag(manifestDoc, nodePath, "uses-feature", "name", "android.hardware.top", "required", "false");
+
+        AppendActivity(manifestDoc, nodePath, "io.port6.android.unitywrapper.HelperActivity");
 
         manifestDoc.Save(manifestPath);
     }

@@ -1,0 +1,7 @@
+﻿---
+BasedOnStyle: Microsoft
+AlwaysBreakTemplateDeclarations: 'Yes'
+BreakAfterJavaFieldAnnotations: 'true'
+NamespaceIndentation: All
+
+...

@@ -1,11 +1,11 @@
 {
   "name": "io.port6.sdk",
-  "displayName": "Touch SDK",
-  "version": "0.6.3-beta",
-  "unity": "2020.3",
-  "description": "Connect Touch SDK compatible wearable controllers to Unity applications over Bluetooth.",
+  "displayName": "Touch SDK Unity",
+  "version": "0.13.1",
+  "unity": "2022.3",
+  "description": "C# scripts for bridging Unity applications with Doublepoint enabled smart peripherals.",
   "keywords": [
-    "Port 6",
+    "Doublepoint",
     "Bluetooth",
     "Smartwatch",
     "Smartphone",
@@ -17,9 +17,9 @@
   "author": {
     "name": "Doublepoint",
     "email": "hello@doublepoint.com",
-    "url": "https://doublepoint.com"
+    "url": "https://www.doublepoint.com"
   },
-  "homepage": "https://doublepoint.com",
+  "homepage": "https://www.doublepoint.com",
   "samples": [
     {
       "displayName": "Watch Visualizer Demo",

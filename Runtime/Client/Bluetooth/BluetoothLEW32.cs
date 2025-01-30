@@ -1,5 +1,5 @@
-// Copyright (c) 2022 Port 6 Oy <hello@port6.io>
-// Licensed under the MIT License. See LICENSE for details.
+/// Copyright (c) 2024 Doublepoint Technologies Oy <hello@doublepoint.com>
+/// Licensed under the MIT License. See LICENSE for details.
 
 using System;
 using System.Linq;
@@ -76,6 +76,7 @@ public class BluetoothLEW32
     /* Iterate data from BleApi */
     IEnumerator PollDevice()
     {
+        bool wasScanning = false;
         while (true)
         {
             BleApi.ScanStatus status;
@@ -90,12 +91,17 @@ public class BluetoothLEW32
                     status = BleApi.PollDevice(ref res, false);
                     if (status == BleApi.ScanStatus.AVAILABLE)
                     {
+                        wasScanning = true;
                         lock (_bluetoothDeviceScript.MessagesToProcess)
                             _bluetoothDeviceScript.MessagesToProcess.Enqueue($"DiscoveredPeripheral~{res.id}~{res.name}~{0}~{Convert.ToBase64String(res.advData.Take((int)res.advDataLen).ToArray())}");
                     }
+                    else if (status == BleApi.ScanStatus.PROCESSING)
+                        wasScanning = true;
                     else if (status == BleApi.ScanStatus.FINISHED)
                     {
-                        logger.Trace(String.Format("Scan finished. Connecting to {0} devices", ToConnect.Count));
+                        if (wasScanning)
+                            logger.Trace(String.Format("Scan finished. Connecting to {0} devices", ToConnect.Count));
+                        wasScanning = false;
                         while (ToConnect.Count > 0 && ScanEnabled)
                             yield return _ConnectToPeripheral();
                         /* Restarting should be used if the library version timeouts the scan.

@@ -1,15 +1,14 @@
-// Copyright (c) 2022 Port 6 Oy <hello@port6.io>
-// Licensed under the MIT License. See LICENSE for details.
+/// Copyright (c) 2024 Doublepoint Technologies Oy <hello@doublepoint.com>
+/// Licensed under the MIT License. See LICENSE for details.
 
 #nullable enable
 
 using System;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using System.Timers;
+using Google.Protobuf;
 
 using Timer = System.Timers.Timer;
 
@@ -55,7 +54,7 @@ namespace Psix
             get; private set;
         } = false;
 
-        /** Construct a gatt connection. 
+        /** Construct a gatt connection.
         * @param address Ble address of the device. Retrieve by scanning.
         * @param subscriptions Characteristics to subscribe to. Data from the first one will be forwarded to acceptor
         * @param acceptor Take data from the first characteristic and determine if the device is acceptable.
@@ -67,7 +66,7 @@ namespace Psix
             if (acceptor != null)
                 _acceptor = acceptor;
         }
-        /** Connect. You need to initialize bluetooth beforehand! 
+        /** Connect. You need to initialize bluetooth beforehand!
         * @param onAccepted Device is sending data that is accepted by acceptor.
         * @param onDisconnect Connection has either timed out or disconnect has been called.
         * @param connectionTimeout Disconnect after this seconds unless <= 0 or the device is accepted.
@@ -96,6 +95,28 @@ namespace Psix
             {
                 logger.Trace("Write succ");
             });
+        }
+
+        /** Gatt read operation
+        * @param serviceUuid UUID of the gatt service to be written to
+        * @param characteristicUUID UUID of the gatt characteristic to be written to
+        */
+        public void RequestBytes(string serviceUuid, string characteristicUuid, Action<byte[]> onData)
+        {
+            BLE.ReadCharacteristic(_address, serviceUuid, characteristicUuid, (charac, data) => onData(data));
+        }
+
+        /* Send information about this device and app to the peripheral */
+        private void SendClientInfo() {
+            var update = new Proto.InputUpdate {
+                ClientInfo = new Proto.ClientInfo {
+                    AppName = Application.productName,
+                    DeviceName = SystemInfo.deviceName,
+                    Os = Application.platform.ToString()
+                }
+            };
+
+            SendBytes(update.ToByteArray(), GattServices.ProtobufServiceUUID, GattServices.ProtobufInputUUID);
         }
 
         /* Disconnect device */
@@ -165,6 +186,7 @@ namespace Psix
                         BLE.RequestMtu(addr, MTU, (addr, mtu) =>
                         {
                             logger.Debug($"{addr} got MTU {mtu}");
+                            self.SendClientInfo();
                             self.Subscribe(self._subscriptions.Count);
                         });
                     }
