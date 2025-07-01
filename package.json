@@ -1,7 +1,7 @@
 {
   "name": "io.port6.sdk",
   "displayName": "Touch SDK Unity",
-  "version": "0.13.2",
+  "version": "0.14.0",
   "unity": "2022.3",
   "description": "C# scripts for bridging Unity applications with Doublepoint enabled smart peripherals.",
   "keywords": [
