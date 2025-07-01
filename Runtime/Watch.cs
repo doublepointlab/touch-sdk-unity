@@ -165,6 +165,17 @@ public class Watch : MonoBehaviour
     [HideInInspector] public string ModelInfo { get { return watch.ModelInfo; } }
     [HideInInspector] public bool HapticsAvailable { get { return watch.HapticsAvailable; } }
     [HideInInspector] public Vector2 TouchScreenResolution { get { return watch.TouchScreenResolution; } }
+    
+    public Vector2 GravityCorrectedGyroDelta
+    {
+        get 
+        {
+            var deltaY = AngularVelocity.x * Gravity.normalized.y - AngularVelocity.y * Gravity.normalized.x;        
+            var deltaX = AngularVelocity.y * Gravity.normalized.y + AngularVelocity.x * Gravity.normalized.x;
+
+            return new Vector2(-deltaX, deltaY);
+        }
+    }
 
     // Set of gestures that the watch is trying to detect
     [HideInInspector] public HashSet<Gesture> DetectedGestures = new HashSet<Gesture>();
