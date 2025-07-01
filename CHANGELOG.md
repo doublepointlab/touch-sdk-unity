@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.14.0
+
+Updated the sample scene to new version.
+Fixed code example. 
+
 ## 0.13.1
 
 Improve sample scene.
